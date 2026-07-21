@@ -101,7 +101,7 @@ theorem split_cycle_monotonicity : Monotonicity splitCycle := by
       have hget0' := List.getElem_rotate (l := c) (n := List.idxOf x c) (k := 0)
         (h := by
           simpa [crot, List.length_rotate] using (List.length_pos_of_mem hxmem))
-      simpa [crot, Nat.zero_add, Nat.mod_eq_of_lt hidx_x] using hget0'
+      simp [crot, Nat.mod_eq_of_lt hidx_x]
     calc
       crot.head hcrot_ne = crot[0]'h0c := List.head_eq_getElem_zero (l := crot) hcrot_ne
       _ = x := hget0

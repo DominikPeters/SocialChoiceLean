@@ -873,7 +873,7 @@ theorem colorMask_indep_of_proper (χ : Fin 16 → Fin 3)
   repeat' apply And.intro
   all_goals
     by_contra h
-    push_neg at h
+    push Not at h
     first
     | exact (hproper 0 6 (by decide)) (by simpa [h.1, h.2])
     | exact (hproper 0 7 (by decide)) (by simpa [h.1, h.2])

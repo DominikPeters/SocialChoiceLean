@@ -228,7 +228,8 @@ lemma schulzeDefeats_trans
 
 lemma schulzeDefeats_transitive
     {V A : Type} [Fintype V] [Fintype A]
-    (P : Profile V A) : Transitive (schulzeDefeats P) := by
+    (P : Profile V A) : IsTrans A (schulzeDefeats P) := by
+  refine ⟨?_⟩
   intro a b c hab hbc
   exact schulzeDefeats_trans (P := P) hab hbc
 

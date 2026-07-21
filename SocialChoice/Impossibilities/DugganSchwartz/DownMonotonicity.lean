@@ -1134,7 +1134,7 @@ lemma profileUpdateSet_empty (P P' : Profile V A) :
 
 omit [DecidableEq A] in
 lemma profileUpdateSet_insert [DecidableEq V]
-    (P P' : Profile V A) (S : Finset V) (v : V) (hv : v ∉ S) :
+    (P P' : Profile V A) (S : Finset V) (v : V) (_ : v ∉ S) :
     profileUpdateSet P P' (insert v S) =
       updateProfile (profileUpdateSet P P' S) v (P'.pref v) := by
   classical
@@ -1214,7 +1214,7 @@ lemma downObtainableSeq_step_of_adjacentInList
   exact DownObtainableSeq.step P (swapInProfile P v x y) v x y hxw hadj''
     (DownObtainableSeq.refl _)
 
-noncomputable def swapDownOnceProfile [DecidableEq A]
+noncomputable def swapDownOnceProfile
     (P : Profile V A) (v : V) (x : A) : Profile V A := by
   classical
   let l := listOfLinearOrder (P.pref v)
@@ -1222,7 +1222,7 @@ noncomputable def swapDownOnceProfile [DecidableEq A]
   · exact swapInProfile P v x (l[l.idxOf x + 1]'h)
   · exact P
 
-noncomputable def swapDownNProfile [DecidableEq A]
+noncomputable def swapDownNProfile
     (P : Profile V A) (v : V) (x : A) : Nat → Profile V A
   | 0 => P
   | n + 1 => swapDownNProfile (swapDownOnceProfile P v x) v x n

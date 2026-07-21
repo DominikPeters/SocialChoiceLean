@@ -12,10 +12,10 @@ open Finset
 
 noncomputable def swapCand : Equiv.Perm (Fin 2) := Equiv.swap 0 1
 
-noncomputable def baseOrder : LinearOrder (Fin 2) := by
+@[implicit_reducible] noncomputable def baseOrder : LinearOrder (Fin 2) := by
   infer_instance
 
-noncomputable def swappedOrder : LinearOrder (Fin 2) :=
+@[implicit_reducible] noncomputable def swappedOrder : LinearOrder (Fin 2) :=
   relabelBallot baseOrder swapCand
 
 noncomputable def twoVoterProfile : Profile (Fin 2) (Fin 2) :=

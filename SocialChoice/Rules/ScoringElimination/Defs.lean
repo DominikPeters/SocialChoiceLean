@@ -196,7 +196,7 @@ noncomputable def scoringEliminationAux
     · -- Base case: 0 or 1 candidate
       exact Finset.univ
     · -- Recursive case: eliminate lowest-scoring candidates
-      push_neg at hcard
+      push Not at hcard
       let m := Fintype.card A
       let scoreVec := fun r => score m r
       let L := lowestScoring P scoreVec

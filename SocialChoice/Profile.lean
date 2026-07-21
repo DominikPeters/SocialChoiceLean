@@ -52,13 +52,13 @@ def permuteVoters {V A : Type} [Fintype V] [Fintype A]
   { pref := fun v => P.pref (σ v) }
 
 -- Relabel a linear order along a permutation.
-noncomputable def relabelBallot {α : Type} (r : LinearOrder α) (σ : Equiv.Perm α) : LinearOrder α := by
+@[implicit_reducible] noncomputable def relabelBallot {α : Type} (r : LinearOrder α) (σ : Equiv.Perm α) : LinearOrder α := by
   classical
   let _ := r
   exact LinearOrder.lift' σ σ.injective
 
 -- Relabel a linear order along an equivalence.
-noncomputable def relabelBallotEquiv {A B : Type} (r : LinearOrder A) (e : A ≃ B) :
+@[implicit_reducible] noncomputable def relabelBallotEquiv {A B : Type} (r : LinearOrder A) (e : A ≃ B) :
     LinearOrder B := by
   classical
   let _ := r
@@ -90,7 +90,7 @@ def unionProfiles {V W A : Type} [Fintype V] [Fintype W] [Fintype A]
       | Sum.inr w => P₂.pref w }
 
 -- Restrict the agenda by a predicate.
-noncomputable def restrictBallot {A : Type} (r : LinearOrder A)
+@[implicit_reducible] noncomputable def restrictBallot {A : Type} (r : LinearOrder A)
     (p : A → Prop) [DecidablePred p] : LinearOrder {a // p a} := by
   classical
   let _ := r

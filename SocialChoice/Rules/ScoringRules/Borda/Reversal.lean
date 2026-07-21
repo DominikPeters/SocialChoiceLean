@@ -45,7 +45,7 @@ theorem borda_reversal_symmetry : ReversalSymmetry borda := by
     have hnonzero : ∃ x, c2BordaScore P x ≠ 0 := by
       by_contra hall
       have hall' : ∀ x, c2BordaScore P x = 0 := by
-        push_neg at hall
+        push Not at hall
         exact hall
       have : c2BordaRule P = Finset.univ :=
         c2BordaRule_eq_univ_of_all_zero (P := P) hall'

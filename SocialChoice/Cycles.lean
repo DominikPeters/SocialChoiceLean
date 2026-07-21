@@ -48,7 +48,7 @@ theorem rotate1_cycle_of_cycle {X : Type} {a : X} {l : List X} {P : X -> X -> Pr
       exact hyEq'.symm
     cases hyEq
     have hrel' : P (List.getLast (a :: l) hne) a :=
-      List.IsChain.rel_head hchain
+      List.IsChain.rel hchain
     have hxEq' : x = List.getLast (a :: l) hne := by
       calc
         x = List.getLast (a :: l) hxl := hxEq
@@ -85,7 +85,7 @@ theorem rotate'_cycle_of_cycle {X : Type} {c : List X} {P : X -> X -> Prop} {n :
         calc
           List.rotate' c (Nat.succ n) = (List.rotate' c n).rotate' 1 := by
             symm
-            simpa using (List.rotate'_rotate' c n 1)
+            simp
           _ = (a :: l).rotate' 1 := by
             simp [hcons]
           _ = l ++ [a] := by
@@ -250,7 +250,7 @@ theorem dominates_of_cycle_index {X : Type} (l : List X) (P : X -> X -> Prop)
     have hrel : P (List.getLast l hne) (l.get ⟨0, hlen⟩) := by
       obtain ⟨b, l', rfl⟩ := List.exists_cons_of_ne_nil hne
       have hrel' : P (List.getLast (b :: l') (by simp)) b := by
-        simpa using (List.IsChain.rel_head hchain)
+        simpa using (List.IsChain.rel hchain)
       simpa using hrel'
     simpa [hleft, hright] using hrel
   · have hle : i + 1 ≤ l.length := Nat.succ_le_of_lt hi
@@ -282,7 +282,7 @@ theorem dominate_of_cycle {X : Type} (l : List X) (P : X -> X -> Prop) (c : cycl
     have hrel : P (List.getLast l hne) (l.get ⟨0, hlen⟩) := by
       obtain ⟨b, l', rfl⟩ := List.exists_cons_of_ne_nil hne
       have hrel' : P (List.getLast (b :: l') (by simp)) b := by
-        exact (List.IsChain.rel_head hchain)
+        exact (List.IsChain.rel hchain)
       simp [hrel']
     refine ⟨List.getLast l hne, ?_, ?_⟩
     · exact List.getLast_mem hne
@@ -536,7 +536,7 @@ theorem to_path_chain'_of_chain' {P : X → X → Prop} {l : List X} :
               have hfirst := to_path_first_elem (l := b :: t) (h := by simp)
               simp [List.head_eq_getElem_zero, hfirst]
             have hab : P a b := by
-              exact (List.IsChain.rel_head hchain)
+              exact (List.IsChain.rel hchain)
             have hrel : P a ((to_path (b :: t)).head htp) := by
               simp [hhead, hab]
             have hpath' : to_path (a :: b :: t) = a :: to_path (b :: t) := by

@@ -273,11 +273,11 @@ lemma margin_addVoter_eq_of_prefers {V A : Type} [Fintype V] [Fintype A]
       ext v
       cases v with
       | inl v =>
-          simp [S, S0, addVoter, Prefers, Finset.mem_image]
+          simp [S, S0, Prefers, Finset.mem_image]
           rfl
       | inr u =>
           cases u
-          simp [S, S0, addVoter, Prefers, Finset.mem_image]
+          simp [S, S0, Prefers, Finset.mem_image]
           exact h
     have hnotmem : Sum.inr () ∉ S0.image (Sum.inl : V → V ⊕ Unit) := by
       simp [Finset.mem_image]
@@ -309,11 +309,11 @@ lemma margin_addVoter_eq_of_prefers {V A : Type} [Fintype V] [Fintype A]
       ext v
       cases v with
       | inl v =>
-          simp [S, S0, addVoter, Prefers, Finset.mem_image]
+          simp [S, S0, Prefers, Finset.mem_image]
           rfl
       | inr u =>
           cases u
-          simp [S, S0, addVoter, Prefers, Finset.mem_image]
+          simp [S, S0, Prefers, Finset.mem_image]
           exact hba
     have hinj : Function.Injective (Sum.inl : V → V ⊕ Unit) := by
       intro a b hEq
@@ -719,7 +719,7 @@ lemma margin_constantProfile_of_lt {V A : Type} [Fintype V] [Fintype A]
   classical
   apply unanimous_margin_eq_card
   intro v
-  simp [constantProfile, Prefers]
+  simp [Prefers]
   exact h
 
 lemma margin_constantProfile_of_gt {V A : Type} [Fintype V] [Fintype A]
@@ -752,10 +752,10 @@ lemma card_votersPreferring_unionProfiles {V W A : Type} [Fintype V] [Fintype W]
     ext v
     cases v with
     | inl v =>
-        simp [S, SV, SW, votersPreferring, unionProfiles, Prefers, Finset.mem_image]
+        simp [S, SV, SW, votersPreferring, Prefers, Finset.mem_image]
         rfl
     | inr w =>
-        simp [S, SV, SW, votersPreferring, unionProfiles, Prefers, Finset.mem_image]
+        simp [S, SV, SW, votersPreferring, Prefers, Finset.mem_image]
         rfl
   have hdisj : Disjoint (SV.image Sum.inl) (SW.image Sum.inr) := by
     refine Finset.disjoint_left.2 ?_

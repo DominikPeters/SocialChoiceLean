@@ -212,8 +212,8 @@ lemma c2Borda_profilePos_cand1 : c2BordaScore profilePos cand1 = 0 := by
   have hsum :
       c2BordaScore profilePos cand1 =
         ∑ x ∈ ({cand2, cand3} : Finset PosCand), margin profilePos cand1 x := by
-    simp [c2BordaScore, univ_profilePos_eq, self_margin_zero, Finset.sum_insert,
-      Finset.sum_singleton, cand1, cand2, cand3]
+    simp [c2BordaScore, univ_profilePos_eq, self_margin_zero,
+      cand1, cand2, cand3]
   calc
     c2BordaScore profilePos cand1 =
         ∑ x ∈ ({cand2, cand3} : Finset PosCand), margin profilePos cand1 x := hsum
@@ -466,7 +466,7 @@ lemma c2Borda_profilePos'_cand2 : c2BordaScore profilePos' cand2' = -1 := by
   have hsum :
       c2BordaScore profilePos' cand2' =
         ∑ x ∈ ({cand2', cand3'} : Finset PosCand'), margin profilePos' cand2' x := by
-    simp [c2BordaScore, univ_profilePos'_eq, self_margin_zero, Finset.sum_insert,
+    simp [c2BordaScore, univ_profilePos'_eq, self_margin_zero,
       Finset.sum_singleton, cand2', cand3']
   have hne : cand2' ≠ cand3' := by decide
   calc
@@ -482,8 +482,7 @@ lemma c2Borda_profilePos'_cand3 : c2BordaScore profilePos' cand3' = 1 := by
   have hsum :
       c2BordaScore profilePos' cand3' =
         ∑ x ∈ ({cand2', cand3'} : Finset PosCand'), margin profilePos' cand3' x := by
-    simp [c2BordaScore, univ_profilePos'_eq, self_margin_zero, Finset.sum_insert,
-      Finset.sum_singleton, cand2', cand3']
+    simp [c2BordaScore, univ_profilePos'_eq, cand2', cand3']
   have hne : cand2' ≠ cand3' := by decide
   calc
     c2BordaScore profilePos' cand3' =

@@ -218,7 +218,7 @@ theorem positiveInvolvement_condorcet_refines_defensible_of_gap
     have hxdef' : ¬ (∀ y, ∃ z, margin P z y ≥ margin P y x) := by
       simpa [mem_defensibleSet_iff] using hxdef
     classical
-    push_neg at hxdef'
+    push Not at hxdef'
     exact hxdef'
   rcases hxdef' with ⟨y, hy⟩
   have hxy : x ≠ y := by

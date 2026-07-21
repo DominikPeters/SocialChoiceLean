@@ -201,7 +201,7 @@ def votersP1 : Finset U450 :=
 
 lemma votersP1_eq_Ico : votersP1 = Finset.Ico 0 p1_cut8_fin := by
   ext v
-  simp [votersP1, Finset.mem_Ico, Fin.le_def, Fin.lt_def, p1_cut8_fin]
+  simp [votersP1, Finset.mem_Ico, Fin.lt_def, p1_cut8_fin]
 
 -- P2 obtained by block 9 joining P1
 def votersP2 : Finset U450 :=
@@ -209,7 +209,7 @@ def votersP2 : Finset U450 :=
 
 lemma votersP2_eq_Ico : votersP2 = Finset.Ico 0 p1_cut9_fin := by
   ext v
-  simp [votersP2, Finset.mem_Ico, Fin.le_def, Fin.lt_def, p1_cut9_fin]
+  simp [votersP2, Finset.mem_Ico, Fin.lt_def, p1_cut9_fin]
 
 -- P3 obtained by block 2 leaving P2
 def votersP3 : Finset U450 :=

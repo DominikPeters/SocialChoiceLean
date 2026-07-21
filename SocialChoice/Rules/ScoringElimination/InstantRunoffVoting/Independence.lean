@@ -291,7 +291,7 @@ lemma liftFinset_scoringEliminationAux_restrictProfile_swap
     intro v
     apply LinearOrder.ext_lt
     intro a b
-    simp [e]
+    simp
     rfl
   have haux :=
     scoringEliminationAux_equiv (score := pluralityScore)

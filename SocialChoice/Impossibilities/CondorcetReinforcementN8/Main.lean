@@ -817,7 +817,7 @@ theorem p5Named_eq_reindex_p5
     simp [p5NamedProfile, p5NamedBallot, reindexVoters, p5Profile, p5Ballot,
       profileOfListBallots, fiveVoterEquiv, fiveVoterIndex, hab, hac, had, hae, hbc,
       hbd, hbe, hcd, hce, hde, hab.symm, hac.symm, had.symm, hae.symm, hbc.symm,
-      hbd.symm, hbe.symm, hcd.symm, hce.symm, hde.symm] <;> rfl
+      hbd.symm, hbe.symm, hcd.symm, hce.symm, hde.symm] ; rfl
 
 theorem p5Named_condorcetWinner
     (x : Fin 3) {a b c d e : Fin 8}
@@ -1168,7 +1168,7 @@ theorem cast_union_cycle_p2_eq_reindex_cyclePlusP2
       hbv, hbw, hcp, hcu, hcv, hcw, hpu, hpv, hpw, huv, huw, hvw,
       hab.symm, hac.symm, hap.symm, hau.symm, hav.symm, haw.symm, hbc.symm, hbp.symm,
       hbu.symm, hbv.symm, hbw.symm, hcp.symm, hcu.symm, hcv.symm, hcw.symm,
-      hpu.symm, hpv.symm, hpw.symm, huv.symm, huw.symm, hvw.symm] <;> rfl
+      hpu.symm, hpv.symm, hpw.symm, huv.symm, huw.symm, hvw.symm] ; rfl
 
 theorem cast_union_cycle_p3_eq_reindex_cyclePlusP3
     (x : Fin 3) {a b c p u q w : Fin 8}
@@ -1201,7 +1201,7 @@ theorem cast_union_cycle_p3_eq_reindex_cyclePlusP3
       hbq, hbw, hcp, hcu, hcq, hcw, hpu, hpq, hpw, huq, huw, hqw,
       hab.symm, hac.symm, hap.symm, hau.symm, haq.symm, haw.symm, hbc.symm, hbp.symm,
       hbu.symm, hbq.symm, hbw.symm, hcp.symm, hcu.symm, hcq.symm, hcw.symm,
-      hpu.symm, hpq.symm, hpw.symm, huq.symm, huw.symm, hqw.symm] <;> rfl
+      hpu.symm, hpq.symm, hpw.symm, huq.symm, huw.symm, hqw.symm] ; rfl
 
 theorem cast_union_cycle_p2_condorcetWinner_prev
     (x : Fin 3) {a b c p u v w : Fin 8}
@@ -1381,7 +1381,7 @@ theorem singletonYXZ_condorcetWinner_next (x : Fin 3) (u : Fin 8) :
   rw [hvoters]
   fin_cases x <;> fin_cases d <;>
     simp_all [singletonYXZBallot, ballotYXZ, nextCandidate, prevCandidate,
-      prefersInList, ListBallot.mk'] <;> norm_num
+      prefersInList, ListBallot.mk']
 
 theorem cast_union_p2_singletonYXZ_eq_reindex_p2PlusYXZ
     (x : Fin 3) {p u v w yv : Fin 8}
@@ -1409,7 +1409,7 @@ theorem cast_union_p2_singletonYXZ_eq_reindex_p2PlusYXZ
       singletonYXZProfile, singletonYXZBallot, p2PlusYXZProfile, p2PlusYXZBallot,
       profileOfListBallots, fiveVoterEquiv, fiveVoterIndex, hpu, hpv, hpw, hpy,
       huv, huw, huy, hvw, hvy, hwy, hpu.symm, hpv.symm, hpw.symm, hpy.symm,
-      huv.symm, huw.symm, huy.symm, hvw.symm, hvy.symm, hwy.symm] <;> rfl
+      huv.symm, huw.symm, huy.symm, hvw.symm, hvy.symm, hwy.symm] ; rfl
 
 theorem cast_union_p3_singletonYXZ_eq_reindex_p3PlusYXZ
     (x : Fin 3) {p u q w yv : Fin 8}
@@ -1437,7 +1437,7 @@ theorem cast_union_p3_singletonYXZ_eq_reindex_p3PlusYXZ
       singletonYXZProfile, singletonYXZBallot, p3PlusYXZProfile, p3PlusYXZBallot,
       profileOfListBallots, fiveVoterEquiv, fiveVoterIndex, hpu, hpq, hpw, hpy,
       huq, huw, huy, hqw, hqy, hwy, hpu.symm, hpq.symm, hpw.symm, hpy.symm,
-      huq.symm, huw.symm, huy.symm, hqw.symm, hqy.symm, hwy.symm] <;> rfl
+      huq.symm, huw.symm, huy.symm, hqw.symm, hqy.symm, hwy.symm] ; rfl
 
 theorem cast_union_p2_singletonYXZ_condorcetWinner
     (x : Fin 3) {p u v w yv : Fin 8}

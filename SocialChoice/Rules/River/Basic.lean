@@ -40,7 +40,7 @@ instance edgeOrder_trans {V A : Type} [Fintype V] [Fintype A] (P : Profile V A) 
   exact le_trans hab hbc
 
 instance edgeOrder_total {V A : Type} [Fintype V] [Fintype A] (P : Profile V A) :
-    IsTotal (A × A) (edgeOrder (P := P)) := by
+    Std.Total (edgeOrder (P := P)) := by
   refine ⟨?_⟩
   intro a b
   exact le_total _ _
@@ -149,7 +149,7 @@ lemma riverDiagram_noCycle {A : Type} (tau : List (A × A)) :
     | cons a t =>
         have hmem : (List.getLast (a :: t) (by simp), a) ∈
             (Finset.empty : Finset (A × A)) := by
-          simpa [edgeRel] using (List.IsChain.rel_head hchain)
+          simpa [edgeRel] using (List.IsChain.rel hchain)
         exact (notMem_empty _ hmem)
   have := riverDiagram_noCycle_from (A := A) (tau := tau)
     (E := (Finset.empty : Finset (A × A))) h0

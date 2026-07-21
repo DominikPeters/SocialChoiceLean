@@ -236,7 +236,7 @@ lemma pathStrength_ge_of_chain
       simp at hlen
   | a :: b :: t, hchain, _hlen => by
       have hab : m ≤ margin P a b :=
-        List.IsChain.rel_head (R := fun a b => m ≤ margin P a b) hchain
+        List.IsChain.rel (R := fun a b => m ≤ margin P a b) hchain
       cases t with
       | nil =>
           exact hab

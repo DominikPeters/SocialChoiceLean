@@ -240,7 +240,7 @@ lemma tieBrokenRule_fishburn_pref {V A : Type} [Fintype V] [Fintype A] [Nonempty
   rw [← hx', ← hy'] at hmin
   exact hmin
 
-noncomputable def canonicalLinearOrder (A : Type) [Fintype A] [Nonempty A] : LinearOrder A := by
+@[implicit_reducible] noncomputable def canonicalLinearOrder (A : Type) [Fintype A] [Nonempty A] : LinearOrder A := by
   classical
   let _ : NeZero (Fintype.card A) :=
     ⟨Nat.ne_of_gt (Fintype.card_pos_iff.mpr ‹Nonempty A›)⟩

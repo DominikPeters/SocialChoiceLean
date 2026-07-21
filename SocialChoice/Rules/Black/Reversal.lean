@@ -16,7 +16,7 @@ private lemma exists_ne_of_black_ne_univ {V A : Type} [Fintype V] [Fintype A]
     ∃ y, y ≠ x := by
   classical
   by_contra h
-  push_neg at h
+  push Not at h
   have hnonempty : (black P).Nonempty := by
     let _ : Nonempty A := ⟨x⟩
     exact black_isVotingRule (P := P)

@@ -663,7 +663,7 @@ lemma not_card_le_one_clonePred
   classical
   have hne : ∃ w : A, w ∉ X := by
     by_contra hall
-    push_neg at hall
+    push Not at hall
     exact hX (Set.eq_univ_of_forall hall)
   rcases hne with ⟨w, hw⟩
   intro hle
@@ -816,7 +816,7 @@ theorem irv_independence_of_clones :
         · intro hxwin
           refine ⟨x', hx', ?_⟩
           exact (hxmem.mp hxwin)
-    · push_neg at hX_singleton
+    · push Not at hX_singleton
       -- There exists y ∈ X' with y ≠ x'
       rcases hX_singleton with ⟨y, hy, hyx⟩
       -- Check if all candidates are clones
@@ -860,7 +860,7 @@ theorem irv_independence_of_clones :
             rcases scoringEliminationAux_nonempty (score := pluralityScore) (P := P') with ⟨w, hw⟩
             refine ⟨w, ?_, hw⟩
             simp [hX_all]
-      · push_neg at hX_all
+      · push Not at hX_all
         -- General case: use strong induction
         -- Unfold scoringEliminationAux and do case analysis
         by_cases hcard_le : Fintype.card A' ≤ 1
@@ -869,7 +869,7 @@ theorem irv_independence_of_clones :
           rcases hX' with ⟨⟨z, hz⟩, _⟩
           have hne : ∃ w, w ∉ X' := by
             by_contra hall
-            push_neg at hall
+            push Not at hall
             have hXuniv : X' = Set.univ := Set.eq_univ_of_forall hall
             exact hX_all hXuniv
           rcases hne with ⟨w, hw⟩
@@ -880,7 +880,7 @@ theorem irv_independence_of_clones :
           -- But card A' ≤ 1 means all elements are equal
           have hsub : Subsingleton A' := Fintype.card_le_one_iff_subsingleton.1 hcard_le
           exact (hzw (Subsingleton.elim z w)).elim
-        · push_neg at hcard_le
+        · push Not at hcard_le
           -- Card > 1, so we can recurse
           refine ⟨?_, ?_⟩
           · -- irv_nonclone_prop

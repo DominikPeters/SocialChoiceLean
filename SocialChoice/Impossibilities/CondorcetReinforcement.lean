@@ -71,7 +71,7 @@ lemma profile6_const (w : Fin 3) : profile6 w = profile6 0 := by
   | mk val hmem =>
       -- Split on the concrete voter index; impossible cases (≥ 6) close by contradiction.
       fin_cases val <;>
-        simp [profile6, fullProfile, restrictElectorate, ballots9, voters6] at hmem ⊢ <;> rfl
+        simp [voters6] at hmem ⊢ <;> rfl
 
 /-- Restrict the full profile to the last 3 voters. -/
 noncomputable def profile3 (w : Fin 3) : Profile (Electorate (Fin 9) voters3) (Fin 3) :=

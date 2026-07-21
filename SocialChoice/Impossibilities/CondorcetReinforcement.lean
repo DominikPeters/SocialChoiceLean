@@ -71,7 +71,7 @@ lemma profile6_const (w : Fin 3) : profile6 w = profile6 0 := by
   | mk val hmem =>
       -- Split on the concrete voter index; impossible cases (≥ 6) close by contradiction.
       fin_cases val <;>
-        simp [profile6, fullProfile, restrictElectorate, ballots9, voters6] at hmem ⊢
+        simp [profile6, fullProfile, restrictElectorate, ballots9, voters6] at hmem ⊢ <;> rfl
 
 /-- Restrict the full profile to the last 3 voters. -/
 noncomputable def profile3 (w : Fin 3) : Profile (Electorate (Fin 9) voters3) (Fin 3) :=
@@ -117,6 +117,22 @@ lemma restrict_profileAll_v3 (w : Fin 3) :
     (restrictElectorate_nested (U := Fin 9) (A := Fin 3)
       (S := voters3) (T := voters6 ∪ voters3) (W := Finset.univ) hST hTW (fullProfile w))
 
+private lemma votersPreferring_profile3_eq_filter (w x y : Fin 3) :
+    votersPreferring (profile3 w) x y =
+      Finset.univ.filter (fun v => prefersInList (ballots9 w v.1).ranking x y) := by
+  ext v
+  simp only [votersPreferring, Finset.mem_filter, Finset.mem_univ, true_and]
+  change Prefers (profileOfListBallots (ballots9 w)) v.1 x y ↔ _
+  exact prefers_iff_prefersInList (ballots9 w) v.1 x y
+
+private lemma votersPreferring_profileAll_eq_filter (w x y : Fin 3) :
+    votersPreferring (profileAll w) x y =
+      Finset.univ.filter (fun v => prefersInList (ballots9 w v.1).ranking x y) := by
+  ext v
+  simp only [votersPreferring, Finset.mem_filter, Finset.mem_univ, true_and]
+  change Prefers (profileOfListBallots (ballots9 w)) v.1 x y ↔ _
+  exact prefers_iff_prefersInList (ballots9 w) v.1 x y
+
 lemma reinforcement_block_condorcet (w : Fin 3) :
     CondorcetWinner (profile3 w) w := by
   classical
@@ -124,10 +140,9 @@ lemma reinforcement_block_condorcet (w : Fin 3) :
   fin_cases w <;> fin_cases d <;> try (cases hd rfl)
   all_goals
     -- Finite computation on the explicit 3-voter block.
-    simp [StrictMajority, votersPreferring, Prefers,
-      profile3, fullProfile, restrictElectorate, ballots9, voters3,
-      prevCandidate, nextCandidate, ListBallot.lt_iff_idxOf]
-    decide
+    rw [votersPreferring_profile3_eq_filter]
+    simp [StrictMajority, voters3, ballots9, prevCandidate, nextCandidate, prefersInList]
+    decide +revert
 
 lemma union_condorcet_prev (w : Fin 3) :
     CondorcetWinner (profileAll w) (prevCandidate w) := by
@@ -136,10 +151,10 @@ lemma union_condorcet_prev (w : Fin 3) :
   fin_cases w <;> fin_cases d <;> try (cases hd rfl)
   all_goals
     -- Finite computation on the explicit 9-voter profile.
-    simp [StrictMajority, votersPreferring, Prefers,
-      profileAll, fullProfile, restrictElectorate, ballots9, voters6, voters3,
-      prevCandidate, nextCandidate, ListBallot.lt_iff_idxOf]
-    decide
+    rw [votersPreferring_profileAll_eq_filter]
+    simp [StrictMajority, voters6, voters3, ballots9, prevCandidate, nextCandidate,
+      prefersInList]
+    decide +revert
 
 /-! ### Main result -/
 

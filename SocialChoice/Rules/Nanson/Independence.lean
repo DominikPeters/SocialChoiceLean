@@ -260,7 +260,9 @@ lemma nanson_profile' : nanson profile' = (Finset.univ : Finset {x : A3 // x ≠
         simp [nansonAux]
     | succ n =>
         simp [nansonAux, hall]
-  simpa [nanson] using haux
+  change nansonAux (Fintype.card {x : A3 // x ≠ a}) {x : A3 // x ≠ a} profile' =
+    (Finset.univ : Finset {x : A3 // x ≠ a})
+  exact haux
 
 lemma nanson_profile'_has_1 : cand1 ∈ nanson profile' := by
   simp [nanson_profile']

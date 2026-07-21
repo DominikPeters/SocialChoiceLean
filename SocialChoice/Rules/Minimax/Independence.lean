@@ -330,11 +330,21 @@ lemma clonePred_eq_23 (b : Fin 4) (hb : clonePred cloneSet rep b) : b = 2 ∨ b 
 
 lemma margin_clone_3_2 :
     margin (removeClonesExcept profile cloneSet rep) cand3clone cand2clone = 1 := by
-  simpa [cand3clone, cand2clone, removeClonesExcept] using margin_profile_3_2
+  change margin (restrictCandidates profile (clonePred cloneSet rep)) cand3clone cand2clone = 1
+  calc
+    _ = margin profile (3 : Fin 4) (2 : Fin 4) :=
+      (margin_eq_margin_restrictCandidates (P := profile) (p := clonePred cloneSet rep)
+        (a := cand3clone) (b := cand2clone)).symm
+    _ = 1 := margin_profile_3_2
 
 lemma margin_clone_2_3 :
     margin (removeClonesExcept profile cloneSet rep) cand2clone cand3clone = -1 := by
-  simpa [cand3clone, cand2clone, removeClonesExcept] using margin_profile_2_3
+  change margin (restrictCandidates profile (clonePred cloneSet rep)) cand2clone cand3clone = -1
+  calc
+    _ = margin profile (2 : Fin 4) (3 : Fin 4) :=
+      (margin_eq_margin_restrictCandidates (P := profile) (p := clonePred cloneSet rep)
+        (a := cand2clone) (b := cand3clone)).symm
+    _ = -1 := margin_profile_2_3
 
 lemma maxLoss_clone_cand2_le :
     maxLoss (removeClonesExcept profile cloneSet rep) cand2clone ≤ 1 := by
@@ -438,6 +448,7 @@ lemma minimax_cloneProfile_not_2 :
     have hEq' := hEq
     simp [maxLoss_clone_cand2, minimaxScore_clone] at hEq'
   have hnonempty : Nonempty {a : Fin 4 // clonePred cloneSet rep a} := ⟨cand3clone⟩
+  change cand2clone ∉ minimax (removeClonesExcept profile cloneSet rep)
   simpa [minimax, hnonempty] using hnotmem
 
 end MinimaxIndependenceCounterexample

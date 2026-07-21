@@ -140,8 +140,7 @@ lemma relabel_profile7_eq_profile7_list :
 lemma relabel_profile6_eq_profile6_list :
     relabelProfileVoters e6 profile6 = profile6_list := by
   ext v
-  fin_cases v <;>
-    simp [profile6, fullProfile, restrictElectorate, ballots7, e6]
+  fin_cases v <;> rfl
 
 lemma scoreCandidate_relabelProfileVoters {V W A : Type} [Fintype V] [Fintype W] [Fintype A]
     (e : W ≃ V) (P : Profile V A) (score : Nat → Int) (c : A) :
@@ -162,7 +161,7 @@ lemma profiles_agree :
     ∀ v : Electorate (Fin 7) voters6,
       profile7.pref (liftVoter (u := (3 : Fin 7)) v) = profile6.pref v := by
   intro v
-  simpa [profile6, profile7] using
+  simpa [profile6, profile7, voters7] using
     (restrictElectorate_agrees (Q := fullProfile) (S := voters6)
       (hS := by intro x hx; exact (Finset.mem_univ x))
       (u := (3 : Fin 7))
@@ -628,7 +627,10 @@ lemma votersPreferring_card_relabelProfileVoters {V W A : Type} [Fintype V] [Fin
   · intro w hw
     have hw' : Prefers (relabelProfileVoters e P) w a b := (Finset.mem_filter.mp hw).2
     have hw'' : Prefers P (e w) a b := by
-      simpa [relabelProfileVoters, Prefers] using hw'
+      have hpref : (relabelProfileVoters e P).pref w = P.pref (e w) := rfl
+      change @LT.lt A ((relabelProfileVoters e P).pref w).toLT a b at hw'
+      rw [hpref] at hw'
+      exact hw'
     exact Finset.mem_filter.mpr ⟨by simp, hw''⟩
   · intro w1 _ w2 _ h
     exact e.injective h
@@ -636,7 +638,12 @@ lemma votersPreferring_card_relabelProfileVoters {V W A : Type} [Fintype V] [Fin
     have hv' : Prefers P v a b := (Finset.mem_filter.mp hv).2
     refine ⟨e.symm v, ?_, by simp⟩
     have : Prefers (relabelProfileVoters e P) (e.symm v) a b := by
-      simpa [relabelProfileVoters, Prefers] using hv'
+      have hpref : (relabelProfileVoters e P).pref (e.symm v) = P.pref v := by
+        change P.pref (e (e.symm v)) = P.pref v
+        rw [e.apply_symm_apply]
+      change @LT.lt A ((relabelProfileVoters e P).pref (e.symm v)).toLT a b
+      rw [hpref]
+      exact hv'
     exact Finset.mem_filter.mpr ⟨by simp, this⟩
 
 lemma votersPreferring_profile7_0_2_card :

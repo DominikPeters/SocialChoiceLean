@@ -30,7 +30,7 @@ theorem plurality_positive_involvement : PositiveInvolvement plurality := by
         by_cases hv : v = newVoter (u := u) (V := V) hu
         · subst hv
           have hpref : TopRank Q (newVoter (u := u) (V := V) hu) d := by
-            simpa [TopRank, Prefers] using htopd
+            exact htopd
           constructor
           · intro _hmem
             simp
@@ -49,7 +49,8 @@ theorem plurality_positive_involvement : PositiveInvolvement plurality := by
             apply Subtype.ext
             rfl
           have htop' : TopRank Q v d ↔ TopRank P v' d := by
-            simp [TopRank, Prefers, hv_eq, hagree]
+            unfold TopRank Prefers
+            rw [hv_eq, hagree]
           have himage : v ∈ S0.image (liftVoter (u := u)) ↔ v' ∈ S0 := by
             constructor
             · intro hvimg
@@ -131,7 +132,8 @@ theorem plurality_positive_involvement : PositiveInvolvement plurality := by
             apply Subtype.ext
             rfl
           have htop' : TopRank Q v d ↔ TopRank P v' d := by
-            simp [TopRank, Prefers, hv_eq, hagree]
+            unfold TopRank Prefers
+            rw [hv_eq, hagree]
           have himage : v ∈ S0.image (liftVoter (u := u)) ↔ v' ∈ S0 := by
             constructor
             · intro hvimg

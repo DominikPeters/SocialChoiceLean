@@ -119,8 +119,7 @@ lemma relabel_profile4_eq_profile4_list :
 lemma relabel_profile3_eq_profile3_list :
     relabelProfileVoters e3 profile3 = profile3_list := by
   ext v
-  fin_cases v <;>
-    simp [profile3, fullProfile, restrictElectorate, ballots4, e3]
+  fin_cases v <;> rfl
 
 lemma margin_profile4_eq_list (a b : A4) :
     margin profile4 a b = margin profile4_list a b := by
@@ -142,7 +141,7 @@ lemma profiles_agree :
     ∀ v : Electorate (Fin 4) voters3,
       profile4.pref (liftVoter (u := (3 : Fin 4)) v) = profile3.pref v := by
   intro v
-  simpa [profile3, profile4] using
+  simpa [profile3, profile4, voters4] using
     (restrictElectorate_agrees (Q := fullProfile) (S := voters3)
       (hS := by intro x hx; exact (Finset.mem_univ x))
       (u := (3 : Fin 4))
@@ -172,7 +171,8 @@ lemma newVoter_bottom_0 :
     BallotBottom
       (profile4.pref (newVoter (u := (3 : Fin 4)) (V := voters3) voters3_not_mem))
       (0 : Fin 4) := by
-  simpa [profile4, fullProfile, ballots4, voters4, voters3] using ballot3210_bottom_0
+  change BallotBottom ballot3210.toLinearOrder (0 : Fin 4)
+  exact ballot3210_bottom_0
 
 /-! ## Margins and C2Borda scores for the full profile (4 voters) -/
 
@@ -387,7 +387,7 @@ private lemma c2Borda_profile3_3 : c2BordaScore profile3_list (3 : Fin 4) = -3 :
 
 abbrev PosCand := {x : A4 // c2BordaScore profile3_list x > 0}
 
-noncomputable def profilePos : Profile (Fin 3) PosCand :=
+@[reducible] noncomputable def profilePos : Profile (Fin 3) PosCand :=
   restrictCandidates profile3_list (fun x => c2BordaScore profile3_list x > 0)
 
 def cand0 : PosCand := ⟨0, by linarith [c2Borda_profile3_0]⟩
@@ -439,11 +439,20 @@ lemma c2Borda_profilePos_cand0 : c2BordaScore profilePos cand0 = -1 := by
 
 lemma c2Borda_profilePos_cand1 : c2BordaScore profilePos cand1 = 1 := by
   classical
+  have hne : cand0 ≠ cand1 := by decide
   have hsum :
       c2BordaScore profilePos cand1 =
         ∑ x ∈ ({cand0} : Finset PosCand), margin profilePos cand1 x := by
-    simp [c2BordaScore, univ_profilePos_eq, self_margin_zero, Finset.sum_insert,
-      Finset.sum_singleton, cand0, cand1]
+    unfold c2BordaScore
+    have hunivSum := congrArg
+      (fun s : Finset PosCand => Finset.sum s (fun x => margin profilePos cand1 x))
+      univ_profilePos_eq
+    calc
+      ∑ x : PosCand, margin profilePos cand1 x =
+          ∑ x ∈ ({cand0, cand1} : Finset PosCand), margin profilePos cand1 x := hunivSum
+      _ = ∑ x ∈ ({cand0} : Finset PosCand), margin profilePos cand1 x := by
+        rw [Finset.sum_insert (by simpa using hne)]
+        simp [self_margin_zero]
   calc
     c2BordaScore profilePos cand1 =
         ∑ x ∈ ({cand0} : Finset PosCand), margin profilePos cand1 x := hsum
@@ -453,7 +462,7 @@ lemma c2Borda_profilePos_cand1 : c2BordaScore profilePos cand1 = 1 := by
 
 abbrev PosCand' := {x : PosCand // c2BordaScore profilePos x > 0}
 
-noncomputable def profilePos' : Profile (Fin 3) PosCand' :=
+@[reducible] noncomputable def profilePos' : Profile (Fin 3) PosCand' :=
   restrictCandidates profilePos (fun x => c2BordaScore profilePos x > 0)
 
 def cand1' : PosCand' := ⟨cand1, by linarith [c2Borda_profilePos_cand1]⟩
@@ -555,7 +564,8 @@ lemma nanson_profile3_list : nanson profile3_list = ({1} : Finset A4) := by
     refine ⟨(0 : Fin 4), ?_⟩
     simp [c2Borda_profile3_0]
   have haux : nanson profile3_list = liftWinners (nansonAux 3 PosCand profilePos) := by
-    simp [nanson, nansonAux, hnotall, hsurv, profilePos]
+    change nansonAux 4 A4 profile3_list = liftWinners (nansonAux 3 PosCand profilePos)
+    simp [nansonAux, hnotall, hsurv, profilePos]
   calc
     nanson profile3_list = liftWinners (nansonAux 3 PosCand profilePos) := haux
     _ = liftWinners ({cand1} : Finset PosCand) := by

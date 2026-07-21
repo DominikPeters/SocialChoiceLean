@@ -24,7 +24,7 @@ def DictatingSet (f : VotingRule) (X : Finset V) : Prop :=
 
 variable [DecidableEq V] [DecidableEq A]
 
-noncomputable def ballotTopAB (a b : A) (hab : a ≠ b) : LinearOrder A := by
+@[reducible] noncomputable def ballotTopAB (a b : A) (hab : a ≠ b) : LinearOrder A := by
   classical
   let rest : Finset A := (Finset.univ.erase a).erase b
   let l : List A := a :: b :: rest.toList
@@ -57,12 +57,13 @@ noncomputable def ballotTopAB (a b : A) (hab : a ≠ b) : LinearOrder A := by
     simp [l, hxa, hxb, hx_mem']
   exact linearOrderOfList l hnodup hcomplete
 
-noncomputable def profileTopAB (a b : A) (hab : a ≠ b) : Profile V A :=
+@[reducible] noncomputable def profileTopAB (a b : A) (hab : a ≠ b) : Profile V A :=
   { pref := fun _ => ballotTopAB (A := A) a b hab }
 
 /-! ## Three-Alternative Top Ballots -/
 
-noncomputable def ballotTopABC (a b c : A) (hab : a ≠ b) (hac : a ≠ c) (hbc : b ≠ c) :
+@[reducible] noncomputable def ballotTopABC (a b c : A)
+    (hab : a ≠ b) (hac : a ≠ c) (hbc : b ≠ c) :
     LinearOrder A := by
   classical
   let rest : Finset A := ((Finset.univ.erase a).erase b).erase c
@@ -106,7 +107,8 @@ noncomputable def ballotTopABC (a b c : A) (hab : a ≠ b) (hac : a ≠ c) (hbc 
     simp [l, hxa, hxb, hxc, hx_mem']
   exact linearOrderOfList l hnodup hcomplete
 
-noncomputable def profileTopABC (a b c : A) (hab : a ≠ b) (hac : a ≠ c) (hbc : b ≠ c) :
+@[reducible] noncomputable def profileTopABC (a b c : A)
+    (hab : a ≠ b) (hac : a ≠ c) (hbc : b ≠ c) :
     Profile V A :=
   { pref := fun _ => ballotTopABC (A := A) a b c hab hac hbc }
 
@@ -717,9 +719,13 @@ lemma winner_preserved_of_optimist_top (f : VotingRule) (hf_opt : OptimistStrate
   by_contra ha'
   let P' := updateProfile P v ballot
   have hback : updateProfile P' v (P.pref v) = P := by
-    ext u
+    apply Profile.ext
+    intro u
     unfold P' updateProfile
-    by_cases h : u = v <;> simp [h]
+    by_cases h : u = v
+    · subst u
+      simp only [if_true]
+    · simp only [if_neg h]
   have hmanip :
       ∃ y ∈ f (updateProfile P' v (P.pref v)),
         ∀ x ∈ f P', Prefers P' v y x := by
@@ -845,12 +851,18 @@ lemma aXb_partition_of_opt_pess_viable (f : VotingRule)
       simpa [hunion] using hvX
     rcases (Finset.mem_union.1 hvYZ) with hvY | hvZ
     · have h := ballotTopABC_prefers_first_second (A := A) a b c hab hac hbc
-      simpa [P, hvY, Prefers] using h
+      unfold Prefers
+      rw [show P.pref v = ballotTopABC (A := A) a b c hab hac hbc by
+        simp only [P, hvY, if_true, r_abc]]
+      exact h
     · have hvY : v ∉ Y := by
         intro hvY
         exact (Finset.disjoint_left.1 hYZ hvY hvZ).elim
       have h := ballotTopABC_prefers_second_third (A := A) c a b hac.symm hbc.symm hab
-      simpa [P, hvY, hvZ, Prefers] using h
+      unfold Prefers
+      rw [show P.pref v = ballotTopABC (A := A) c a b hac.symm hbc.symm hab by
+        simp only [P, hvY, hvZ, if_false, if_true, r_cab]]
+      exact h
   have hnotb : f P ≠ {b} := hX P hXpref
   have hAorC : a ∈ f P ∨ c ∈ f P := by
     by_contra h
@@ -912,7 +924,11 @@ lemma aXb_partition_of_opt_pess_viable (f : VotingRule)
             intro d hd
             have htop :=
               topRank_profileTopABC (V := V) (A := A) a c b hac hab hbc.symm v d hd
-            simpa [P_acb, profileTopABC, Prefers, updateProfile] using htop
+            unfold Prefers
+            rw [show (updateProfile Q v (P_acb.pref v)).pref v = P_acb.pref v by
+              simp only [updateProfile, if_true]]
+            change (profileTopABC (V := V) (A := A) a c b hac hab hbc.symm).pref v |>.lt a d
+            exact htop
           have haQ' : a ∈ f (updateProfile Q v (P_acb.pref v)) :=
             winner_preserved_of_optimist_top (f := f) (hf_opt := hf_opt)
               (P := Q) (v := v) (ballot := P_acb.pref v) (a := a) haQ hTopBallot
@@ -982,10 +998,16 @@ lemma aXb_partition_of_opt_pess_viable (f : VotingRule)
             · exact (hy_ne hy').elim
             · subst y
               have h := ballotTopABC_prefers_first_third (A := A) b c a hbc hab.symm hac.symm
-              simpa [Q, profileUpdateSet, P, Prefers, hv_notY, hv_notZ, hv] using h
+              unfold Prefers
+              rw [show Q.pref v = ballotTopABC (A := A) b c a hbc hab.symm hac.symm by
+                simp only [Q, profileUpdateSet, hv, if_false, P, hv_notY, hv_notZ, r_bca]]
+              exact h
             · subst y
               have h := ballotTopABC_prefers_second_third (A := A) b c a hbc hab.symm hac.symm
-              simpa [Q, profileUpdateSet, P, Prefers, hv_notY, hv_notZ, hv] using h
+              unfold Prefers
+              rw [show Q.pref v = ballotTopABC (A := A) b c a hbc hab.symm hac.symm by
+                simp only [Q, profileUpdateSet, hv, if_false, P, hv_notY, hv_notZ, r_bca]]
+              exact h
           have haQ' :
               a ∈ f (updateProfile Q v (P_cab.pref v)) :=
             winner_preserved_of_pessimist_pref (f := f) (hf_pess := hf_pess)
@@ -1044,11 +1066,15 @@ lemma aXb_partition_of_opt_pess_viable (f : VotingRule)
       have hP2prefsY : ∀ v : V, v ∈ Y → Prefers P2 v a c := by
         intro v hvY
         have h := ballotTopABC_prefers_first_second (A := A) a c b hac hab hbc.symm
-        simpa [Prefers, hPrefY v hvY] using h
+        unfold Prefers
+        rw [hPrefY v hvY]
+        exact h
       have hP2prefsNotY : ∀ v : V, v ∉ Y → Prefers P2 v c a := by
         intro v hvY
         have h := ballotTopABC_prefers_first_second (A := A) c a b hac.symm hbc.symm hab
-        simpa [Prefers, hPrefNotY v hvY] using h
+        unfold Prefers
+        rw [hPrefNotY v hvY]
+        exact h
       left
       exact aXb_of_exists_profile (f := f) (hf := hmono_singleton) (X := Y) (a := a) (b := c)
         (hab := hac) ⟨P2, hTopP2_ac, hP2prefsY, hP2prefsNotY, haP2⟩
@@ -1069,7 +1095,11 @@ lemma aXb_partition_of_opt_pess_viable (f : VotingRule)
             intro d hd
             have htop :=
               topRank_profileTopABC (V := V) (A := A) c b a hbc.symm hac.symm hab.symm v d hd
-            simpa [P_cba, profileTopABC, Prefers, updateProfile] using htop
+            unfold Prefers
+            rw [show (updateProfile Q v (P_cba.pref v)).pref v = P_cba.pref v by
+              simp only [updateProfile, if_true]]
+            change (profileTopABC (V := V) (A := A) c b a hbc.symm hac.symm hab.symm).pref v |>.lt c d
+            exact htop
           have hcQ' : c ∈ f (updateProfile Q v (P_cba.pref v)) :=
             winner_preserved_of_optimist_top (f := f) (hf_opt := hf_opt)
               (P := Q) (v := v) (ballot := P_cba.pref v) (a := c) hcQ hTopBallot
@@ -1124,11 +1154,15 @@ lemma aXb_partition_of_opt_pess_viable (f : VotingRule)
                 simpa [abc] using hyabc
               rcases hy' with hy' | hy' | hy'
               · subst y
-                simpa [Q, profileUpdateSet, P, Prefers, hv, hvY, hv_notZ] using
-                  (ballotTopABC_prefers_first_third (A := A) (a := a) (b := b) (c := c) hab hac hbc)
+                unfold Prefers
+                rw [show Q.pref v = ballotTopABC (A := A) a b c hab hac hbc by
+                  simp only [Q, profileUpdateSet, hv, if_false, P, hvY, if_true, hv_notZ, r_abc]]
+                exact ballotTopABC_prefers_first_third (A := A) a b c hab hac hbc
               · subst y
-                simpa [Q, profileUpdateSet, P, Prefers, hv, hvY, hv_notZ] using
-                  (ballotTopABC_prefers_second_third (A := A) (a := a) (b := b) (c := c) hab hac hbc)
+                unfold Prefers
+                rw [show Q.pref v = ballotTopABC (A := A) a b c hab hac hbc by
+                  simp only [Q, profileUpdateSet, hv, if_false, P, hvY, if_true, hv_notZ, r_abc]]
+                exact ballotTopABC_prefers_second_third (A := A) a b c hab hac hbc
               · subst y
                 exact (hy_ne rfl).elim
             have hcQ' :
@@ -1174,11 +1208,15 @@ lemma aXb_partition_of_opt_pess_viable (f : VotingRule)
       have hP2prefsZ : ∀ v : V, v ∈ Z → Prefers P2 v c b := by
         intro v hvZ
         have h := ballotTopABC_prefers_first_second (A := A) c b a hbc.symm hac.symm hab.symm
-        simpa [Prefers, hPrefZ v hvZ] using h
+        unfold Prefers
+        rw [hPrefZ v hvZ]
+        exact h
       have hP2prefsNotZ : ∀ v : V, v ∉ Z → Prefers P2 v b c := by
         intro v hvZ
         have h := ballotTopABC_prefers_first_second (A := A) b c a hbc hab.symm hac.symm
-        simpa [Prefers, hPrefNotZ v hvZ] using h
+        unfold Prefers
+        rw [hPrefNotZ v hvZ]
+        exact h
       right
       exact aXb_of_exists_profile (f := f) (hf := hmono_singleton) (X := Z) (a := c) (b := b)
         (hab := hbc.symm) ⟨P2, hTopP2_cb, hP2prefsZ, hP2prefsNotZ, hcP2⟩

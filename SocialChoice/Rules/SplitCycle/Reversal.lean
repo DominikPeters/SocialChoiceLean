@@ -29,7 +29,7 @@ lemma splitCycleDefeats_reverse_iff {V A : Type} [Fintype V] [Fintype A]
         refine cycle_of_cycle_imp ?_ (cycle_reverse_rel (P := fun a b =>
           margin P x y ≤ margin P a b) hcycle)
         intro a b hab
-        simpa [margin_reverse_eq] using hab
+        exact hab
       have hxmem' : x ∈ c.reverse := by simpa using (List.mem_reverse.mpr hxmem)
       have hymem' : y ∈ c.reverse := by simpa using (List.mem_reverse.mpr hymem)
       exact hnocycle ⟨c.reverse, hymem', hxmem', hcycle'⟩
@@ -49,7 +49,7 @@ lemma splitCycleDefeats_reverse_iff {V A : Type} [Fintype V] [Fintype A]
         refine cycle_of_cycle_imp ?_ (cycle_reverse_rel (P := fun a b =>
           margin (reverse_profile P) y x ≤ margin (reverse_profile P) a b) hcycle)
         intro a b hab
-        simpa [margin_reverse_eq] using hab
+        exact hab
       have hxmem' : x ∈ c.reverse := by simpa using (List.mem_reverse.mpr hxmem)
       have hymem' : y ∈ c.reverse := by simpa using (List.mem_reverse.mpr hymem)
       exact hnocycle ⟨c.reverse, hxmem', hymem', hcycle'⟩

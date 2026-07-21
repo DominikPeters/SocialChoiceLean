@@ -109,7 +109,6 @@ lemma topRank_iff_isTopOfList' (ballots : V → ListBallot 3) (v : V) (c : Fin 3
     have hhead_ne_c : (ballots v).ranking.head hne ≠ c := hne'
     have := htop ((ballots v).ranking.head hne) hhead_ne_c
     unfold Prefers profileOfBallots at this
-    simp only at this
     rw [(ballots v).lt_iff_idxOf] at this
     have hidx_c := List.idxOf_lt_length_of_mem hc_mem
     omega
@@ -118,7 +117,6 @@ lemma topRank_iff_isTopOfList' (ballots : V → ListBallot 3) (v : V) (c : Fin 3
     simp only [decide_eq_true_eq] at htop
     intro d hd
     unfold Prefers profileOfBallots
-    simp only
     rw [(ballots v).lt_iff_idxOf]
     have hne : (ballots v).ranking ≠ [] := by
       intro h
@@ -152,7 +150,6 @@ lemma topCount_eq_countTop' (ballots : V → ListBallot 3) (c : Fin 3) :
 lemma prefers_iff_prefersInList' (ballots : V → ListBallot 3) (v : V) (a b : Fin 3) :
     Prefers (profileOfBallots ballots) v a b ↔ prefersInList (ballots v).ranking a b = true := by
   unfold Prefers profileOfBallots prefersInList
-  simp only
   rw [(ballots v).lt_iff_idxOf]
   simp only [decide_eq_true_eq]
 

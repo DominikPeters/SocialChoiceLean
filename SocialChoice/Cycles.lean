@@ -174,8 +174,9 @@ lemma cycle_reverse_rel {X : Type} {P : X → X → Prop} {c : List X} :
   have hchain_rev : (List.getLast c.reverse hne' :: c.reverse).reverse.IsChain P := by
     simpa [getLast_reverse_eq_head (c := c) hne] using hchain_app
   have hchain_final : (List.getLast c.reverse hne' :: c.reverse).IsChain (reverse_rel P) := by
-    simpa [reverse_rel] using
-      (List.isChain_reverse (l := List.getLast c.reverse hne' :: c.reverse) (R := P)).1 hchain_rev
+    change List.IsChain (fun a b => P b a) (List.getLast c.reverse hne' :: c.reverse)
+    exact (List.isChain_reverse (l := List.getLast c.reverse hne' :: c.reverse) (R := P)).1
+      hchain_rev
   simpa using hchain_final
 
 lemma getLast_iterate_succ {α : Type} (f : α → α) (a : α) (n : Nat) :
@@ -266,7 +267,7 @@ theorem dominates_of_cycle_index {X : Type} (l : List X) (P : X -> X -> Prop)
     have hchain_tail : List.IsChain P l := hchain.tail
     have hrel : P l[i] l[i + 1] := by
       exact (List.isChain_iff_getElem).1 hchain_tail i hlt
-    simpa [hmodEq] using hrel
+    convert hrel
 
 theorem dominate_of_cycle {X : Type} (l : List X) (P : X -> X -> Prop) (c : cycle P l) :
     ∀ x ∈ l, ∃ y ∈ l, P y x := by

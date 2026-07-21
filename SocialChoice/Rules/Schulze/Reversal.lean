@@ -445,14 +445,14 @@ lemma reversalCounterexample_strongestPath_0_y_ge_zero (y : Fin 3) (hy : y ≠ 0
         (b := (1 : Fin 3)) (by decide)
     simpa [reversalCounterexampleProfile,
       margin_eq_marginList (ballots := reversalCounterexampleBallots),
-      reversalCounterexampleBallots, reversalCounterexample_marginList_01] using h
+      reversalCounterexample_marginList_01] using h
   ·
     have h :=
       margin_le_strongestPath_of_ne (P := reversalCounterexampleProfile) (a := (0 : Fin 3))
         (b := (2 : Fin 3)) (by decide)
     simpa [reversalCounterexampleProfile,
       margin_eq_marginList (ballots := reversalCounterexampleBallots),
-      reversalCounterexampleBallots, reversalCounterexample_marginList_02] using h
+      reversalCounterexample_marginList_02] using h
 
 lemma reversalCounterexample_strongestPath_y_0_ge_zero (y : Fin 3) (hy : y ≠ 0) :
     (0 : Int) ≤ strongestPath reversalCounterexampleProfile y (0 : Fin 3) := by
@@ -464,14 +464,14 @@ lemma reversalCounterexample_strongestPath_y_0_ge_zero (y : Fin 3) (hy : y ≠ 0
         (b := (0 : Fin 3)) (by decide)
     simpa [reversalCounterexampleProfile,
       margin_eq_marginList (ballots := reversalCounterexampleBallots),
-      reversalCounterexampleBallots, reversalCounterexample_marginList_10] using h
+      reversalCounterexample_marginList_10] using h
   ·
     have h :=
       margin_le_strongestPath_of_ne (P := reversalCounterexampleProfile) (a := (2 : Fin 3))
         (b := (0 : Fin 3)) (by decide)
     simpa [reversalCounterexampleProfile,
       margin_eq_marginList (ballots := reversalCounterexampleBallots),
-      reversalCounterexampleBallots, reversalCounterexample_marginList_20] using h
+      reversalCounterexample_marginList_20] using h
 
 lemma reversalCounterexample_strongestPath_1_2_ge_two :
     (2 : Int) ≤ strongestPath reversalCounterexampleProfile (1 : Fin 3) (2 : Fin 3) := by
@@ -486,7 +486,7 @@ lemma reversalCounterexample_strongestPath_1_2_ge_two :
     (P := reversalCounterexampleProfile) (a := (1 : Fin 3)) (b := (2 : Fin 3)) (l := [1, 2]) hmem
   simpa [pathStrength_two, reversalCounterexampleProfile,
     margin_eq_marginList (ballots := reversalCounterexampleBallots),
-    reversalCounterexampleBallots, reversalCounterexample_marginList_12] using hle
+    reversalCounterexample_marginList_12] using hle
 
 lemma reversalCounterexample_schulzeDefeats_12 :
     schulzeDefeats reversalCounterexampleProfile (1 : Fin 3) (2 : Fin 3) := by

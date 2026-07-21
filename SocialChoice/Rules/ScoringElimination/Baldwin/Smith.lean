@@ -153,7 +153,8 @@ theorem baldwin_smithCriterion : SmithCriterion baldwin := by
           scoringEliminationAux bordaScore A P ⊆ topCycleSet (P := P) :=
         baldwin_subset_of_dominatesSet (P := P)
           (S := topCycleSet (P := P)) (topCycleSet_dominates (P := P))
-      simpa [baldwin] using hsubset'
+      change scoringEliminationAux bordaScore A P ⊆ topCycleSet (P := P)
+      exact hsubset'
     simpa [topCycle, hA] using hsubset
   · have hA' : IsEmpty A := (not_nonempty_iff.mp hA)
     have hcard : Fintype.card A ≤ 1 := by

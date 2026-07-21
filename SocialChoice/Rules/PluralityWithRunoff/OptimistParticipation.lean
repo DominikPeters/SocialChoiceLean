@@ -402,7 +402,8 @@ theorem pluralityWithRunoff_not_optimistParticipation :
   let r := profile5OP.pref (newVoter (u := (0 : Fin 5)) (V := voters4OP) voters4OP_not_mem)
   letI : LinearOrder (Fin 3) := r
   have hweak :
-      OptimistWeak r (pluralityWithRunoff profile5OP) (pluralityWithRunoff profile4OP) := by
+      @OptimistWeak (Fin 3) (fun a b => LinearOrder.toDecidableEq a b) r
+        (pluralityWithRunoff profile5OP) (pluralityWithRunoff profile4OP) := by
     simpa [OptimistParticipation, StrongParticipation, OptimistExtension, r] using
       hopt (V := voters4OP) (u := (0 : Fin 5)) (hu := voters4OP_not_mem)
         (P := profile4OP) (Q := profile5OP) profiles_agreeOP

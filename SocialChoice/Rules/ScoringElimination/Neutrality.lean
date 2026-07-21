@@ -153,7 +153,7 @@ lemma lowestScoring_relabelProfile {V A B : Type} [Fintype V] [Fintype A] [Finty
       exact ⟨e.symm b, by simp⟩
     simp [lowestScoring, hA, hB]
 
-def subtypeEquiv {A B : Type} (e : A ≃ B) (a : A) :
+@[implicit_reducible] def subtypeEquiv {A B : Type} (e : A ≃ B) (a : A) :
     {x : A // x ≠ a} ≃ {y : B // y ≠ e a} := by
   classical
   refine
@@ -194,7 +194,7 @@ lemma liftFinset_map_subtypeEquiv {A B : Type} [DecidableEq A] [DecidableEq B]
     rcases Finset.mem_image.mp hb with ⟨x, hx, rfl⟩
     rcases Finset.mem_map.mp hx with ⟨y, hy, hxy⟩
     have hb' : (e y : B) = (x : B) := by
-      simpa using congrArg Subtype.val hxy
+      exact congrArg Subtype.val hxy
     refine Finset.mem_map.mpr ?_
     refine ⟨y, ?_, hb'⟩
     exact Finset.mem_image.mpr ⟨y, hy, rfl⟩
@@ -204,7 +204,7 @@ lemma liftFinset_map_subtypeEquiv {A B : Type} [DecidableEq A] [DecidableEq B]
     refine Finset.mem_image.mpr ?_
     refine ⟨(subtypeEquiv e a y), ?_, ?_⟩
     · exact Finset.mem_map.mpr ⟨y, hy, rfl⟩
-    · simpa using hba
+    · exact hba
 
 theorem scoringEliminationAux_equiv_card (score : Nat → Nat → Int) :
     ∀ n, ∀ {V A B : Type} [Fintype V] [Fintype A] [Fintype B]

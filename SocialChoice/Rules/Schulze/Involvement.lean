@@ -148,8 +148,7 @@ lemma relabel_profile9_eq_profile9_list :
 lemma relabel_profile8_eq_profile8_list :
     relabelProfileVoters e8 profile8 = profile8_list := by
   ext v
-  fin_cases v <;>
-    simp [profile8, fullProfile, restrictElectorate, ballots9, e8]
+  fin_cases v <;> rfl
 
 lemma margin_profile9_eq_list (a b : A4) :
     margin profile9 a b = margin profile9_list a b := by
@@ -171,7 +170,7 @@ lemma profiles_agree :
     ∀ v : Electorate (Fin 9) voters8,
       profile9.pref (liftVoter (u := (0 : Fin 9)) v) = profile8.pref v := by
   intro v
-  simpa [profile8, profile9] using
+  simpa [profile8, profile9, voters9] using
     (restrictElectorate_agrees (Q := fullProfile) (S := voters8)
       (hS := by intro x hx; exact (Finset.mem_univ x))
       (u := (0 : Fin 9))
@@ -201,7 +200,8 @@ lemma newVoter_bottom_0 :
     BallotBottom
       (profile9.pref (newVoter (u := (0 : Fin 9)) (V := voters8) voters8_not_mem))
       a0 := by
-  simpa [profile9, fullProfile, ballots9, voters9, voters8] using ballot1320_bottom_0
+  change BallotBottom ballot1320.toLinearOrder a0
+  exact ballot1320_bottom_0
 
 /-! ## Margins for the full profile (9 voters) -/
 
@@ -600,7 +600,7 @@ lemma pathStrength_le_zero_of_last {V A : Type} [Fintype V] [Fintype A]
                 simp [pathStrength, pathStrengthAux, hzero]
               ·
                 have hle := hmargin a h
-                simpa [pathStrength] using hle
+                simpa [pathStrength, pathStrengthAux] using hle
           | cons d t'' =>
               have hlast' : (b :: d :: t'').getLast? = some cand := by
                 simpa using hlast

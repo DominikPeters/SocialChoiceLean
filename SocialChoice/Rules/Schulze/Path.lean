@@ -381,8 +381,7 @@ lemma getLast?_remove_repeat (l1 l2 l3 : List A) (x : A) :
             simpa [List.append_assoc] using
               (List.getLast?_append_of_ne_nil l1 (by simp))
           _ = ([x] : List A).getLast? := by
-            simpa [List.append_assoc] using
-              (List.getLast?_append_of_ne_nil (x :: l2) (by simp))
+            exact List.getLast?_append_of_ne_nil (x :: l2) (by simp)
       have h2 : (l1 ++ [x]).getLast? = ([x] : List A).getLast? := by
         exact (List.getLast?_append_of_ne_nil l1 (by simp))
       exact h1.trans h2.symm
@@ -638,7 +637,7 @@ lemma mem_pathsUpTo_of_props (l : List A) (a b : A)
     refine Finset.mem_image.mpr ?_
     refine ⟨(fun i : Fin l.length => l[(i : Nat)]), ?_, ?_⟩
     · simp
-    · exact (List.ofFn_getElem (l := l))
+    · exact (List.ofFn_getElem (xs := l))
   have hmem_len : l ∈ pathsOfLength (A := A) l.length a b := by
     refine Finset.mem_filter.mpr ?_
     exact ⟨hmem_list, ⟨rfl, hhead, hlast, hnodup⟩⟩
@@ -658,7 +657,7 @@ lemma mem_pathsUpToAny_of_props (l : List A) (a b : A) (n : Nat)
     refine Finset.mem_image.mpr ?_
     refine ⟨(fun i : Fin l.length => l[(i : Nat)]), ?_, ?_⟩
     · simp
-    · exact (List.ofFn_getElem (l := l))
+    · exact (List.ofFn_getElem (xs := l))
   have hmem_len : l ∈ pathsOfLengthAny (A := A) l.length a b := by
     refine Finset.mem_filter.mpr ?_
     exact ⟨hmem_list, ⟨rfl, hhead, hlast⟩⟩
@@ -862,8 +861,8 @@ lemma exists_nodup_strength_ge (P : Profile V A) (a c : A) (l : List A)
               simp [hdecomp]
             have hlastx : l.getLast? = some x := by
               have hlast' : l.getLast? = ([x] : List A).getLast? := by
-                simpa [hdecomp, List.append_assoc] using
-                  (List.getLast?_append_of_ne_nil (x :: l2) (by simp))
+                rw [hdecomp]
+                exact List.getLast?_append_of_ne_nil (x :: l2) (by simp)
               calc
                 l.getLast? = ([x] : List A).getLast? := hlast'
                 _ = some x := by simp

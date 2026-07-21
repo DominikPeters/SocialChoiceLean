@@ -208,7 +208,7 @@ lemma bottomRank_restrict_cand2 (v : Fin 13) :
   constructor
   · intro h
     have h' : Prefers profile' v cand0 cand2 := h cand0 (by decide)
-    simp at h'
+    change Prefers profile v (0 : Fin 3) (2 : Fin 3) at h'
     exact h'
   · intro h d hd
     have hcard : Fintype.card {x : Fin 3 // x ≠ (1 : Fin 3)} = 2 := by
@@ -216,7 +216,7 @@ lemma bottomRank_restrict_cand2 (v : Fin 13) :
     have hne : cand0 ≠ cand2 := by decide
     rcases two_elems_eq_or_eq (A := {x : Fin 3 // x ≠ (1 : Fin 3)}) hcard cand0 cand2 hne d with
       rfl | rfl
-    · simp at h
+    · change Prefers profile' v cand0 cand2
       exact h
     · exact (hd rfl).elim
 
@@ -225,7 +225,7 @@ lemma bottomRank_restrict_cand0 (v : Fin 13) :
   constructor
   · intro h
     have h' : Prefers profile' v cand2 cand0 := h cand2 (by decide)
-    simp at h'
+    change Prefers profile v (2 : Fin 3) (0 : Fin 3) at h'
     exact h'
   · intro h d hd
     have hcard : Fintype.card {x : Fin 3 // x ≠ (1 : Fin 3)} = 2 := by
@@ -234,7 +234,7 @@ lemma bottomRank_restrict_cand0 (v : Fin 13) :
     rcases two_elems_eq_or_eq (A := {x : Fin 3 // x ≠ (1 : Fin 3)}) hcard cand0 cand2 hne d with
       rfl | rfl
     · exact (hd rfl).elim
-    · simp at h
+    · change Prefers profile' v cand2 cand0
       exact h
 
 lemma votersPreferring_0_2 :

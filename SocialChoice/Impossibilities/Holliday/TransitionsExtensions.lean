@@ -91,7 +91,9 @@ lemma not_mem_P3_add_newVoter_of_not_mem_P2_add_newVoter {f : VotingRule} (hpos 
       rw [hP2pref] at h
       exact h
     simp only [Q2', castProfile]
-    convert hQ2pref using 1
+    rw [show (⟨w, _⟩ : Electorate U450 (insert u votersP2)) =
+      liftVoter (u := u) ⟨w, hwP2⟩ by apply Subtype.ext; rfl]
+    exact hQ2pref
   exact
     not_mem_add_copies_of_not_mem (f := f) hpos V votersP1_2 hVW Q3 Q2' d
       ballot_daceb.toLinearOrder hrest hnew ballot_daceb_top_d hnot
@@ -165,7 +167,9 @@ lemma not_mem_P3_add_newVoter_of_not_mem_P4_add_newVoter {f : VotingRule} (hpos 
       rw [hP4pref] at h
       exact h
     simp only [Q4', castProfile]
-    convert hQ4pref using 1
+    rw [show (⟨w, _⟩ : Electorate U450 (insert u votersP4)) =
+      liftVoter (u := u) ⟨w, hwP4⟩ by apply Subtype.ext; rfl]
+    exact hQ4pref
   exact
     not_mem_add_copies_of_not_mem (f := f) hpos V votersP1_10 hVW Q3 Q4' b
       ballot_bdeac.toLinearOrder hrest hnew ballot_bdeac_top_b hnot
@@ -239,7 +243,9 @@ lemma not_mem_P5_add_newVoter_of_not_mem_P4_add_newVoter {f : VotingRule} (hpos 
       rw [hP4pref] at h
       exact h
     simp only [Q4', castProfile]
-    convert hQ4pref using 1
+    rw [show (⟨w, _⟩ : Electorate U450 (insert u votersP4)) =
+      liftVoter (u := u) ⟨w, hwP4⟩ by apply Subtype.ext; rfl]
+    exact hQ4pref
   exact
     not_mem_add_copies_of_not_mem (f := f) hpos V votersP1_7 hVW Q5 Q4' d
       ballot_dbace.toLinearOrder hrest hnew ballot_dbace_top_d hnot
@@ -373,7 +379,11 @@ lemma not_mem_P5_add_twoVoters_of_not_mem_P4_add_twoVoters {f : VotingRule} (hpo
       rw [hP4pref] at h
       exact h
     simp only [Q4', castProfile]
-    convert hQ4pref using 1
+    rw [show (⟨w, _⟩ : Electorate U450 (insert u4 (insert u2 votersP4))) =
+      liftVoter (u := u4) (liftVoter (u := u2) ⟨w, hwP4⟩) by
+        apply Subtype.ext
+        rfl]
+    exact hQ4pref
   exact
     not_mem_add_copies_of_not_mem (f := f) hpos V votersP1_7 hVW Q5 Q4' d
       ballot_dbace.toLinearOrder hrest hnew ballot_dbace_top_d hnot

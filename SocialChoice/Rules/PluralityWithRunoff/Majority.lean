@@ -65,7 +65,9 @@ lemma margin_pos_of_majority_top {V A : Type} [Fintype V] [Fintype A]
   have hmargin :
       0 < Int.ofNat (votersPreferring P x y).card -
           Int.ofNat (votersPreferring P y x).card := sub_pos.mpr hlt'
-  simpa [margin_pos, margin] using hmargin
+  change 0 < Int.ofNat (votersPreferring P x y).card -
+    Int.ofNat (votersPreferring P y x).card
+  exact hmargin
 
 theorem plurality_with_runoff_majority_criterion : MajorityCriterion pluralityWithRunoff := by
   intro V A _ _ P x hmaj

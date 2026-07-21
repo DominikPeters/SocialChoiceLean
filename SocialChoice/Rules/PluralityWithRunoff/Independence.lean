@@ -222,7 +222,7 @@ lemma pwr_independence_of_dominated_ge_two
           simpa [P'] using
             (margin_eq_margin_restrictCandidates (P := P)
               (p := fun a => a ≠ d)
-              (a := (⟨a, ha'⟩ : {x : A // x ≠ d})) (b := y)).symm
+              (a := (⟨a, ha'⟩ : {x : A // x ≠ d})) (b := y))
         simpa [hmargin''] using hmargin
       have hcardA : ¬ Fintype.card A ≤ 1 := by
         have hA_ge2 : 2 ≤ Fintype.card A := le_trans hS (Finset.card_le_univ S)
@@ -721,8 +721,8 @@ lemma pwr_independence_of_dominated_le_one
         ∀ {b : A} (hb : b ≠ d),
           topCount P b = topCount P' (⟨b, hb⟩ : {x : A // x ≠ d}) := by
       intro b hb
-      simpa [P'] using
-        (topCount_restrictProfile_eq (P := P) (d := d) hnot_top_d b hb).symm
+      change topCount P b = topCount (restrictProfile P d) (⟨b, hb⟩ : {x : A // x ≠ d})
+      exact (topCount_restrictProfile_eq (P := P) (d := d) hnot_top_d b hb).symm
     constructor
     · intro haT
       have haT' := (mem_secondPluralitySet_iff_forall_le (P := P) (S := S) hR).1 haT

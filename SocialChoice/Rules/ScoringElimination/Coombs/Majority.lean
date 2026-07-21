@@ -322,7 +322,7 @@ lemma coombs_profile_has_1 : (1 : Fin 3) ∈ coombs profile := by
         margin profile (1 : Fin 3) (0 : Fin 3) := by
     simpa [cand1_2, cand0_2] using
       (margin_eq_margin_restrictProfile (P := profile) (c := (2 : Fin 3))
-        (a := cand1_2) (b := cand0_2))
+        (a := cand1_2) (b := cand0_2)).symm
   have hmargin_val :
       margin (restrictProfile profile (2 : Fin 3)) cand1_2 cand0_2 = (1 : Int) := by
     simpa [hmargin] using margin_profile_1_0

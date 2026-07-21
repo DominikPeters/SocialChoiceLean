@@ -113,7 +113,9 @@ theorem plurality_with_runoff_positive_involvement : PositiveInvolvement plurali
           by_cases hv : v = newVoter (u := u) (V := V) hu
           · subst hv
             have hpref : TopRank P' (newVoter (u := u) (V := V) hu) d := by
-              simpa [TopRank, Prefers] using htopd
+              intro d1 hne
+              change ballot.lt d d1
+              exact htopd d1 hne
             constructor
             · intro _hmem
               simp
@@ -135,10 +137,14 @@ theorem plurality_with_runoff_positive_involvement : PositiveInvolvement plurali
               constructor
               · intro h d1 hne
                 have h' := h d1 hne
-                simpa [P', Prefers, hv_eq, hagree] using h'
+                change @LT.lt A (P'.pref v).toLT d d1 at h'
+                rw [hv_eq, hagree] at h'
+                exact h'
               · intro h d1 hne
                 have h' := h d1 hne
-                simpa [P', Prefers, hv_eq, hagree] using h'
+                change @LT.lt A (P'.pref v).toLT d d1
+                rw [hv_eq, hagree]
+                exact h'
             have himage : v ∈ S0.image (liftVoter (u := u)) ↔ v' ∈ S0 := by
               constructor
               · intro hvimg
@@ -223,10 +229,14 @@ theorem plurality_with_runoff_positive_involvement : PositiveInvolvement plurali
               constructor
               · intro h d1 hne
                 have h' := h d1 hne
-                simpa [P', Prefers, hv_eq, hagree] using h'
+                change @LT.lt A (P'.pref v).toLT d d1 at h'
+                rw [hv_eq, hagree] at h'
+                exact h'
               · intro h d1 hne
                 have h' := h d1 hne
-                simpa [P', Prefers, hv_eq, hagree] using h'
+                change @LT.lt A (P'.pref v).toLT d d1
+                rw [hv_eq, hagree]
+                exact h'
             have himage : v ∈ S0.image (liftVoter (u := u)) ↔ v' ∈ S0 := by
               constructor
               · intro hvimg
@@ -710,7 +720,6 @@ lemma topRank_iff_isTopOfListNI (ballots : V → ListBallot 3) (v : V) (c : Fin 
     have hhead_ne_c : (ballots v).ranking.head hne ≠ c := hne'
     have := htop ((ballots v).ranking.head hne) hhead_ne_c
     unfold Prefers profileOfBallotsNI at this
-    simp only at this
     rw [(ballots v).lt_iff_idxOf] at this
     have hidx_c := List.idxOf_lt_length_of_mem hc_mem
     omega
@@ -719,7 +728,6 @@ lemma topRank_iff_isTopOfListNI (ballots : V → ListBallot 3) (v : V) (c : Fin 
     simp only [decide_eq_true_eq] at htop
     intro d hd
     unfold Prefers profileOfBallotsNI
-    simp only
     rw [(ballots v).lt_iff_idxOf]
     have hne : (ballots v).ranking ≠ [] := by
       intro h
@@ -753,7 +761,6 @@ lemma topCount_eq_countTopNI (ballots : V → ListBallot 3) (c : Fin 3) :
 lemma prefers_iff_prefersInListNI (ballots : V → ListBallot 3) (v : V) (a b : Fin 3) :
     Prefers (profileOfBallotsNI ballots) v a b ↔ prefersInList (ballots v).ranking a b = true := by
   unfold Prefers profileOfBallotsNI prefersInList
-  simp only
   rw [(ballots v).lt_iff_idxOf]
   simp only [decide_eq_true_eq]
 
@@ -1019,7 +1026,8 @@ lemma newVoter_bottom_1 :
     BallotBottom
       (profile6.pref (newVoter (u := (0 : Fin 6)) (V := voters5) voters5_not_mem))
       (1 : Fin 3) := by
-  simpa [profile6, fullProfile, ballots6] using ballot021_bottom_1
+  change BallotBottom ballot021.toLinearOrder (1 : Fin 3)
+  exact ballot021_bottom_1
 
 end PluralityWithRunoffNegativeInvolvementCounterexample
 

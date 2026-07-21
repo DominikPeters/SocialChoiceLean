@@ -47,7 +47,7 @@ lemma permuteCandidates_twoVoterProfile :
   fin_cases v
   · simp [twoVoterProfile, permuteCandidates, permuteVoters, swappedOrder, swapCand]
   · simp [twoVoterProfile, permuteCandidates, permuteVoters, swappedOrder, swapCand]
-    simpa using relabelBallot_relabelBallot_swap
+    exact relabelBallot_relabelBallot_swap
 
 lemma swapCand_ne (c : Fin 2) : swapCand c ≠ c := by
   fin_cases c <;> decide

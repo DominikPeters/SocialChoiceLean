@@ -296,7 +296,22 @@ lemma c2BordaScore_eq_affine {V A : Type} [Fintype V] [Fintype A]
                     (fun v => Classical.propDecidable ((P.pref v).lt y x))
                     (Finset.univ : Finset V)).card)) := by
     classical
-    simp [c2BordaScore, margin, Prefers, Finset.sum_sub_distrib]
+    simp only [c2BordaScore, margin, Finset.sum_sub_distrib]
+    refine congrArg₂ (· - ·) (Finset.sum_congr rfl ?_) (Finset.sum_congr rfl ?_)
+    · intro y _
+      apply congrArg Int.ofNat
+      apply congrArg Finset.card
+      ext v
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and]
+      unfold Prefers
+      rfl
+    · intro y _
+      apply congrArg Int.ofNat
+      apply congrArg Finset.card
+      ext v
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and]
+      unfold Prefers
+      rfl
   calc
     c2BordaScore P x =
       (Finset.univ : Finset A).sum (fun y =>

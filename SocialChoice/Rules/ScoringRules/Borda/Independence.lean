@@ -399,7 +399,8 @@ theorem borda_not_independenceOfDominated : ¬ IndependenceOfDominated borda := 
   have hb_left :
       (1 : Fin 3) ∈
         liftWinners (borda (restrictCandidates profile (fun a => a ≠ (2 : Fin 3)))) := by
-    simpa [profile'] using lift_borda_profile'_has_b
+    change (1 : Fin 3) ∈ liftWinners (borda (restrictProfile profile (2 : Fin 3)))
+    exact lift_borda_profile'_has_b
   have hb_right : (1 : Fin 3) ∈ borda profile := by
     simpa [hEq] using hb_left
   exact (borda_profile_not_b hb_right).elim

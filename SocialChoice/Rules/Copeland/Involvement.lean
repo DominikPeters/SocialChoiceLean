@@ -67,7 +67,7 @@ lemma profiles_agree :
     ∀ v : Electorate (Fin 6) voters5,
       profile6.pref (liftVoter (u := (3 : Fin 6)) v) = profile5.pref v := by
   intro v
-  simpa [profile5, profile6] using
+  simpa [profile5, profile6, voters6] using
     (restrictElectorate_agrees (Q := fullProfile) (S := voters5)
       (hS := by intro x hx; exact (Finset.mem_univ x))
       (u := (3 : Fin 6))
@@ -80,7 +80,8 @@ lemma ballot120_top_1 : BallotTop ballot120.toLinearOrder (1 : Fin 3) := by
 lemma newVoter_top_1 :
     BallotTop (profile6.pref (newVoter (u := (3 : Fin 6)) (V := voters5) voters5_not_mem))
       (1 : Fin 3) := by
-  simpa [profile6, fullProfile, ballots6, voters5_not_mem, voters6] using ballot120_top_1
+  change BallotTop ballot120.toLinearOrder (1 : Fin 3)
+  exact ballot120_top_1
 
 lemma univ_fin3 : (Finset.univ : Finset (Fin 3)) = {0, 1, 2} := by
   ext x
@@ -100,18 +101,35 @@ lemma margin_eq_card_diff {V A : Type} [Fintype V] [Fintype A]
   classical
   simp [margin, votersPreferring]
 
+private lemma votersPreferring_profile5_eq_filter (x y : Fin 3) :
+    votersPreferring profile5 x y =
+      Finset.univ.filter (fun v => prefersInList (ballots6 v.1).ranking x y) := by
+  ext v
+  simp only [votersPreferring, Finset.mem_filter, Finset.mem_univ, true_and]
+  change Prefers (profileOfListBallots ballots6) v.1 x y ↔ _
+  exact prefers_iff_prefersInList ballots6 v.1 x y
+
+private lemma votersPreferring_profile6_eq_filter (x y : Fin 3) :
+    votersPreferring profile6 x y =
+      Finset.univ.filter (fun v => prefersInList (ballots6 v.1).ranking x y) := by
+  ext v
+  simp only [votersPreferring, Finset.mem_filter, Finset.mem_univ, true_and]
+  change Prefers (profileOfListBallots ballots6) v.1 x y ↔ _
+  exact prefers_iff_prefersInList ballots6 v.1 x y
+
 lemma votersPreferring_profile5_0_1 :
     votersPreferring profile5 (0 : Fin 3) (1 : Fin 3) =
       ({⟨0, by simp [voters5]⟩,
         ⟨1, by simp [voters5]⟩} :
         Finset (Electorate (Fin 6) voters5)) := by
   classical
+  rw [votersPreferring_profile5_eq_filter]
   ext v
   cases v with
   | mk val hmem =>
       fin_cases val <;>
-        (simp [votersPreferring, profile5, fullProfile, restrictElectorate,
-          ballots6, voters5, Prefers, ListBallot.lt_iff_idxOf] at hmem ⊢; all_goals decide)
+        (simp [voters5, ballots6, ballot021, ballot102, ballot120, ballot210,
+          prefersInList] at hmem ⊢; all_goals decide +revert)
 
 lemma votersPreferring_profile5_1_0 :
     votersPreferring profile5 (1 : Fin 3) (0 : Fin 3) =
@@ -120,12 +138,13 @@ lemma votersPreferring_profile5_1_0 :
         ⟨5, by simp [voters5]⟩} :
         Finset (Electorate (Fin 6) voters5)) := by
   classical
+  rw [votersPreferring_profile5_eq_filter]
   ext v
   cases v with
   | mk val hmem =>
       fin_cases val <;>
-        (simp [votersPreferring, profile5, fullProfile, restrictElectorate,
-          ballots6, voters5, Prefers, ListBallot.lt_iff_idxOf] at hmem ⊢; all_goals decide)
+        (simp [voters5, ballots6, ballot021, ballot102, ballot120, ballot210,
+          prefersInList] at hmem ⊢; all_goals decide +revert)
 
 lemma votersPreferring_profile5_0_2 :
     votersPreferring profile5 (0 : Fin 3) (2 : Fin 3) =
@@ -134,12 +153,13 @@ lemma votersPreferring_profile5_0_2 :
         ⟨2, by simp [voters5]⟩} :
         Finset (Electorate (Fin 6) voters5)) := by
   classical
+  rw [votersPreferring_profile5_eq_filter]
   ext v
   cases v with
   | mk val hmem =>
       fin_cases val <;>
-        (simp [votersPreferring, profile5, fullProfile, restrictElectorate,
-          ballots6, voters5, Prefers, ListBallot.lt_iff_idxOf] at hmem ⊢; all_goals decide)
+        (simp [voters5, ballots6, ballot021, ballot102, ballot120, ballot210,
+          prefersInList] at hmem ⊢; all_goals decide +revert)
 
 lemma votersPreferring_profile5_2_0 :
     votersPreferring profile5 (2 : Fin 3) (0 : Fin 3) =
@@ -147,24 +167,26 @@ lemma votersPreferring_profile5_2_0 :
         ⟨5, by simp [voters5]⟩} :
         Finset (Electorate (Fin 6) voters5)) := by
   classical
+  rw [votersPreferring_profile5_eq_filter]
   ext v
   cases v with
   | mk val hmem =>
       fin_cases val <;>
-        (simp [votersPreferring, profile5, fullProfile, restrictElectorate,
-          ballots6, voters5, Prefers, ListBallot.lt_iff_idxOf] at hmem ⊢; all_goals decide)
+        (simp [voters5, ballots6, ballot021, ballot102, ballot120, ballot210,
+          prefersInList] at hmem ⊢; all_goals decide +revert)
 
 lemma votersPreferring_profile5_1_2 :
     votersPreferring profile5 (1 : Fin 3) (2 : Fin 3) =
       ({⟨2, by simp [voters5]⟩} :
         Finset (Electorate (Fin 6) voters5)) := by
   classical
+  rw [votersPreferring_profile5_eq_filter]
   ext v
   cases v with
   | mk val hmem =>
       fin_cases val <;>
-        (simp [votersPreferring, profile5, fullProfile, restrictElectorate,
-          ballots6, voters5, Prefers, ListBallot.lt_iff_idxOf] at hmem ⊢; all_goals decide)
+        (simp [voters5, ballots6, ballot021, ballot102, ballot120, ballot210,
+          prefersInList] at hmem ⊢; all_goals decide +revert)
 
 lemma votersPreferring_profile5_2_1 :
     votersPreferring profile5 (2 : Fin 3) (1 : Fin 3) =
@@ -174,12 +196,13 @@ lemma votersPreferring_profile5_2_1 :
         ⟨5, by simp [voters5]⟩} :
         Finset (Electorate (Fin 6) voters5)) := by
   classical
+  rw [votersPreferring_profile5_eq_filter]
   ext v
   cases v with
   | mk val hmem =>
       fin_cases val <;>
-        (simp [votersPreferring, profile5, fullProfile, restrictElectorate,
-          ballots6, voters5, Prefers, ListBallot.lt_iff_idxOf] at hmem ⊢; all_goals decide)
+        (simp [voters5, ballots6, ballot021, ballot102, ballot120, ballot210,
+          prefersInList] at hmem ⊢; all_goals decide +revert)
 
 lemma votersPreferring_profile6_0_1 :
     votersPreferring profile6 (0 : Fin 3) (1 : Fin 3) =
@@ -187,12 +210,13 @@ lemma votersPreferring_profile6_0_1 :
         ⟨1, by simp [voters6, voters5]⟩} :
         Finset (Electorate (Fin 6) voters6)) := by
   classical
+  rw [votersPreferring_profile6_eq_filter]
   ext v
   cases v with
   | mk val hmem =>
       fin_cases val <;>
-        (simp [votersPreferring, profile6, fullProfile, restrictElectorate,
-          ballots6, voters6, voters5, Prefers, ListBallot.lt_iff_idxOf] at hmem ⊢; all_goals decide)
+        (simp [voters6, voters5, ballots6, ballot021, ballot102, ballot120, ballot210,
+          prefersInList] at hmem ⊢; all_goals decide +revert)
 
 lemma votersPreferring_profile6_1_0 :
     votersPreferring profile6 (1 : Fin 3) (0 : Fin 3) =
@@ -202,12 +226,13 @@ lemma votersPreferring_profile6_1_0 :
         ⟨5, by simp [voters6, voters5]⟩} :
         Finset (Electorate (Fin 6) voters6)) := by
   classical
+  rw [votersPreferring_profile6_eq_filter]
   ext v
   cases v with
   | mk val hmem =>
       fin_cases val <;>
-        (simp [votersPreferring, profile6, fullProfile, restrictElectorate,
-          ballots6, voters6, voters5, Prefers, ListBallot.lt_iff_idxOf] at hmem ⊢; all_goals decide)
+        (simp [voters6, voters5, ballots6, ballot021, ballot102, ballot120, ballot210,
+          prefersInList] at hmem ⊢; all_goals decide +revert)
 
 lemma votersPreferring_profile6_0_2 :
     votersPreferring profile6 (0 : Fin 3) (2 : Fin 3) =
@@ -216,12 +241,13 @@ lemma votersPreferring_profile6_0_2 :
         ⟨2, by simp [voters6, voters5]⟩} :
         Finset (Electorate (Fin 6) voters6)) := by
   classical
+  rw [votersPreferring_profile6_eq_filter]
   ext v
   cases v with
   | mk val hmem =>
       fin_cases val <;>
-        (simp [votersPreferring, profile6, fullProfile, restrictElectorate,
-          ballots6, voters6, voters5, Prefers, ListBallot.lt_iff_idxOf] at hmem ⊢; all_goals decide)
+        (simp [voters6, voters5, ballots6, ballot021, ballot102, ballot120, ballot210,
+          prefersInList] at hmem ⊢; all_goals decide +revert)
 
 lemma votersPreferring_profile6_2_0 :
     votersPreferring profile6 (2 : Fin 3) (0 : Fin 3) =
@@ -230,12 +256,13 @@ lemma votersPreferring_profile6_2_0 :
         ⟨5, by simp [voters6, voters5]⟩} :
         Finset (Electorate (Fin 6) voters6)) := by
   classical
+  rw [votersPreferring_profile6_eq_filter]
   ext v
   cases v with
   | mk val hmem =>
       fin_cases val <;>
-        (simp [votersPreferring, profile6, fullProfile, restrictElectorate,
-          ballots6, voters6, voters5, Prefers, ListBallot.lt_iff_idxOf] at hmem ⊢; all_goals decide)
+        (simp [voters6, voters5, ballots6, ballot021, ballot102, ballot120, ballot210,
+          prefersInList] at hmem ⊢; all_goals decide +revert)
 
 lemma votersPreferring_profile6_1_2 :
     votersPreferring profile6 (1 : Fin 3) (2 : Fin 3) =
@@ -243,12 +270,13 @@ lemma votersPreferring_profile6_1_2 :
         ⟨3, by simp [voters6, voters5]⟩} :
         Finset (Electorate (Fin 6) voters6)) := by
   classical
+  rw [votersPreferring_profile6_eq_filter]
   ext v
   cases v with
   | mk val hmem =>
       fin_cases val <;>
-        (simp [votersPreferring, profile6, fullProfile, restrictElectorate,
-          ballots6, voters6, voters5, Prefers, ListBallot.lt_iff_idxOf] at hmem ⊢; all_goals decide)
+        (simp [voters6, voters5, ballots6, ballot021, ballot102, ballot120, ballot210,
+          prefersInList] at hmem ⊢; all_goals decide +revert)
 
 lemma votersPreferring_profile6_2_1 :
     votersPreferring profile6 (2 : Fin 3) (1 : Fin 3) =
@@ -258,12 +286,13 @@ lemma votersPreferring_profile6_2_1 :
         ⟨5, by simp [voters6, voters5]⟩} :
         Finset (Electorate (Fin 6) voters6)) := by
   classical
+  rw [votersPreferring_profile6_eq_filter]
   ext v
   cases v with
   | mk val hmem =>
       fin_cases val <;>
-        (simp [votersPreferring, profile6, fullProfile, restrictElectorate,
-          ballots6, voters6, voters5, Prefers, ListBallot.lt_iff_idxOf] at hmem ⊢; all_goals decide)
+        (simp [voters6, voters5, ballots6, ballot021, ballot102, ballot120, ballot210,
+          prefersInList] at hmem ⊢; all_goals decide +revert)
 
 lemma margin_profile5_0_1_neg : margin profile5 (0 : Fin 3) (1 : Fin 3) < 0 := by
   have h1 : (votersPreferring profile5 (0 : Fin 3) (1 : Fin 3)).card = 2 := by

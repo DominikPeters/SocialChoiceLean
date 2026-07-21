@@ -16,8 +16,9 @@ lemma addCopiesProfile_restrict {U A : Type} [DecidableEq U] [Fintype A]
     restrictElectorate (addCopiesProfile V W P r) V (by
       intro x hx
       exact Finset.mem_union.mpr (Or.inl hx)) = P := by
-  ext v
-  simp [restrictElectorate, addCopiesProfile]
+  apply Profile.ext
+  intro v
+  simp only [restrictElectorate, addCopiesProfile, dif_pos v.2]
 
 lemma addCopiesProfile_pref_of_mem {U A : Type} [DecidableEq U] [Fintype A]
     (V W : Finset U) (P : Profile (Electorate U V) A) (r : LinearOrder A)
@@ -45,7 +46,8 @@ lemma margin_addCopies_eq_of_prefers {U A : Type} [DecidableEq U] [Fintype A]
   · intro _hVW
     have hEq : V ∪ (∅ : Finset U) = V := by simp
     have hP : castProfile hEq (addCopiesProfile V (∅ : Finset U) P r) = P := by
-      ext v
+      apply Profile.ext
+      intro v
       simp [castProfile, addCopiesProfile]
     have hcast :
         margin (castProfile hEq (addCopiesProfile V (∅ : Finset U) P r)) a b =
@@ -88,7 +90,8 @@ lemma margin_addCopies_eq_of_prefers {U A : Type} [DecidableEq U] [Fintype A]
     have hmargin :
         margin Qbig a b = margin Qsmall a b + 1 := by
       have hpref : (Qbig.pref (newVoter (u := w) (V := V ∪ s) hwV')).lt a b := by
-        simpa [hnew] using h
+        rw [hnew]
+        exact h
       exact margin_add_newVoter_eq_of_prefers (u := w) (V := V ∪ s) hwV' Qsmall Qbig hagree a b
         hpref
     have hIH := ih hVS

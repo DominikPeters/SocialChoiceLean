@@ -17,6 +17,7 @@ lemma scoreCandidate_permuteVoters {V A : Type} [Fintype V] [Fintype A]
     simp
   · intro v hv
     simp [permuteVoters, rank]
+    rfl
 
 lemma lowestScoring_permuteVoters {V A : Type} [Fintype V] [Fintype A] [DecidableEq A]
     (P : Profile V A) (σ : Equiv.Perm V) (score : Nat → Int) :

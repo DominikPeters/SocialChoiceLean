@@ -416,7 +416,7 @@ lemma resoluteParticipation_superset {f : VotingRule} (hf : Resolute f)
         exact hUpper a (by simpa [T] using haT)
       have hnot' :
           ¬ (Q.pref ⟨a, haW⟩).lt x' y := by
-        simpa [restrictElectorate, newVoter, Ssmall] using hnot
+        exact hnot
       exact upperSet_mem_of_not_lt hUpper_a hx'_mem hnot'
   have hW : V ∪ T = W := by
     simpa [T] using (Finset.union_sdiff_of_subset hVW)
@@ -436,6 +436,7 @@ lemma resoluteParticipation_superset {f : VotingRule} (hf : Resolute f)
     rw [← restrictElectorate_self Q]
     convert rfl
     · exact hW.symm
+    · exact (restrictElectorate_self Q).symm
     · exact hW.symm
   rw [← hQeq]
   exact hsubset

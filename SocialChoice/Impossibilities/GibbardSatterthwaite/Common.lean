@@ -68,8 +68,10 @@ lemma topRank_expandProfile_of_ne {V A : Type} [Fintype V] [Fintype A] [Decidabl
     (w : {w : V // w ≠ v₂}) (htop : TopRank P' w c) :
     TopRank (expandProfile v₁ v₂ hne P') w.val c := by
   intro d hd
-  unfold Prefers expandProfile
-  simp only [w.prop, dite_false]
+  have hpref : (expandProfile v₁ v₂ hne P').pref w.val = P'.pref w := by
+    simp [expandProfile, w.prop]
+  unfold Prefers
+  rw [hpref]
   exact htop d hd
 
 /-- Helper: TopRank at v₂ in expanded profile equals TopRank at v₁ in reduced profile. -/
@@ -78,8 +80,10 @@ lemma topRank_expandProfile_v2 {V A : Type} [Fintype V] [Fintype A] [DecidableEq
     (htop : TopRank P' ⟨v₁, hne⟩ c) :
     TopRank (expandProfile v₁ v₂ hne P') v₂ c := by
   intro d hd
-  unfold Prefers expandProfile
-  simp only [dite_true]
+  have hpref : (expandProfile v₁ v₂ hne P').pref v₂ = P'.pref ⟨v₁, hne⟩ := by
+    simp [expandProfile]
+  unfold Prefers
+  rw [hpref]
   exact htop d hd
 
 /-- If f is unanimous, then the cloned rule is unanimous. -/
@@ -112,9 +116,9 @@ lemma expandProfile_updateProfile_eq {V A : Type} [Fintype V] [Fintype A] [Decid
     (ballot : LinearOrder A) :
     expandProfile v₁ v₂ hne (updateProfile P' w ballot) =
     updateProfile (expandProfile v₁ v₂ hne P') w.val ballot := by
-  ext u
+  apply Profile.ext
+  intro u
   unfold expandProfile updateProfile
-  simp only
   by_cases huv₂ : u = v₂
   · -- u = v₂: both sides use v₁'s ballot
     simp only [huv₂, dite_true]
@@ -150,9 +154,9 @@ lemma expandProfile_updateProfile_v1_eq {V A : Type} [Fintype V] [Fintype A] [De
     (ballot : LinearOrder A) :
     expandProfile v₁ v₂ hne (updateProfile P' ⟨v₁, hne⟩ ballot) =
     updateProfile (updateProfile (expandProfile v₁ v₂ hne P') v₁ ballot) v₂ ballot := by
-  ext u
+  apply Profile.ext
+  intro u
   unfold expandProfile updateProfile
-  simp only
   by_cases huv₂ : u = v₂
   · -- u = v₂
     simp only [huv₂, dite_true, ite_true]
@@ -253,9 +257,10 @@ lemma clonedRule_strategyproof {V A : Type} [Fintype V] [Fintype A] [Nonempty A]
       -- And P'.pref ⟨v₁, hne⟩ = P'.pref w (since w = ⟨v₁, hne⟩)
       -- So Prefers P_v1 v₂ y x ↔ Prefers P' w y x
       have hpref_eq : Prefers P_v1 v₂ y x ↔ Prefers P' w y x := by
-        -- v₂ uses v₁'s ballot in the expanded profiles
-        constructor <;> intro h <;>
-          simpa [Prefers, P_v1, P_full, hw', expandProfile, updateProfile, hne, hne.symm] using h
+        change (P_v1.pref v₂).lt y x ↔ (P'.pref w).lt y x
+        have hp : P_v1.pref v₂ = P'.pref w := by
+          simp [P_v1, P_full, updateProfile, expandProfile, hne.symm, hw']
+        rw [hp]
       rw [hpref_eq] at hnot_v2
       exact hnot_v2 hpref
     · -- z ≠ x: the intermediate outcome changed
@@ -276,12 +281,20 @@ lemma clonedRule_strategyproof {V A : Type} [Fintype V] [Fintype A] [Nonempty A]
       -- Prefers P_full v₁ = using P'.pref ⟨v₁, hne⟩
       -- Prefers P_v1 v₂ = using P'.pref ⟨v₁, hne⟩ (since v₂ still has original)
       have hpref_v1_full : Prefers P_full v₁ y x ↔ Prefers P' w y x := by
-        simp [Prefers, P_full, hw', expandProfile, hne]
+        change (P_full.pref v₁).lt y x ↔ (P'.pref w).lt y x
+        have hp : P_full.pref v₁ = P'.pref w := by
+          simp [P_full, expandProfile, hne, hw']
+        rw [hp]
       have hpref_v2_pv1 : Prefers P_v1 v₂ y z ↔ Prefers P_full v₂ y z := by
-        constructor <;> intro h <;>
-          simpa [Prefers, P_v1, P_full, updateProfile, hne, hne.symm] using h
+        change (P_v1.pref v₂).lt y z ↔ (P_full.pref v₂).lt y z
+        have hp : P_v1.pref v₂ = P_full.pref v₂ := by
+          simp [P_v1, updateProfile, hne.symm]
+        rw [hp]
       have hpref_full_v2_v1 : Prefers P_full v₂ y z ↔ Prefers P_full v₁ y z := by
-        simp [Prefers, P_full, expandProfile, hne]
+        change (P_full.pref v₂).lt y z ↔ (P_full.pref v₁).lt y z
+        have hp : P_full.pref v₂ = P_full.pref v₁ := by
+          simp [P_full, expandProfile, hne]
+        rw [hp]
 
       -- We have:
       -- ¬ Prefers P_full v₁ z x (from hnot_v1)
@@ -350,8 +363,10 @@ lemma clonedRule_strategyproof {V A : Type} [Fintype V] [Fintype A] [Nonempty A]
 
     -- Show that Prefers in expanded profile equals Prefers in P' for w
     have hpref_eq : Prefers (expandProfile v₁ v₂ hne P') w.val y x ↔ Prefers P' w y x := by
-      unfold Prefers expandProfile
-      simp only [w.prop, dite_false]
+      change ((expandProfile v₁ v₂ hne P').pref w.val).lt y x ↔ (P'.pref w).lt y x
+      have hp : (expandProfile v₁ v₂ hne P').pref w.val = P'.pref w := by
+        simp [expandProfile, w.prop]
+      rw [hp]
 
     rw [hpref_eq] at hnot
     exact hnot hpref

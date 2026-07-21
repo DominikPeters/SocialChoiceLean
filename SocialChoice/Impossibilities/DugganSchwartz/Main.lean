@@ -79,7 +79,8 @@ lemma ballotTopSetList_complete (S : Finset A) (a : A) (ha : a ∈ S) :
       simpa [Finset.mem_toList] using hx'
     simp [ballotTopSetList, hx, hxS, hx_list]
 
-noncomputable def ballotTopSet (S : Finset A) (a : A) (ha : a ∈ S) : LinearOrder A := by
+@[reducible] noncomputable def ballotTopSet
+    (S : Finset A) (a : A) (ha : a ∈ S) : LinearOrder A := by
   classical
   exact linearOrderOfList (ballotTopSetList S a)
     (ballotTopSetList_nodup S a ha)
@@ -132,7 +133,13 @@ lemma ballotTopSet_topSet (S : Finset A) (a : A) (ha : a ∈ S) :
     exact (linearOrderOfList_lt_iff_idxOf (l := l)
       (hnodup := ballotTopSetList_nodup S a ha)
       (hcomplete := ballotTopSetList_complete S a ha) x y).2 hlt
-  simpa [ballotTopSet, ballotTopSetList, l, lS, lT] using hlt'
+  change
+    (linearOrderOfList (ballotTopSetList S a)
+      (ballotTopSetList_nodup S a ha) (ballotTopSetList_complete S a ha)).lt x y
+  have hl : l = ballotTopSetList S a := by
+    simp only [l, lS, lT, ballotTopSetList]
+  subst l
+  exact hlt'
 
 omit [Nonempty A] in
 lemma ballotTopSet_prefers_top (S : Finset A) (a b : A) (ha : a ∈ S) (hb : b ≠ a) :
@@ -143,7 +150,7 @@ lemma ballotTopSet_prefers_top (S : Finset A) (a b : A) (ha : a ∈ S) (hb : b �
   have hidxa : l.idxOf a = 0 := by
     simp [ballotTopSetList, l]
   have hidxb : l.idxOf b = Nat.succ (tail.idxOf b) := by
-    simpa [ballotTopSetList, tail] using
+    simpa [l, ballotTopSetList, tail] using
       (List.idxOf_cons_ne (a := b) (b := a) (l := tail) hb.symm)
   have hlt : l.idxOf a < l.idxOf b := by
     simp [hidxa, hidxb]
@@ -169,9 +176,13 @@ lemma winners_subset_of_ballotTopSet_update (f : VotingRule)
   by_contra hyS
   let P' := updateProfile P v ballot
   have hback : updateProfile P' v (P.pref v) = P := by
-    ext u
+    apply Profile.ext
+    intro u
     unfold P' updateProfile
-    by_cases h : u = v <;> simp [h]
+    by_cases h : u = v
+    · subst u
+      simp only [if_true]
+    · simp only [if_neg h]
   have hmanip :
       ∃ x ∈ f P', ∀ y' ∈ f (updateProfile P' v (P.pref v)), Prefers P' v y' x := by
     refine ⟨y, hy, ?_⟩
@@ -180,7 +191,9 @@ lemma winners_subset_of_ballotTopSet_update (f : VotingRule)
       simpa [hback] using hy'
     have hy'_S : y' ∈ S := hsubset hy'_P
     have hlt : ballot.lt y' y := hBallot y' y hy'_S hyS
-    simpa [P', Prefers, updateProfile] using hlt
+    unfold Prefers
+    rw [show P'.pref v = ballot by simp only [P', updateProfile, if_true]]
+    exact hlt
   exact (hf_pess P' v (P.pref v)) hmanip
 
 omit [Nonempty A] in
@@ -277,7 +290,9 @@ theorem duggan_schwartz
   have htop_x' : TopRank P1 i x := by
     intro d hd
     have h := htop_x d hd
-    simpa [Prefers, hpref_i] using h
+    unfold Prefers at h ⊢
+    rw [hpref_i]
+    exact h
   have hx_eq_P1 : topChoice P1 i = x := by
     have h := eq_topChoice_of_topRank (P := P1) (v := i) (c := x) htop_x'
     simpa using h.symm
@@ -318,7 +333,9 @@ theorem duggan_schwartz
     Finset.exists_mem_ne (s := S) (by simpa using hcard_gt1) a
   have h_pref_ab : Prefers P1 i a b := by
     have h := h_pref_min b hbS hbne
-    simpa [Prefers, hpref_i] using h
+    unfold Prefers at h ⊢
+    rw [hpref_i]
+    exact h
   have hTop_a : TopSet P_top {a} := by
     refine (topSet_singleton_iff_topRank (P := P_top) (c := a)).2 ?_
     intro v d hd
@@ -328,13 +345,18 @@ theorem duggan_schwartz
     singleton_winner_of_topSet (f := f) (hf_total := hf_total) (hf_opt := hf_opt)
       (hf_pess := hf_pess) (hviable := hviable) (P := P_top) (a := a) hTop_a
   have hupdate : updateProfile P1 i ballot = P_top := by
-    ext u
+    apply Profile.ext
+    intro u
+    unfold updateProfile
     by_cases hu : u = i
-    · subst hu
-      simp [P_top, updateProfile]
+    · subst u
+      simp only [if_true]
+      rfl
     · have hu' : u ∈ others := by
         simp [others, hu]
-      simp [P1, P_top, profileUpdateSet, updateProfile, others, hu]
+      simp only [if_neg hu]
+      change (if u ∈ others then P_top.pref u else P0.pref u) = P_top.pref u
+      rw [if_pos hu']
   have hmanip :
       ∃ x ∈ f P1, ∀ y ∈ f (updateProfile P1 i ballot), Prefers P1 i y x := by
     refine ⟨b, ?_, ?_⟩

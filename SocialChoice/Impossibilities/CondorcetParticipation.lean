@@ -117,9 +117,15 @@ lemma restrictElectorate_eq_profileOnSubsetP5 {S T : Finset (Fin 12)} (hST : S �
   simp [restrictElectorate, profileOnSubsetP5]
 
 lemma P0_P5_coincide : P0ProfileSub = P0ProfileSubP5 := by
-  simp [P0ProfileSub, P0ProfileSubP5, profileOnSubset, profileOnSubsetP5]
-  ext v
-  fin_cases v <;> simp [P1Ballots, P5Ballots]
+  apply Profile.ext
+  rintro ⟨v, hv⟩
+  change v ∈ V0 at hv
+  fin_cases v <;> simp_all [P0ProfileSub, P0ProfileSubP5, profileOnSubset,
+    profileOnSubsetP5, V0, P1Ballots, P5Ballots]
+  all_goals
+    exfalso
+    revert hv
+    native_decide
 
 -- Lemma for restrictElectorate equality
 lemma restrictElectorate_eq_profileOnSubset {S T : Finset (Fin 12)} (hST : S ⊆ T) :
@@ -370,89 +376,125 @@ lemma P7_to_P8_preserve_ac {f : VotingRule} (hf : Resolute f)
 
 -- Condorcet winners for the four key profiles.
 
+private lemma votersPreferring_subsetProfile_eq_filter
+    (S : Finset (Fin m)) (ballots : Fin m → ListBallot n) (a b : Fin n) :
+    votersPreferring
+        ({ pref := fun v : Electorate (Fin m) S => (ballots v.1).toLinearOrder } :
+          Profile (Electorate (Fin m) S) (Fin n)) a b =
+      Finset.univ.filter (fun v => prefersInList (ballots v.1).ranking a b) := by
+  ext v
+  simp only [votersPreferring, Finset.mem_filter, Finset.mem_univ, true_and]
+  unfold Prefers prefersInList
+  rw [ListBallot.lt_iff_idxOf]
+  simp [decide_eq_true_eq]
+
 @[simp] private lemma P2_strict_majority_0 : StrictMajority (votersPreferring P2ProfileSub 2 0) := by
-  unfold StrictMajority votersPreferring
-  simp [P2ProfileSub, profileOnSubset, Prefers, ListBallot.lt_iff_idxOf,
-        V2, P1Ballots, ballotABCD, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB,
-        ListBallot.mk']
-  decide
+  unfold StrictMajority
+  rw [show votersPreferring P2ProfileSub 2 0 = _ by
+    simpa [P2ProfileSub, profileOnSubset] using
+      votersPreferring_subsetProfile_eq_filter V2 P1Ballots 2 0]
+  simp [V2, P1Ballots, ballotABCD, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB,
+    prefersInList]
+  decide +revert
 
 @[simp] private lemma P2_strict_majority_1 : StrictMajority (votersPreferring P2ProfileSub 2 1) := by
-  unfold StrictMajority votersPreferring
-  simp [P2ProfileSub, profileOnSubset, Prefers, ListBallot.lt_iff_idxOf,
-        V2, P1Ballots, ballotABCD, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB,
-        ListBallot.mk']
-  decide
+  unfold StrictMajority
+  rw [show votersPreferring P2ProfileSub 2 1 = _ by
+    simpa [P2ProfileSub, profileOnSubset] using
+      votersPreferring_subsetProfile_eq_filter V2 P1Ballots 2 1]
+  simp [V2, P1Ballots, ballotABCD, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB,
+    prefersInList]
+  decide +revert
 
 @[simp] private lemma P2_strict_majority_3 : StrictMajority (votersPreferring P2ProfileSub 2 3) := by
-  unfold StrictMajority votersPreferring
-  simp [P2ProfileSub, profileOnSubset, Prefers, ListBallot.lt_iff_idxOf,
-        V2, P1Ballots, ballotABCD, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB,
-        ListBallot.mk']
-  decide
+  unfold StrictMajority
+  rw [show votersPreferring P2ProfileSub 2 3 = _ by
+    simpa [P2ProfileSub, profileOnSubset] using
+      votersPreferring_subsetProfile_eq_filter V2 P1Ballots 2 3]
+  simp [V2, P1Ballots, ballotABCD, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB,
+    prefersInList]
+  decide +revert
 
 @[simp] private lemma P4_strict_majority_1 : StrictMajority (votersPreferring P4ProfileSub 0 1) := by
-  unfold StrictMajority votersPreferring
-  simp [P4ProfileSub, profileOnSubset, Prefers, ListBallot.lt_iff_idxOf,
-        V4, P1Ballots, ballotABCD, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB,
-        ListBallot.mk']
-  decide
+  unfold StrictMajority
+  rw [show votersPreferring P4ProfileSub 0 1 = _ by
+    simpa [P4ProfileSub, profileOnSubset] using
+      votersPreferring_subsetProfile_eq_filter V4 P1Ballots 0 1]
+  simp [V4, P1Ballots, ballotABCD, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB,
+    prefersInList]
+  decide +revert
 
 @[simp] private lemma P4_strict_majority_2 : StrictMajority (votersPreferring P4ProfileSub 0 2) := by
-  unfold StrictMajority votersPreferring
-  simp [P4ProfileSub, profileOnSubset, Prefers, ListBallot.lt_iff_idxOf,
-        V4, P1Ballots, ballotABCD, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB,
-        ListBallot.mk']
-  decide
+  unfold StrictMajority
+  rw [show votersPreferring P4ProfileSub 0 2 = _ by
+    simpa [P4ProfileSub, profileOnSubset] using
+      votersPreferring_subsetProfile_eq_filter V4 P1Ballots 0 2]
+  simp [V4, P1Ballots, ballotABCD, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB,
+    prefersInList]
+  decide +revert
 
 @[simp] private lemma P4_strict_majority_3 : StrictMajority (votersPreferring P4ProfileSub 0 3) := by
-  unfold StrictMajority votersPreferring
-  simp [P4ProfileSub, profileOnSubset, Prefers, ListBallot.lt_iff_idxOf,
-        V4, P1Ballots, ballotABCD, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB,
-        ListBallot.mk']
-  decide
+  unfold StrictMajority
+  rw [show votersPreferring P4ProfileSub 0 3 = _ by
+    simpa [P4ProfileSub, profileOnSubset] using
+      votersPreferring_subsetProfile_eq_filter V4 P1Ballots 0 3]
+  simp [V4, P1Ballots, ballotABCD, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB,
+    prefersInList]
+  decide +revert
 
 @[simp] private lemma P6_strict_majority_0 : StrictMajority (votersPreferring P6ProfileSub 1 0) := by
-  unfold StrictMajority votersPreferring
-  simp [P6ProfileSub, profileOnSubsetP5, Prefers, ListBallot.lt_iff_idxOf,
-        V6, P5Ballots, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB, ballotDCBA,
-        ListBallot.mk']
-  decide
+  unfold StrictMajority
+  rw [show votersPreferring P6ProfileSub 1 0 = _ by
+    simpa [P6ProfileSub, profileOnSubsetP5] using
+      votersPreferring_subsetProfile_eq_filter V6 P5Ballots 1 0]
+  simp [V6, P5Ballots, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB, ballotDCBA,
+    prefersInList]
+  decide +revert
 
 @[simp] private lemma P6_strict_majority_2 : StrictMajority (votersPreferring P6ProfileSub 1 2) := by
-  unfold StrictMajority votersPreferring
-  simp [P6ProfileSub, profileOnSubsetP5, Prefers, ListBallot.lt_iff_idxOf,
-        V6, P5Ballots, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB, ballotDCBA,
-        ListBallot.mk']
-  decide
+  unfold StrictMajority
+  rw [show votersPreferring P6ProfileSub 1 2 = _ by
+    simpa [P6ProfileSub, profileOnSubsetP5] using
+      votersPreferring_subsetProfile_eq_filter V6 P5Ballots 1 2]
+  simp [V6, P5Ballots, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB, ballotDCBA,
+    prefersInList]
+  decide +revert
 
 @[simp] private lemma P6_strict_majority_3 : StrictMajority (votersPreferring P6ProfileSub 1 3) := by
-  unfold StrictMajority votersPreferring
-  simp [P6ProfileSub, profileOnSubsetP5, Prefers, ListBallot.lt_iff_idxOf,
-        V6, P5Ballots, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB, ballotDCBA,
-        ListBallot.mk']
-  decide
+  unfold StrictMajority
+  rw [show votersPreferring P6ProfileSub 1 3 = _ by
+    simpa [P6ProfileSub, profileOnSubsetP5] using
+      votersPreferring_subsetProfile_eq_filter V6 P5Ballots 1 3]
+  simp [V6, P5Ballots, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB, ballotDCBA,
+    prefersInList]
+  decide +revert
 
 @[simp] private lemma P8_strict_majority_0 : StrictMajority (votersPreferring P8ProfileSub 3 0) := by
-  unfold StrictMajority votersPreferring
-  simp [P8ProfileSub, profileOnSubsetP5, Prefers, ListBallot.lt_iff_idxOf,
-        V8, P5Ballots, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB, ballotDCBA,
-        ListBallot.mk']
-  decide
+  unfold StrictMajority
+  rw [show votersPreferring P8ProfileSub 3 0 = _ by
+    simpa [P8ProfileSub, profileOnSubsetP5] using
+      votersPreferring_subsetProfile_eq_filter V8 P5Ballots 3 0]
+  simp [V8, P5Ballots, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB, ballotDCBA,
+    prefersInList]
+  decide +revert
 
 @[simp] private lemma P8_strict_majority_1 : StrictMajority (votersPreferring P8ProfileSub 3 1) := by
-  unfold StrictMajority votersPreferring
-  simp [P8ProfileSub, profileOnSubsetP5, Prefers, ListBallot.lt_iff_idxOf,
-        V8, P5Ballots, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB, ballotDCBA,
-        ListBallot.mk']
-  decide
+  unfold StrictMajority
+  rw [show votersPreferring P8ProfileSub 3 1 = _ by
+    simpa [P8ProfileSub, profileOnSubsetP5] using
+      votersPreferring_subsetProfile_eq_filter V8 P5Ballots 3 1]
+  simp [V8, P5Ballots, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB, ballotDCBA,
+    prefersInList]
+  decide +revert
 
 @[simp] private lemma P8_strict_majority_2 : StrictMajority (votersPreferring P8ProfileSub 3 2) := by
-  unfold StrictMajority votersPreferring
-  simp [P8ProfileSub, profileOnSubsetP5, Prefers, ListBallot.lt_iff_idxOf,
-        V8, P5Ballots, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB, ballotDCBA,
-        ListBallot.mk']
-  decide
+  unfold StrictMajority
+  rw [show votersPreferring P8ProfileSub 3 2 = _ by
+    simpa [P8ProfileSub, profileOnSubsetP5] using
+      votersPreferring_subsetProfile_eq_filter V8 P5Ballots 3 2]
+  simp [V8, P5Ballots, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB, ballotDCBA,
+    prefersInList]
+  decide +revert
 
 lemma P2_CondorcetWinner_c : CondorcetWinner P2ProfileSub 2 := by
   intro y hy
@@ -751,18 +793,39 @@ noncomputable def Rbeta5Profile : Profile (Electorate (Fin 17) V16) (Fin 4) :=
 -- Agreement lemmas between the shared subprofiles.
 lemma alpha3_alpha5_coincide_V11 :
     profileOnSubsetAlpha3 V11 = profileOnSubsetAlpha5 V11 := by
-  ext v
-  fin_cases v <;> simp [profileOnSubsetAlpha3, profileOnSubsetAlpha5, ballotsAlpha3, ballotsAlpha5]
+  apply Profile.ext
+  rintro ⟨v, hv⟩
+  change v ∈ V11 at hv
+  fin_cases v <;> simp_all [profileOnSubsetAlpha3, profileOnSubsetAlpha5,
+    V11, V10, V0, ballotsAlpha3, ballotsAlpha5]
+  all_goals
+    exfalso
+    revert hv
+    native_decide
 
 lemma alpha3_beta3_coincide_V0 :
     profileOnSubsetAlpha3 V0 = profileOnSubsetBeta3 V0 := by
-  ext v
-  fin_cases v <;> simp [profileOnSubsetAlpha3, profileOnSubsetBeta3, ballotsAlpha3, ballotsBeta3]
+  apply Profile.ext
+  rintro ⟨v, hv⟩
+  change v ∈ V0 at hv
+  fin_cases v <;> simp_all [profileOnSubsetAlpha3, profileOnSubsetBeta3,
+    V0, ballotsAlpha3, ballotsBeta3]
+  all_goals
+    exfalso
+    revert hv
+    native_decide
 
 lemma beta3_beta5_coincide_V11 :
     profileOnSubsetBeta3 V11 = profileOnSubsetBeta5 V11 := by
-  ext v
-  fin_cases v <;> simp [profileOnSubsetBeta3, profileOnSubsetBeta5, ballotsBeta3, ballotsBeta5]
+  apply Profile.ext
+  rintro ⟨v, hv⟩
+  change v ∈ V11 at hv
+  fin_cases v <;> simp_all [profileOnSubsetBeta3, profileOnSubsetBeta5,
+    V11, V10, V0, ballotsBeta3, ballotsBeta5]
+  all_goals
+    exfalso
+    revert hv
+    native_decide
 
 -- Basic TopInSet helpers.
 lemma topInSet_of_ballotTop {A : Type} [DecidableEq A]
@@ -878,7 +941,8 @@ lemma optimist_preserve_top {f : VotingRule} (hopt : OptimistParticipation f) :
       c ∈ f Q := by
   intro V u hu P Q c hagree htop hc
   let r := Q.pref (newVoter (u := u) (V := V) hu)
-  have hweak : OptimistWeak r (f Q) (f P) := by
+  have hweak :
+      @OptimistWeak (Fin 4) (fun a b => LinearOrder.toDecidableEq a b) r (f Q) (f P) := by
     simpa [OptimistParticipation, StrongParticipation, OptimistExtension, r] using
       (hopt (V := V) (u := u) hu P Q hagree)
   rcases hweak with ⟨x, y, hxTop, hyTop, hle⟩
@@ -913,10 +977,15 @@ lemma optimist_preserve_abcd {f : VotingRule} (hopt : OptimistParticipation f)
     ((0 : Fin 4) ∈ f Q ∨ (1 : Fin 4) ∈ f Q) := by
   intro hagree hnew hmem
   have hweak :
-      OptimistWeak (Q.pref (newVoter (u := u) (V := V) hu)) (f Q) (f P) := by
+      @OptimistWeak (Fin 4)
+        (fun a b => (Q.pref (newVoter (u := u) (V := V) hu)).toDecidableEq a b)
+        (Q.pref (newVoter (u := u) (V := V) hu)) (f Q) (f P) := by
     simpa [OptimistParticipation, StrongParticipation, OptimistExtension] using
       (hopt (V := V) (u := u) hu P Q hagree)
-  have hweak' : OptimistWeak ballotABCD.toLinearOrder (f Q) (f P) := by
+  have hweak' :
+      @OptimistWeak (Fin 4)
+        (fun a b => (Q.pref (newVoter (u := u) (V := V) hu)).toDecidableEq a b)
+        ballotABCD.toLinearOrder (f Q) (f P) := by
     simpa [hnew] using hweak
   let r := ballotABCD.toLinearOrder
   rcases hweak' with ⟨x, y, hxTop, hyTop, hle⟩
@@ -968,10 +1037,15 @@ lemma optimist_preserve_dcba {f : VotingRule} (hopt : OptimistParticipation f)
     ((2 : Fin 4) ∈ f Q ∨ (3 : Fin 4) ∈ f Q) := by
   intro hagree hnew hmem
   have hweak :
-      OptimistWeak (Q.pref (newVoter (u := u) (V := V) hu)) (f Q) (f P) := by
+      @OptimistWeak (Fin 4)
+        (fun a b => (Q.pref (newVoter (u := u) (V := V) hu)).toDecidableEq a b)
+        (Q.pref (newVoter (u := u) (V := V) hu)) (f Q) (f P) := by
     simpa [OptimistParticipation, StrongParticipation, OptimistExtension] using
       (hopt (V := V) (u := u) hu P Q hagree)
-  have hweak' : OptimistWeak ballotDCBA.toLinearOrder (f Q) (f P) := by
+  have hweak' :
+      @OptimistWeak (Fin 4)
+        (fun a b => (Q.pref (newVoter (u := u) (V := V) hu)).toDecidableEq a b)
+        ballotDCBA.toLinearOrder (f Q) (f P) := by
     simpa [hnew] using hweak
   let r := ballotDCBA.toLinearOrder
   rcases hweak' with ⟨x, y, hxTop, hyTop, hle⟩
@@ -1016,99 +1090,123 @@ lemma optimist_preserve_dcba {f : VotingRule} (hopt : OptimistParticipation f)
 
 @[simp] private lemma Ralpha3_strict_majority_0 :
     StrictMajority (votersPreferring Ralpha3Profile 2 0) := by
-  unfold StrictMajority votersPreferring
-  simp [Ralpha3Profile, profileOnSubsetAlpha3, Prefers, ListBallot.lt_iff_idxOf, V14_eq,
-    ballotsAlpha3, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB, ballotABCD, ballotACBD,
-    ListBallot.mk']
-  decide
+  unfold StrictMajority
+  rw [show votersPreferring Ralpha3Profile 2 0 = _ by
+    simpa [Ralpha3Profile, profileOnSubsetAlpha3] using
+      votersPreferring_subsetProfile_eq_filter V14 ballotsAlpha3 2 0]
+  simp [V14_eq, ballotsAlpha3, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB,
+    ballotABCD, ballotACBD, prefersInList]
+  decide +revert
 
 @[simp] private lemma Ralpha3_strict_majority_1 :
     StrictMajority (votersPreferring Ralpha3Profile 2 1) := by
-  unfold StrictMajority votersPreferring
-  simp [Ralpha3Profile, profileOnSubsetAlpha3, Prefers, ListBallot.lt_iff_idxOf, V14_eq,
-    ballotsAlpha3, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB, ballotABCD, ballotACBD,
-    ListBallot.mk']
-  decide
+  unfold StrictMajority
+  rw [show votersPreferring Ralpha3Profile 2 1 = _ by
+    simpa [Ralpha3Profile, profileOnSubsetAlpha3] using
+      votersPreferring_subsetProfile_eq_filter V14 ballotsAlpha3 2 1]
+  simp [V14_eq, ballotsAlpha3, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB,
+    ballotABCD, ballotACBD, prefersInList]
+  decide +revert
 
 @[simp] private lemma Ralpha3_strict_majority_3 :
     StrictMajority (votersPreferring Ralpha3Profile 2 3) := by
-  unfold StrictMajority votersPreferring
-  simp [Ralpha3Profile, profileOnSubsetAlpha3, Prefers, ListBallot.lt_iff_idxOf, V14_eq,
-    ballotsAlpha3, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB, ballotABCD, ballotACBD,
-    ListBallot.mk']
-  decide
+  unfold StrictMajority
+  rw [show votersPreferring Ralpha3Profile 2 3 = _ by
+    simpa [Ralpha3Profile, profileOnSubsetAlpha3] using
+      votersPreferring_subsetProfile_eq_filter V14 ballotsAlpha3 2 3]
+  simp [V14_eq, ballotsAlpha3, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB,
+    ballotABCD, ballotACBD, prefersInList]
+  decide +revert
 
 @[simp] private lemma Ralpha5_strict_majority_1 :
     StrictMajority (votersPreferring Ralpha5Profile 0 1) := by
-  unfold StrictMajority votersPreferring
-  simp [Ralpha5Profile, profileOnSubsetAlpha5, Prefers, ListBallot.lt_iff_idxOf, V16_eq,
-    ballotsAlpha5, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB, ballotABCD, ballotBACD,
-    ListBallot.mk']
-  decide
+  unfold StrictMajority
+  rw [show votersPreferring Ralpha5Profile 0 1 = _ by
+    simpa [Ralpha5Profile, profileOnSubsetAlpha5] using
+      votersPreferring_subsetProfile_eq_filter V16 ballotsAlpha5 0 1]
+  simp [V16_eq, ballotsAlpha5, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB,
+    ballotABCD, ballotBACD, prefersInList]
+  decide +revert
 
 @[simp] private lemma Ralpha5_strict_majority_2 :
     StrictMajority (votersPreferring Ralpha5Profile 0 2) := by
-  unfold StrictMajority votersPreferring
-  simp [Ralpha5Profile, profileOnSubsetAlpha5, Prefers, ListBallot.lt_iff_idxOf, V16_eq,
-    ballotsAlpha5, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB, ballotABCD, ballotBACD,
-    ListBallot.mk']
-  decide
+  unfold StrictMajority
+  rw [show votersPreferring Ralpha5Profile 0 2 = _ by
+    simpa [Ralpha5Profile, profileOnSubsetAlpha5] using
+      votersPreferring_subsetProfile_eq_filter V16 ballotsAlpha5 0 2]
+  simp [V16_eq, ballotsAlpha5, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB,
+    ballotABCD, ballotBACD, prefersInList]
+  decide +revert
 
 @[simp] private lemma Ralpha5_strict_majority_3 :
     StrictMajority (votersPreferring Ralpha5Profile 0 3) := by
-  unfold StrictMajority votersPreferring
-  simp [Ralpha5Profile, profileOnSubsetAlpha5, Prefers, ListBallot.lt_iff_idxOf, V16_eq,
-    ballotsAlpha5, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB, ballotABCD, ballotBACD,
-    ListBallot.mk']
-  decide
+  unfold StrictMajority
+  rw [show votersPreferring Ralpha5Profile 0 3 = _ by
+    simpa [Ralpha5Profile, profileOnSubsetAlpha5] using
+      votersPreferring_subsetProfile_eq_filter V16 ballotsAlpha5 0 3]
+  simp [V16_eq, ballotsAlpha5, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB,
+    ballotABCD, ballotBACD, prefersInList]
+  decide +revert
 
 @[simp] private lemma Rbeta3_strict_majority_0 :
     StrictMajority (votersPreferring Rbeta3Profile 1 0) := by
-  unfold StrictMajority votersPreferring
-  simp [Rbeta3Profile, profileOnSubsetBeta3, Prefers, ListBallot.lt_iff_idxOf, V14_eq,
-    ballotsBeta3, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB, ballotDCBA, ballotDBCA,
-    ListBallot.mk']
-  decide
+  unfold StrictMajority
+  rw [show votersPreferring Rbeta3Profile 1 0 = _ by
+    simpa [Rbeta3Profile, profileOnSubsetBeta3] using
+      votersPreferring_subsetProfile_eq_filter V14 ballotsBeta3 1 0]
+  simp [V14_eq, ballotsBeta3, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB,
+    ballotDCBA, ballotDBCA, prefersInList]
+  decide +revert
 
 @[simp] private lemma Rbeta3_strict_majority_2 :
     StrictMajority (votersPreferring Rbeta3Profile 1 2) := by
-  unfold StrictMajority votersPreferring
-  simp [Rbeta3Profile, profileOnSubsetBeta3, Prefers, ListBallot.lt_iff_idxOf, V14_eq,
-    ballotsBeta3, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB, ballotDCBA, ballotDBCA,
-    ListBallot.mk']
-  decide
+  unfold StrictMajority
+  rw [show votersPreferring Rbeta3Profile 1 2 = _ by
+    simpa [Rbeta3Profile, profileOnSubsetBeta3] using
+      votersPreferring_subsetProfile_eq_filter V14 ballotsBeta3 1 2]
+  simp [V14_eq, ballotsBeta3, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB,
+    ballotDCBA, ballotDBCA, prefersInList]
+  decide +revert
 
 @[simp] private lemma Rbeta3_strict_majority_3 :
     StrictMajority (votersPreferring Rbeta3Profile 1 3) := by
-  unfold StrictMajority votersPreferring
-  simp [Rbeta3Profile, profileOnSubsetBeta3, Prefers, ListBallot.lt_iff_idxOf, V14_eq,
-    ballotsBeta3, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB, ballotDCBA, ballotDBCA,
-    ListBallot.mk']
-  decide
+  unfold StrictMajority
+  rw [show votersPreferring Rbeta3Profile 1 3 = _ by
+    simpa [Rbeta3Profile, profileOnSubsetBeta3] using
+      votersPreferring_subsetProfile_eq_filter V14 ballotsBeta3 1 3]
+  simp [V14_eq, ballotsBeta3, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB,
+    ballotDCBA, ballotDBCA, prefersInList]
+  decide +revert
 
 @[simp] private lemma Rbeta5_strict_majority_0 :
     StrictMajority (votersPreferring Rbeta5Profile 3 0) := by
-  unfold StrictMajority votersPreferring
-  simp [Rbeta5Profile, profileOnSubsetBeta5, Prefers, ListBallot.lt_iff_idxOf, V16_eq,
-    ballotsBeta5, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB, ballotDCBA, ballotCDBA,
-    ListBallot.mk']
-  decide
+  unfold StrictMajority
+  rw [show votersPreferring Rbeta5Profile 3 0 = _ by
+    simpa [Rbeta5Profile, profileOnSubsetBeta5] using
+      votersPreferring_subsetProfile_eq_filter V16 ballotsBeta5 3 0]
+  simp [V16_eq, ballotsBeta5, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB,
+    ballotDCBA, ballotCDBA, prefersInList]
+  decide +revert
 
 @[simp] private lemma Rbeta5_strict_majority_1 :
     StrictMajority (votersPreferring Rbeta5Profile 3 1) := by
-  unfold StrictMajority votersPreferring
-  simp [Rbeta5Profile, profileOnSubsetBeta5, Prefers, ListBallot.lt_iff_idxOf, V16_eq,
-    ballotsBeta5, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB, ballotDCBA, ballotCDBA,
-    ListBallot.mk']
-  decide
+  unfold StrictMajority
+  rw [show votersPreferring Rbeta5Profile 3 1 = _ by
+    simpa [Rbeta5Profile, profileOnSubsetBeta5] using
+      votersPreferring_subsetProfile_eq_filter V16 ballotsBeta5 3 1]
+  simp [V16_eq, ballotsBeta5, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB,
+    ballotDCBA, ballotCDBA, prefersInList]
+  decide +revert
 
 @[simp] private lemma Rbeta5_strict_majority_2 :
     StrictMajority (votersPreferring Rbeta5Profile 3 2) := by
-  unfold StrictMajority votersPreferring
-  simp [Rbeta5Profile, profileOnSubsetBeta5, Prefers, ListBallot.lt_iff_idxOf, V16_eq,
-    ballotsBeta5, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB, ballotDCBA, ballotCDBA,
-    ListBallot.mk']
-  decide
+  unfold StrictMajority
+  rw [show votersPreferring Rbeta5Profile 3 2 = _ by
+    simpa [Rbeta5Profile, profileOnSubsetBeta5] using
+      votersPreferring_subsetProfile_eq_filter V16 ballotsBeta5 3 2]
+  simp [V16_eq, ballotsBeta5, ballotABDC, ballotBDCA, ballotCABD, ballotDCAB,
+    ballotDCBA, ballotCDBA, prefersInList]
+  decide +revert
 
 lemma Ralpha3_CondorcetWinner_c : CondorcetWinner Ralpha3Profile 2 := by
   intro y hy
@@ -1137,10 +1235,7 @@ theorem no_condorcet_optimist_participation_m4_n17 :
   have hagree10 : ∀ v : Electorate (Fin 17) V0,
       R10.pref (liftVoter (u := 10) v) = RProfile.pref v := by
     intro v; rfl
-  have hweak :
-      OptimistWeak (R10.pref (newVoter (u := 10) (V := V0) h10)) (f R10) (f RProfile) := by
-    simpa [OptimistParticipation, StrongParticipation, OptimistExtension] using
-      (hopt (V := V0) (u := 10) h10 RProfile R10 hagree10)
+  have hweak := hopt (V := V0) (u := 10) h10 RProfile R10 hagree10
   rcases hweak with ⟨_, y0, _, hy0, _⟩
   have hnonempty : (f RProfile).Nonempty := ⟨y0, hy0.1⟩
   rcases hnonempty with ⟨x, hx⟩
@@ -1180,22 +1275,22 @@ theorem no_condorcet_optimist_participation_m4_n17 :
         apply optimist_preserve_top hopt V11 12 h12 R11 R12 0
         · intro v; rfl
         ·
-          simpa [R12, profileOnSubsetAlpha3, ballotsAlpha3] using
-            (ballotACBD_top_a)
+          change BallotTop ballotACBD.toLinearOrder (0 : Fin 4)
+          exact ballotACBD_top_a
         · exact h0
       have h0_R13 : (0 : Fin 4) ∈ f R13 := by
         apply optimist_preserve_top hopt V12 13 h13 R12 R13 0
         · intro v; rfl
         ·
-          simpa [R13, profileOnSubsetAlpha3, ballotsAlpha3] using
-            (ballotACBD_top_a)
+          change BallotTop ballotACBD.toLinearOrder (0 : Fin 4)
+          exact ballotACBD_top_a
         · exact h0_R12
       have h0_R14 : (0 : Fin 4) ∈ f R14 := by
         apply optimist_preserve_top hopt V13 14 h14 R13 R14 0
         · intro v; rfl
         ·
-          simpa [R14, profileOnSubsetAlpha3, ballotsAlpha3] using
-            (ballotACBD_top_a)
+          change BallotTop ballotACBD.toLinearOrder (0 : Fin 4)
+          exact ballotACBD_top_a
         · exact h0_R13
       have hcw : f Ralpha3Profile = {2} :=
         hcond Ralpha3Profile 2 Ralpha3_CondorcetWinner_c
@@ -1220,36 +1315,36 @@ theorem no_condorcet_optimist_participation_m4_n17 :
         apply optimist_preserve_top hopt V11 12 h12 R11A5 R12A5 1
         · intro v; rfl
         ·
-          simpa [R12A5, profileOnSubsetAlpha5, ballotsAlpha5] using
-            (ballotBACD_top_b)
+          change BallotTop ballotBACD.toLinearOrder (1 : Fin 4)
+          exact ballotBACD_top_b
         · exact h1A5
       have h1_R13 : (1 : Fin 4) ∈ f R13A5 := by
         apply optimist_preserve_top hopt V12 13 h13 R12A5 R13A5 1
         · intro v; rfl
         ·
-          simpa [R13A5, profileOnSubsetAlpha5, ballotsAlpha5] using
-            (ballotBACD_top_b)
+          change BallotTop ballotBACD.toLinearOrder (1 : Fin 4)
+          exact ballotBACD_top_b
         · exact h1_R12
       have h1_R14 : (1 : Fin 4) ∈ f R14A5 := by
         apply optimist_preserve_top hopt V13 14 h14 R13A5 R14A5 1
         · intro v; rfl
         ·
-          simpa [R14A5, profileOnSubsetAlpha5, ballotsAlpha5] using
-            (ballotBACD_top_b)
+          change BallotTop ballotBACD.toLinearOrder (1 : Fin 4)
+          exact ballotBACD_top_b
         · exact h1_R13
       have h1_R15 : (1 : Fin 4) ∈ f R15A5 := by
         apply optimist_preserve_top hopt V14 15 h15 R14A5 R15A5 1
         · intro v; rfl
         ·
-          simpa [R15A5, profileOnSubsetAlpha5, ballotsAlpha5] using
-            (ballotBACD_top_b)
+          change BallotTop ballotBACD.toLinearOrder (1 : Fin 4)
+          exact ballotBACD_top_b
         · exact h1_R14
       have h1_R16 : (1 : Fin 4) ∈ f R16A5 := by
         apply optimist_preserve_top hopt V15 16 h16 R15A5 R16A5 1
         · intro v; rfl
         ·
-          simpa [R16A5, profileOnSubsetAlpha5, ballotsAlpha5] using
-            (ballotBACD_top_b)
+          change BallotTop ballotBACD.toLinearOrder (1 : Fin 4)
+          exact ballotBACD_top_b
         · exact h1_R15
       have hcw : f Ralpha5Profile = {0} :=
         hcond Ralpha5Profile 0 Ralpha5_CondorcetWinner_a
@@ -1303,36 +1398,36 @@ theorem no_condorcet_optimist_participation_m4_n17 :
         apply optimist_preserve_top hopt V11 12 h12 R11B5 R12B5 2
         · intro v; rfl
         ·
-          simpa [R12B5, profileOnSubsetBeta5, ballotsBeta5] using
-            (ballotCDBA_top_c)
+          change BallotTop ballotCDBA.toLinearOrder (2 : Fin 4)
+          exact ballotCDBA_top_c
         · exact h2B5
       have h2_R13 : (2 : Fin 4) ∈ f R13B5 := by
         apply optimist_preserve_top hopt V12 13 h13 R12B5 R13B5 2
         · intro v; rfl
         ·
-          simpa [R13B5, profileOnSubsetBeta5, ballotsBeta5] using
-            (ballotCDBA_top_c)
+          change BallotTop ballotCDBA.toLinearOrder (2 : Fin 4)
+          exact ballotCDBA_top_c
         · exact h2_R12
       have h2_R14 : (2 : Fin 4) ∈ f R14B5 := by
         apply optimist_preserve_top hopt V13 14 h14 R13B5 R14B5 2
         · intro v; rfl
         ·
-          simpa [R14B5, profileOnSubsetBeta5, ballotsBeta5] using
-            (ballotCDBA_top_c)
+          change BallotTop ballotCDBA.toLinearOrder (2 : Fin 4)
+          exact ballotCDBA_top_c
         · exact h2_R13
       have h2_R15 : (2 : Fin 4) ∈ f R15B5 := by
         apply optimist_preserve_top hopt V14 15 h15 R14B5 R15B5 2
         · intro v; rfl
         ·
-          simpa [R15B5, profileOnSubsetBeta5, ballotsBeta5] using
-            (ballotCDBA_top_c)
+          change BallotTop ballotCDBA.toLinearOrder (2 : Fin 4)
+          exact ballotCDBA_top_c
         · exact h2_R14
       have h2_R16 : (2 : Fin 4) ∈ f R16B5 := by
         apply optimist_preserve_top hopt V15 16 h16 R15B5 R16B5 2
         · intro v; rfl
         ·
-          simpa [R16B5, profileOnSubsetBeta5, ballotsBeta5] using
-            (ballotCDBA_top_c)
+          change BallotTop ballotCDBA.toLinearOrder (2 : Fin 4)
+          exact ballotCDBA_top_c
         · exact h2_R15
       have hcw : f Rbeta5Profile = {3} :=
         hcond Rbeta5Profile 3 Rbeta5_CondorcetWinner_d
@@ -1348,22 +1443,22 @@ theorem no_condorcet_optimist_participation_m4_n17 :
         apply optimist_preserve_top hopt V11 12 h12 R11B R12B 3
         · intro v; rfl
         ·
-          simpa [R12B, profileOnSubsetBeta3, ballotsBeta3] using
-            (ballotDBCA_top_d)
+          change BallotTop ballotDBCA.toLinearOrder (3 : Fin 4)
+          exact ballotDBCA_top_d
         · exact h3
       have h3_R13 : (3 : Fin 4) ∈ f R13B := by
         apply optimist_preserve_top hopt V12 13 h13 R12B R13B 3
         · intro v; rfl
         ·
-          simpa [R13B, profileOnSubsetBeta3, ballotsBeta3] using
-            (ballotDBCA_top_d)
+          change BallotTop ballotDBCA.toLinearOrder (3 : Fin 4)
+          exact ballotDBCA_top_d
         · exact h3_R12
       have h3_R14 : (3 : Fin 4) ∈ f R14B := by
         apply optimist_preserve_top hopt V13 14 h14 R13B R14B 3
         · intro v; rfl
         ·
-          simpa [R14B, profileOnSubsetBeta3, ballotsBeta3] using
-            (ballotDBCA_top_d)
+          change BallotTop ballotDBCA.toLinearOrder (3 : Fin 4)
+          exact ballotDBCA_top_d
         · exact h3_R13
       have hcw : f Rbeta3Profile = {1} :=
         hcond Rbeta3Profile 1 Rbeta3_CondorcetWinner_b

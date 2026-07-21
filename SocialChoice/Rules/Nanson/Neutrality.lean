@@ -171,7 +171,9 @@ lemma nansonAux_relabelProfile {V A B : Type} [Fintype V]
 theorem nanson_neutral : Neutrality nanson := by
   intro V A _ _ P σ
   classical
-  simpa [nanson, permuteWinners] using
-    (nansonAux_relabelProfile (V := V) (A := A) (B := A) (n := Fintype.card A) (P := P) (e := σ))
+  change (nansonAux (Fintype.card A) A P).map σ.toEmbedding =
+    nansonAux (Fintype.card A) A (relabelProfile P σ)
+  exact nansonAux_relabelProfile (V := V) (A := A) (B := A)
+    (n := Fintype.card A) (P := P) (e := σ)
 
 end SocialChoice

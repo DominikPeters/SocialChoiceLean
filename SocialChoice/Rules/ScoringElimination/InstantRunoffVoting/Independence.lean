@@ -292,6 +292,7 @@ lemma liftFinset_scoringEliminationAux_restrictProfile_swap
     apply LinearOrder.ext_lt
     intro a b
     simp [e]
+    rfl
   have haux :=
     scoringEliminationAux_equiv (score := pluralityScore)
       (P := restrictProfile (restrictProfile P c) ⟨d, Ne.symm hcd⟩) (e := e)
@@ -650,7 +651,7 @@ theorem instantRunoffVoting_independent_of_non_top
           (fun a b => Classical.propDecidable (a = b)) := by
       funext a b
       apply Subsingleton.elim
-    simp [hinst]
+    rw [hinst]
   have hmain' :
       liftWinners
           (@scoringEliminationAux V _ pluralityScore { a // p a } (Subtype.fintype p)
@@ -672,7 +673,10 @@ theorem instantRunoffVoting_independent_of_non_top
                 (fun a b => Classical.propDecidable (a = b)) := by
             funext a b
             apply Subsingleton.elim
-          simp [hinst]
+          exact scoringEliminationAux_decidableEq_congr
+            (score := pluralityScore) (P := P)
+            (inst1 := inferInstance)
+            (inst2 := fun a b => Classical.propDecidable (a = b))
 
 theorem instantRunoffVoting_independenceOfDominated : IndependenceOfDominated instantRunoffVoting := by
   intro V A _ _ _ _ P c d hpref

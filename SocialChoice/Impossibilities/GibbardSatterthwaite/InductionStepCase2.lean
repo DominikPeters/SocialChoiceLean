@@ -42,12 +42,12 @@ variable {V A : Type} [Fintype V] [Fintype A] [DecidableEq V] [Nonempty A]
 /-! ## Preliminary: Profile Construction Helpers -/
 
 /-- A profile where everyone ranks c at top. -/
-noncomputable def someLinearOrder (A : Type) [Fintype A] : LinearOrder A := by
+@[implicit_reducible] noncomputable def someLinearOrder (A : Type) [Fintype A] : LinearOrder A := by
   classical
   let e := Fintype.equivFin A
   exact LinearOrder.lift' e e.injective
 
-noncomputable def ballotWithTop {A : Type} [Fintype A] (c : A) : LinearOrder A := by
+@[implicit_reducible] noncomputable def ballotWithTop {A : Type} [Fintype A] (c : A) : LinearOrder A := by
   classical
   letI : Nonempty A := ⟨c⟩
   let r0 : LinearOrder A := someLinearOrder A
@@ -62,7 +62,7 @@ by a permutation so that `a` becomes the minimal element and `b` becomes the sec
 
 Requires `2 ≤ Fintype.card A` and `a ≠ b`.
 -/
-noncomputable def ballotWithTopTwo {A : Type} [Fintype A] (a b : A)
+@[implicit_reducible] noncomputable def ballotWithTopTwo {A : Type} [Fintype A] (a b : A)
   (hcard : 2 ≤ Fintype.card A) (_hab : a ≠ b) : LinearOrder A := by
   classical
   letI : Nonempty A := ⟨a⟩
@@ -70,7 +70,7 @@ noncomputable def ballotWithTopTwo {A : Type} [Fintype A] (a b : A)
   -- Use the canonical identification A ≃ Fin n to pick the 0th and 1st elements.
   let e := Fintype.equivFin A
   let n := Fintype.card A
-  have hn1 : 1 < n := by simpa [n] using hcard
+  have hn1 : 1 < n := by omega
   have hn0 : 0 < n := lt_of_lt_of_le Nat.zero_lt_two (by simpa [n] using hcard)
   let m0 : A := e.symm ⟨0, hn0⟩
   let m1 : A := e.symm ⟨1, hn1⟩
@@ -231,7 +231,7 @@ lemma rank_ballotWithTopTwo_top {A : Type} [Fintype A]
   let r0 : LinearOrder A := someLinearOrder A
   let e := Fintype.equivFin A
   let n := Fintype.card A
-  have hn1 : 1 < n := by simpa [n] using hcard
+  have hn1 : 1 < n := by omega
   have hn0 : 0 < n := lt_of_lt_of_le Nat.zero_lt_two (by simpa [n] using hcard)
   let m0 : A := e.symm ⟨0, hn0⟩
   let m1 : A := e.symm ⟨1, hn1⟩
@@ -284,7 +284,7 @@ lemma rank_ballotWithTopTwo_second {A : Type} [Fintype A]
   let r0 : LinearOrder A := someLinearOrder A
   let e := Fintype.equivFin A
   let n := Fintype.card A
-  have hn1 : 1 < n := by simpa [n] using hcard
+  have hn1 : 1 < n := by omega
   have hn0 : 0 < n := lt_of_lt_of_le Nat.zero_lt_two (by simpa [n] using hcard)
   let m0 : A := e.symm ⟨0, hn0⟩
   let m1 : A := e.symm ⟨1, hn1⟩
@@ -369,7 +369,9 @@ lemma outcome_is_a_or_b
     intro d hd
     unfold Prefers
     have hb : (P.pref v₂).lt b d := hb_top_v2 d hd
-    simpa [P'] using hb
+    have hp : P'.pref ⟨v₁, hne⟩ = P.pref v₂ := by simp [P']
+    rw [hp]
+    exact hb
 
   have htopChoice' : topChoice P' ⟨v₁, hne⟩ = b := by
     symm
@@ -383,7 +385,8 @@ lemma outcome_is_a_or_b
 
   -- The expanded profile equals P updated at v₁ with v₂'s ballot.
   have hexpand : expandProfile v₁ v₂ hne P' = updateProfile P v₁ (P.pref v₂) := by
-    ext v
+    apply Profile.ext
+    intro v
     unfold expandProfile updateProfile
     by_cases hv2 : v = v₂
     · subst hv2
@@ -430,6 +433,22 @@ noncomputable def crossedTopTwoProfile
       v₂ (ballotWithTopTwo (A := A) b a hcard2 hab.symm)
 
 omit [Nonempty A] in
+@[simp] lemma crossedTopTwoProfile_pref_v2
+    (hcard : 3 ≤ Fintype.card A)
+    (Pbar : Profile V A) (v₁ v₂ : V) (a b : A) (hab : a ≠ b) :
+    (crossedTopTwoProfile (V := V) (A := A) hcard Pbar v₁ v₂ a b hab).pref v₂ =
+      ballotWithTopTwo (A := A) b a (by omega) hab.symm := by
+  simp [crossedTopTwoProfile, updateProfile]
+
+omit [Nonempty A] in
+@[simp] lemma crossedTopTwoProfile_pref_v1
+    (hcard : 3 ≤ Fintype.card A)
+    (Pbar : Profile V A) (v₁ v₂ : V) (hne : v₁ ≠ v₂) (a b : A) (hab : a ≠ b) :
+    (crossedTopTwoProfile (V := V) (A := A) hcard Pbar v₁ v₂ a b hab).pref v₁ =
+      ballotWithTopTwo (A := A) a b (by omega) hab := by
+  simp [crossedTopTwoProfile, updateProfile, hne]
+
+omit [Nonempty A] in
 lemma topRank_crossedTopTwoProfile_v2
     (hcard : 3 ≤ Fintype.card A)
     (Pbar : Profile V A) (v₁ v₂ : V) (a b : A) (hab : a ≠ b) :
@@ -437,8 +456,9 @@ lemma topRank_crossedTopTwoProfile_v2
   classical
   have hcard2 : 2 ≤ Fintype.card A := by omega
   intro d hd
-  unfold Prefers crossedTopTwoProfile
-  simp [updateProfile, topRank_ballotWithTopTwo (A := A) b a hcard2 hab.symm, hd]
+  unfold Prefers
+  rw [crossedTopTwoProfile_pref_v2]
+  exact topRank_ballotWithTopTwo (A := A) b a hcard2 hab.symm d hd
 
 omit [Nonempty A] in
 lemma prefers_b_over_others_crossedTopTwoProfile_v1
@@ -453,7 +473,8 @@ lemma prefers_b_over_others_crossedTopTwoProfile_v1
   have hb :
       (ballotWithTopTwo (A := A) a b (by omega) hab).lt b c :=
     prefers_second_over_others_ballotWithTopTwo (A := A) a b c hcard hab hca hcb
-  simpa [crossedTopTwoProfile, updateProfile, hne] using hb
+  rw [crossedTopTwoProfile_pref_v1 (hne := hne)]
+  exact hb
 
 /-- Step (i) (paper): at the crossed-top-two profile, the outcome is `a` or `b`.
 
@@ -498,6 +519,19 @@ noncomputable def setV1V2
   classical
   exact updateProfile (updateProfile Pbar v₁ ballot₁) v₂ ballot₂
 
+omit [Nonempty A] in
+@[simp] lemma setV1V2_pref_v2
+    (Pbar : Profile V A) (v₁ v₂ : V) (ballot₁ ballot₂ : LinearOrder A) :
+    (setV1V2 Pbar v₁ v₂ ballot₁ ballot₂).pref v₂ = ballot₂ := by
+  simp [setV1V2, updateProfile]
+
+omit [Nonempty A] in
+@[simp] lemma setV1V2_pref_v1
+    (Pbar : Profile V A) (v₁ v₂ : V) (ballot₁ ballot₂ : LinearOrder A)
+    (hne : v₁ ≠ v₂) :
+    (setV1V2 Pbar v₁ v₂ ballot₁ ballot₂).pref v₁ = ballot₁ := by
+  simp [setV1V2, updateProfile, hne]
+
 /-- Step (ii) (paper): if voter 1 ranks `a` first and voter 2 ranks `b` first,
 then the outcome is `{a}` (for the fixed subprofile `Pbar`). -/
 lemma step_ii_case_a_v1_top_a_v2_top_b_outcome_a
@@ -540,10 +574,13 @@ lemma step_ii_case_a_v1_top_a_v2_top_b_outcome_a
         have hb' : (ballotWithTopTwo (A := A) a b (by omega) hab).lt b c' :=
           prefers_second_over_others_ballotWithTopTwo
             (A := A) (a := a) (b := b) (c := c') hcard hab hc'a hc'b
-        simpa [P0, setV1V2, updateProfile, hne, ballot_ab] using hb'
+        rw [show P0.pref v₁ = ballotWithTopTwo (A := A) a b (by omega) hab by
+          simp [P0, setV1V2, updateProfile, hne, ballot_ab]]
+        exact hb'
       · intro d hd
         unfold Prefers
-        simpa [P0, setV1V2, updateProfile] using hb_top₂ d hd
+        rw [show P0.pref v₂ = ballot₂' by simp [P0, setV1V2, updateProfile]]
+        exact hb_top₂ d hd
 
     -- Since `c ≠ a`, it must be `b`.
     have hcb : c = b := by
@@ -563,13 +600,15 @@ lemma step_ii_case_a_v1_top_a_v2_top_b_outcome_a
       unfold Prefers
       exact hb_top_orig a (by simp [hab])
     have hupd : updateProfile P_cross v₂ ballot₂' = P0 := by
-      ext v
+      apply Profile.ext
+      intro v
       by_cases hv2 : v = v₂
       · subst hv2
         simp [P0, P_cross, setV1V2, crossedTopTwoProfile, updateProfile]
       · by_cases hv1 : v = v₁
         · subst hv1
           simp [P0, P_cross, setV1V2, crossedTopTwoProfile, updateProfile, hv2]
+          rfl
         · simp [P0, P_cross, setV1V2, crossedTopTwoProfile, updateProfile, hv2, hv1]
     have hnot : ¬ Prefers P_cross v₂ b a :=
       hf_sp P_cross v₂ ballot₂' a b hfa (by simpa [hupd] using hc_b)
@@ -586,11 +625,13 @@ lemma step_ii_case_a_v1_top_a_v2_top_b_outcome_a
     unfold Prefers
     -- voter 1's ballot in P12 is ballot₁'
     have : ballot₁'.lt a d := ha_top₁ d hda
-    simpa [P12, setV1V2, updateProfile, hne] using this
+    rw [show P12.pref v₁ = ballot₁' by simp [P12, setV1V2, updateProfile, hne]]
+    exact this
   have h_dev : f (updateProfile P12 v₁ ballot_ab) = {a} := by
     -- Updating v₁ to ballot_ab yields exactly the base profile handled above.
     have hupd : updateProfile P12 v₁ ballot_ab = setV1V2 Pbar v₁ v₂ ballot_ab ballot₂' := by
-      ext v
+      apply Profile.ext
+      intro v
       by_cases hv1 : v = v₁
       · subst hv1
         simp [P12, setV1V2, updateProfile, hne]
@@ -646,13 +687,15 @@ lemma step_iii_case_a_v1_top_a_any_v2_outcome_a
       have : ballot₂'.lt b a := by
         -- b is top, so b < a since a ≠ b
         exact hb_top₂ a (by simp [hab])
-      simpa [setV1V2, updateProfile] using this
+      rw [setV1V2_pref_v2]
+      exact this
     have hnot : ¬ Prefers (setV1V2 Pbar v₁ v₂ ballot₁' ballot₂') v₂ b a :=
       hf_sp (setV1V2 Pbar v₁ v₂ ballot₁' ballot₂') v₂ ballot₂'' a b hP1 (by
         -- updating v₂ twice is just the last update
         have hupd :
             updateProfile (setV1V2 Pbar v₁ v₂ ballot₁' ballot₂') v₂ ballot₂'' = P12 := by
-          ext v
+          apply Profile.ext
+          intro v
           by_cases hv : v = v₂ <;> simp [P12, setV1V2, updateProfile, hv]
         simpa [hupd] using hc')
     exact (hnot hpref).elim
@@ -676,12 +719,14 @@ lemma step_iii_case_a_v1_top_a_any_v2_outcome_a
           · exact hab
           · exact Ne.symm hca
         simpa [ballot₂'] using this
-      simpa [setV1V2, updateProfile] using this
+      rw [setV1V2_pref_v2]
+      exact this
     have hnot : ¬ Prefers (setV1V2 Pbar v₁ v₂ ballot₁' ballot₂') v₂ c a :=
       hf_sp (setV1V2 Pbar v₁ v₂ ballot₁' ballot₂') v₂ ballot₂'' a c hP1 (by
         have hupd :
             updateProfile (setV1V2 Pbar v₁ v₂ ballot₁' ballot₂') v₂ ballot₂'' = P12 := by
-          ext v
+          apply Profile.ext
+          intro v
           by_cases hv : v = v₂ <;> simp [P12, setV1V2, updateProfile, hv]
         simpa [hupd] using hc)
     exact (hnot hpref).elim
@@ -721,7 +766,8 @@ lemma step_ii_case_b_v1_top_a_v2_top_b_outcome_b
       let P_cross : Profile V A :=
         crossedTopTwoProfile (V := V) (A := A) hcard Pbar v₁ v₂ a b hab
       have h_eq_cross : P_cross = setV1V2 Pbar v₁ v₂ ballot_ab ballot_ba := by
-        ext v
+        apply Profile.ext
+        intro v
         by_cases hv2 : v = v₂
         · subst hv2
           simp [P_cross, crossedTopTwoProfile, setV1V2, updateProfile, ballot_ba]
@@ -730,11 +776,13 @@ lemma step_ii_case_b_v1_top_a_v2_top_b_outcome_b
             simp [P_cross, crossedTopTwoProfile, setV1V2, updateProfile, ballot_ab, hv2]
           · simp [P_cross, crossedTopTwoProfile, setV1V2, updateProfile, hv1, hv2]
       have hcross : f (setV1V2 Pbar v₁ v₂ ballot_ab ballot_ba) = {b} := by
-        simpa [h_eq_cross] using hfb
+        rw [← h_eq_cross]
+        exact hfb
 
       -- Deviating v₁ at the crossed profile to `ballot₁'` yields `P0`.
       have hupd : updateProfile (setV1V2 Pbar v₁ v₂ ballot_ab ballot_ba) v₁ ballot₁' = P0 := by
-        ext v
+        apply Profile.ext
+        intro v
         by_cases hv1 : v = v₁
         · subst hv1
           simp [P0, setV1V2, updateProfile, hne]
@@ -752,7 +800,8 @@ lemma step_ii_case_b_v1_top_a_v2_top_b_outcome_b
         have ha_top_ab : ∀ d, d ≠ a → ballot_ab.lt a d :=
           topRank_ballotWithTopTwo (A := A) a b hcard2 hab
         have : ballot_ab.lt a b := ha_top_ab b hab.symm
-        simpa [setV1V2, updateProfile, ballot_ab, hne] using this
+        rw [setV1V2_pref_v1 (hne := hne)]
+        exact this
       exact (hnot hpref).elim
 
     -- Otherwise, c is neither a nor b. Voter 2 can deviate to match voter 1 and obtain `{a}`.
@@ -769,7 +818,8 @@ lemma step_ii_case_b_v1_top_a_v2_top_b_outcome_b
       unfold Prefers
       -- At ⟨v₁, hne⟩, the ballot is exactly `ballot₁'`.
       have : ballot₁'.lt a d := ha_top₁ d hd
-      simpa [P'] using this
+      rw [show P'.pref ⟨v₁, hne⟩ = ballot₁' by simp [P']]
+      exact this
     have htopChoice' : topChoice P' ⟨v₁, hne⟩ = a := by
       symm
       exact topRank_eq_topChoice P' ⟨v₁, hne⟩ a ha_top'
@@ -777,7 +827,8 @@ lemma step_ii_case_b_v1_top_a_v2_top_b_outcome_b
       simpa [htopChoice'] using hdict_g P'
     have ha_same : f P_same = {a} := by
       have hexpand : expandProfile v₁ v₂ hne P' = P_same := by
-        ext v
+        apply Profile.ext
+        intro v
         by_cases hv2 : v = v₂
         · subst hv2
           simp [expandProfile, P_same, setV1V2, updateProfile, P']
@@ -789,7 +840,8 @@ lemma step_ii_case_b_v1_top_a_v2_top_b_outcome_b
       simpa [clonedRule, hexpand] using hdictP'
 
     have hupd_same : updateProfile P0 v₂ ballot₁' = P_same := by
-      ext v
+      apply Profile.ext
+      intro v
       by_cases hv : v = v₂
       · subst hv
         simp [P0, P_same, setV1V2, updateProfile]
@@ -806,7 +858,8 @@ lemma step_ii_case_b_v1_top_a_v2_top_b_outcome_b
           (A := A) (a := b) (b := a) (c := c) hcard hab.symm ?_ ?_
         · exact hcb'
         · exact hca'
-      simpa [P0, setV1V2, updateProfile, ballot_ba] using this
+      rw [show P0.pref v₂ = ballot_ba by simp [P0, setV1V2, updateProfile]]
+      exact this
     have hnot : ¬ Prefers P0 v₂ a c :=
       hf_sp P0 v₂ ballot₁' c a hc (by simpa [hupd_same] using ha_same)
     exact (hnot hpref).elim
@@ -820,9 +873,11 @@ lemma step_ii_case_b_v1_top_a_v2_top_b_outcome_b
   have hpref : Prefers P12 v₂ b d := by
     unfold Prefers
     have : ballot₂'.lt b d := hb_top₂ d hdb
-    simpa [P12, setV1V2, updateProfile] using this
+    rw [show P12.pref v₂ = ballot₂' by simp [P12, setV1V2, updateProfile]]
+    exact this
   have hupd : updateProfile P12 v₂ ballot_ba = setV1V2 Pbar v₁ v₂ ballot₁' ballot_ba := by
-    ext v
+    apply Profile.ext
+    intro v
     by_cases hv : v = v₂
     · subst hv
       simp [P12, setV1V2, updateProfile]
@@ -872,7 +927,8 @@ lemma step_iii_case_b_any_v1_v2_top_b_outcome_b
         hcard f hf hf_sp v₁ v₂ hne hdict_g Pbar a b hab hfb
         ballot_ab ballot₂' ha_top₁ hb_top₂
     have hupd : updateProfile (setV1V2 Pbar v₁ v₂ ballot_ab ballot₂') v₁ ballot₁'' = P12 := by
-      ext v
+      apply Profile.ext
+      intro v
       by_cases hv1 : v = v₁
       · subst hv1
         simp [P12, setV1V2, updateProfile, hne]
@@ -887,7 +943,8 @@ lemma step_iii_case_b_any_v1_v2_top_b_outcome_b
     have hpref : Prefers (setV1V2 Pbar v₁ v₂ ballot_ab ballot₂') v₁ a b := by
       unfold Prefers
       have : ballot_ab.lt a b := ha_top₁ b hab.symm
-      simpa [setV1V2, updateProfile, ballot_ab, hne] using this
+      rw [setV1V2_pref_v1 (hne := hne)]
+      exact this
     exact (hnot hpref).elim
   · -- If `c ≠ a` and `c ≠ b`, take ballot `a>c>...` so voter 1 prefers `c` over `b`.
     have hac : a ≠ c := by
@@ -902,7 +959,8 @@ lemma step_iii_case_b_any_v1_v2_top_b_outcome_b
         hcard f hf hf_sp v₁ v₂ hne hdict_g Pbar a b hab hfb
         ballot_ac ballot₂' ha_top₁ hb_top₂
     have hupd : updateProfile (setV1V2 Pbar v₁ v₂ ballot_ac ballot₂') v₁ ballot₁'' = P12 := by
-      ext v
+      apply Profile.ext
+      intro v
       by_cases hv1 : v = v₁
       · subst hv1
         simp [P12, setV1V2, updateProfile, hne]
@@ -924,7 +982,8 @@ lemma step_iii_case_b_any_v1_v2_top_b_outcome_b
           refine prefers_second_over_others_ballotWithTopTwo
             (A := A) (a := a) (b := c) (c := b) hcard hac hab.symm hbc
         simpa [ballot_ac] using this
-      simpa [setV1V2, updateProfile, ballot_ac, hne] using this
+      rw [setV1V2_pref_v1 (hne := hne)]
+      exact this
     exact (hnot hpref).elim
 
 /-!
@@ -1288,14 +1347,16 @@ lemma step_v_change_one_voter_v1
     unfold Prefers
     have : ballot_wz.lt w d :=
       (topRank_ballotWithTopTwo (A := A) w z hcard2 (Ne.symm hwz_ne)) d hd
-    simpa [Pnew, setV1V2, updateProfile, hne12] using this
+    rw [show Pnew.pref v₂ = ballot_wz by simp [Pnew, setV1V2, updateProfile]]
+    exact this
   have hw_second_v1 : ∀ c, c ≠ z → c ≠ w → Prefers Pnew v₁ w c := by
     intro c hcz hcw
     unfold Prefers
     have : ballot_zw.lt w c :=
       prefers_second_over_others_ballotWithTopTwo
         (A := A) (a := z) (b := w) (c := c) hcard hwz_ne hcz hcw
-    simpa [Pnew, setV1V2, updateProfile, hne12] using this
+    rw [show Pnew.pref v₁ = ballot_zw by simp [Pnew, setV1V2, updateProfile, hne12]]
+    exact this
 
   have h_or : f Pnew = {z} ∨ f Pnew = {w} := by
     refine outcome_is_a_or_b
@@ -1312,7 +1373,8 @@ lemma step_v_change_one_voter_v1
     · -- If the updated profile yields `{w}`, voter `v₃` can obtain `{w}` by reporting `ballot₃'`.
       let Pold : Profile V A := setV1V2 Pbar v₁ v₂ ballot_zw ballot_wz
       have hupd : updateProfile Pold v₃ ballot₃' = Pnew := by
-        ext v
+        apply Profile.ext
+        intro v
         by_cases hv3 : v = v₃
         · subst hv3
           simp [Pold, Pnew, setV1V2, updateProfile, hne13, hne23]
@@ -1329,7 +1391,9 @@ lemma step_v_change_one_voter_v1
         -- At voter v₃, the ballot is still the old `r3`.
         have : (Pbar.pref v₃).lt w z := hwz
         -- and Pold agrees with Pbar at v₃ (since v₃ ≠ v₁,v₂).
-        simpa [Pold, setV1V2, updateProfile, hne13, hne23] using this
+        rw [show Pold.pref v₃ = Pbar.pref v₃ by
+          simp [Pold, setV1V2, updateProfile, hne13, hne23]]
+        exact this
 
       have hnot : ¬ Prefers Pold v₃ w z :=
         hf_sp Pold v₃ ballot₃' z w h_old (by simpa [hupd] using hw)
@@ -1341,13 +1405,16 @@ lemma step_v_change_one_voter_v1
     -- instantiate Step (iii) with a=z, b=w and the crossed outcome `h_new`
     have hcross_eq :
         crossedTopTwoProfile (V := V) (A := A) hcard (updateProfile Pbar v₃ ballot₃') v₁ v₂ z w hwz_ne = Pnew := by
-      ext v
+      apply Profile.ext
+      intro v
       by_cases hv2 : v = v₂
       · subst hv2
         simp [crossedTopTwoProfile, Pnew, setV1V2, updateProfile]
+        rfl
       · by_cases hv1 : v = v₁
         · subst hv1
           simp [crossedTopTwoProfile, Pnew, setV1V2, updateProfile, hv2]
+          rfl
         · simp [crossedTopTwoProfile, Pnew, setV1V2, updateProfile, hv2, hv1]
     have hfa' :
         f (crossedTopTwoProfile (V := V) (A := A) hcard (updateProfile Pbar v₃ ballot₃') v₁ v₂ z w hwz_ne) = {z} := by
@@ -1429,14 +1496,16 @@ lemma step_v_change_one_voter_v2
     unfold Prefers
     have : ballot_zw.lt z d :=
       (topRank_ballotWithTopTwo (A := A) z w hcard2 hwz_ne) d hd
-    simpa [Pnew, setV1V2, updateProfile, hne12] using this
+    rw [show Pnew.pref v₂ = ballot_zw by simp [Pnew, setV1V2, updateProfile]]
+    exact this
   have hz_second_v1 : ∀ c, c ≠ w → c ≠ z → Prefers Pnew v₁ z c := by
     intro c hcw hcz
     unfold Prefers
     have : ballot_wz.lt z c :=
       prefers_second_over_others_ballotWithTopTwo
         (A := A) (a := w) (b := z) (c := c) hcard (Ne.symm hwz_ne) hcw hcz
-    simpa [Pnew, setV1V2, updateProfile, hne12] using this
+    rw [show Pnew.pref v₁ = ballot_wz by simp [Pnew, setV1V2, updateProfile, hne12]]
+    exact this
 
   have h_or : f Pnew = {w} ∨ f Pnew = {z} := by
     refine outcome_is_a_or_b
@@ -1452,7 +1521,8 @@ lemma step_v_change_one_voter_v2
     · -- If the updated profile yields `{w}`, voter `v₃` can obtain `{w}` by reporting `ballot₃'`.
       let Pold : Profile V A := setV1V2 Pbar v₁ v₂ ballot_wz ballot_zw
       have hupd : updateProfile Pold v₃ ballot₃' = Pnew := by
-        ext v
+        apply Profile.ext
+        intro v
         by_cases hv3 : v = v₃
         · subst hv3
           simp [Pold, Pnew, setV1V2, updateProfile, hne13, hne23]
@@ -1469,7 +1539,9 @@ lemma step_v_change_one_voter_v2
         -- At voter v₃, the ballot is still the old `r3`.
         have : (Pbar.pref v₃).lt w z := hwz
         -- and Pold agrees with Pbar at v₃ (since v₃ ≠ v₁,v₂).
-        simpa [Pold, setV1V2, updateProfile, hne13, hne23] using this
+        rw [show Pold.pref v₃ = Pbar.pref v₃ by
+          simp [Pold, setV1V2, updateProfile, hne13, hne23]]
+        exact this
 
       have hnot : ¬ Prefers Pold v₃ w z :=
         hf_sp Pold v₃ ballot₃' z w h_old (by simpa [hupd] using hw)
@@ -1482,13 +1554,16 @@ lemma step_v_change_one_voter_v2
     -- instantiate Step (iii) (case b) with a = w, b = z and the crossed outcome `h_new`
     have hcross_eq :
         crossedTopTwoProfile (V := V) (A := A) hcard (updateProfile Pbar v₃ ballot₃') v₁ v₂ w z (Ne.symm hwz_ne) = Pnew := by
-      ext v
+      apply Profile.ext
+      intro v
       by_cases hv2 : v = v₂
       · subst hv2
         simp [crossedTopTwoProfile, Pnew, setV1V2, updateProfile]
+        rfl
       · by_cases hv1 : v = v₁
         · subst hv1
           simp [crossedTopTwoProfile, Pnew, setV1V2, updateProfile, hv2]
+          rfl
         · simp [crossedTopTwoProfile, Pnew, setV1V2, updateProfile, hv2, hv1]
     have hfb' :
         f (crossedTopTwoProfile (V := V) (A := A) hcard (updateProfile Pbar v₃ ballot₃') v₁ v₂ w z (Ne.symm hwz_ne)) = {z} := by
@@ -1552,7 +1627,8 @@ lemma step_v_invariant_v1
       -- Now transfer full decisiveness by rewriting the underlying profile.
       intro x ballot₁ hx_top ballot₂
       have : setV1V2 P v₁ v₂ ballot₁ ballot₂ = setV1V2 Pbar' v₁ v₂ ballot₁ ballot₂ := by
-        ext v
+        apply Profile.ext
+        intro v
         by_cases hv1 : v = v₁
         · subst hv1
           simp [setV1V2, updateProfile]
@@ -1599,7 +1675,7 @@ lemma step_v_invariant_v1
   intro hfull
   exact main (diffVoters (V := V) (A := A) Pbar Pbar' v₁ v₂).card Pbar rfl hfull
 
-  lemma step_v_invariant_v2
+lemma step_v_invariant_v2
     (hcard : 3 ≤ Fintype.card A)
     (f : VotingRule) (hf : Resolute f)
     (hf_sp : ResoluteStrategyproofness f hf)
@@ -1636,7 +1712,8 @@ lemma step_v_invariant_v1
       -- Now transfer full decisiveness by rewriting the underlying profile.
       intro x ballot₂ hx_top ballot₁
       have : setV1V2 P v₁ v₂ ballot₁ ballot₂ = setV1V2 Pbar' v₁ v₂ ballot₁ ballot₂ := by
-        ext v
+        apply Profile.ext
+        intro v
         by_cases hv1 : v = v₁
         · subst hv1
           simp [setV1V2, updateProfile]
@@ -1728,13 +1805,14 @@ theorem gs_case2
       intro d hd
       exact topChoice_topRank P v₁ d hd
     have hset : setV1V2 Pbar v₁ v₂ (P.pref v₁) (P.pref v₂) = P := by
-      ext v
+      apply Profile.ext
+      intro v
       simp [setV1V2, updateProfile]
       by_cases hv : v = v₂
       · subst hv; simp
       · by_cases hv1 : v = v₁
         · subst hv1; simp [hv]
-        · simp [hv, hv1]
+        · simp [hv, hv1, Pbar]
     specialize hV1 P x (P.pref v₁) hx_top (P.pref v₂)
     rw [hset] at hV1
     exact hV1
@@ -1746,13 +1824,14 @@ theorem gs_case2
       intro d hd
       exact topChoice_topRank P v₂ d hd
     have hset : setV1V2 Pbar v₁ v₂ (P.pref v₁) (P.pref v₂) = P := by
-      ext v
+      apply Profile.ext
+      intro v
       simp [setV1V2, updateProfile]
       by_cases hv : v = v₂
       · subst hv; simp
       · by_cases hv1 : v = v₁
         · subst hv1; simp [hv]
-        · simp [hv, hv1]
+        · simp [hv, hv1, Pbar]
     specialize hV2 P x (P.pref v₂) hx_top (P.pref v₁)
     rw [hset] at hV2
     exact hV2

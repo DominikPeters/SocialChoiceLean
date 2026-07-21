@@ -275,7 +275,7 @@ lemma clone_winner_swap
 
 /-! ## Plurality score facts under clone restriction -/
 
-noncomputable def pluralityScoreVec : Nat → Int :=
+noncomputable abbrev pluralityScoreVec : Nat → Int :=
   fun r => if r = 0 then 1 else 0
 
 lemma topRank_removeClonesExcept_iff_of_nonclone

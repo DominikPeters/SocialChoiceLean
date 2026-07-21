@@ -915,7 +915,10 @@ lemma A5_chain (P : Profile V A) (c : A) (D : Set {x : A // x ≠ c})
                 (H := hd) (Hb := hyNot) clone
             have hfc : f c = d := by
               simpa [hxEq] using hfx
-            simpa [hfc, hfy] using hcd
+            have htrans := hcd.trans
+              (margin_eq_margin_minusCandidate (P := P) (c := c) (a := d)
+                (b := (⟨y, replaceClonesHelper c D hyClone⟩ : {x : A // x ≠ c}))).symm
+            simpa [hfc, hfy] using htrans
           · have hxD :
               (⟨x, hxEq⟩ : {x : A // x ≠ c}) ∈ D :=
               (clone_mem_iff (c := c) (D := D) (a := x) hxEq).1 hxClone
@@ -1373,7 +1376,9 @@ lemma clone_maintains_defeat (P : Profile V A) (c : A) (D : Set {x : A // x ≠ 
       ⟨hpos, hno⟩
     refine (splitCycleDefeats_iff_path (P := P) (x := a) (y := b)).2 ?_
     refine ⟨?_, ?_⟩
-    · simpa [margin_eq_margin_minusCandidate (P := P) (c := c) (a := a) (b := b)] using hpos
+    · change 0 < margin P (a : A) (b : A)
+      rw [margin_eq_margin_minusCandidate (P := P) (c := c) (a := a) (b := b)]
+      exact hpos
     · intro hex
       rcases hex with ⟨l, hne, hnodup, hfirst, hlast, hchain⟩
       have hDne : D.Nonempty := clone.1
@@ -1452,7 +1457,9 @@ lemma clone_maintains_defeat (P : Profile V A) (c : A) (D : Set {x : A // x ≠ 
       ⟨hpos, hno⟩
     refine (splitCycleDefeats_iff_path (P := minusCandidate P c) (x := a) (y := b)).2 ?_
     refine ⟨?_, ?_⟩
-    · simpa [margin_eq_margin_minusCandidate (P := P) (c := c) (a := a) (b := b)] using hpos
+    · change 0 < margin (minusCandidate P c) a b
+      rw [← margin_eq_margin_minusCandidate (P := P) (c := c) (a := a) (b := b)]
+      exact hpos
     · intro hex
       rcases hex with ⟨l, hne, hnodup, hfirst, hlast, hchain⟩
       let l' : List A := l.map Subtype.val
@@ -1498,7 +1505,9 @@ lemma clone_maintains_defeat' (P : Profile V A) (c : A) (D : Set {x : A // x ≠
       ⟨hpos, hno⟩
     refine (splitCycleDefeats_iff_path (P := P) (x := a) (y := b)).2 ?_
     refine ⟨?_, ?_⟩
-    · simpa [margin_eq_margin_minusCandidate (P := P) (c := c) (a := a) (b := b)] using hpos
+    · change 0 < margin P (a : A) (b : A)
+      rw [margin_eq_margin_minusCandidate (P := P) (c := c) (a := a) (b := b)]
+      exact hpos
     · intro hex
       rcases hex with ⟨l, hne, hnodup, hfirst, hlast, hchain⟩
       have hne' : replaceClones c D b Hb l ≠ [] :=
@@ -1563,7 +1572,9 @@ lemma clone_maintains_defeat' (P : Profile V A) (c : A) (D : Set {x : A // x ≠
       ⟨hpos, hno⟩
     refine (splitCycleDefeats_iff_path (P := minusCandidate P c) (x := a) (y := b)).2 ?_
     refine ⟨?_, ?_⟩
-    · simpa [margin_eq_margin_minusCandidate (P := P) (c := c) (a := a) (b := b)] using hpos
+    · change 0 < margin (minusCandidate P c) a b
+      rw [← margin_eq_margin_minusCandidate (P := P) (c := c) (a := a) (b := b)]
+      exact hpos
     · intro hex
       rcases hex with ⟨l, hne, hnodup, hfirst, hlast, hchain⟩
       let l' : List A := l.map Subtype.val
@@ -2046,7 +2057,8 @@ theorem split_cycle_independence_of_clones : IndependenceOfClones splitCycle := 
             (⟨c, Or.inl hc⟩ : {a : A' // clonePred X' x' a}) ∈
                 splitCycle (removeClonesExcept P' X' x') ↔
               c ∈ splitCycle P' := by
-          simpa [hrelabel] using
+          have hec : e.symm (⟨c, Or.inl hc⟩ : {a : A' // clonePred X' x' a}) = c := rfl
+          simpa only [hrelabel, hec] using
             (mem_splitCycle_relabelProfile_iff (P := P') (e := e)
               (b := (⟨c, Or.inl hc⟩ : {a : A' // clonePred X' x' a})))
         exact hmem.symm
@@ -2054,7 +2066,8 @@ theorem split_cycle_independence_of_clones : IndependenceOfClones splitCycle := 
             (⟨x', Or.inr rfl⟩ : {a : A' // clonePred X' x' a}) ∈
                 splitCycle (removeClonesExcept P' X' x') ↔
               x' ∈ splitCycle P' := by
-          simpa [hrelabel] using
+          have hex : e.symm (⟨x', Or.inr rfl⟩ : {a : A' // clonePred X' x' a}) = x' := rfl
+          simpa only [hrelabel, hex] using
             (mem_splitCycle_relabelProfile_iff (P := P') (e := e)
               (b := (⟨x', Or.inr rfl⟩ : {a : A' // clonePred X' x' a})))
         constructor
@@ -2111,7 +2124,9 @@ theorem split_cycle_independence_of_clones : IndependenceOfClones splitCycle := 
             split_cycle_non_clone_choice_independence_of_clones
               (P := P') (c := ℓ) (D := restrictCloneSet X' ℓ) hcloneℓ
               (a := (⟨c, hcℓ⟩ : {a : A' // a ≠ ℓ})) hnot
-          simpa [minusCandidate] using hnon'
+          change c ∈ splitCycle P' ↔
+            (⟨c, hcℓ⟩ : {a : A' // a ≠ ℓ}) ∈ splitCycle (minusCandidate P' ℓ)
+          exact hnon'
         have hrec_non :
             (⟨c, hcℓ⟩ : {a : A' // a ≠ ℓ}) ∈ splitCycle (restrictProfile P' ℓ) ↔
               (⟨⟨c, hcℓ⟩, Or.inl hnot⟩ :

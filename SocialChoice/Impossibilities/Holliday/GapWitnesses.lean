@@ -35,7 +35,9 @@ lemma Wpool_erase_erase_card_ge_168 (u1 u2 : U450) :
 
 private lemma mem_Iio_u280_of_val_lt {v : U450} (hv : v.val < 280) :
     v ∈ Finset.Iio u280 := by
-  exact (Finset.mem_Iio.mpr (by simpa [u280] using hv))
+  apply Finset.mem_Iio.mpr
+  change v.val < u280.val
+  exact hv
 
 lemma disjoint_Iio_u280_Wpool : Disjoint (Finset.Iio u280) Wpool := by
   refine Finset.disjoint_left.2 ?_

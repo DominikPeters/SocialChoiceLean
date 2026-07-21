@@ -50,7 +50,7 @@ def margin_pos {V A : Type} [Fintype V] [Fintype A]
     · intro v hv
       have hv' : Prefers (permuteVoters P σ) v a b := (Finset.mem_filter.mp hv).2
       have hv'' : Prefers P (σ v) a b := by
-        simpa [permuteVoters, Prefers] using hv'
+        exact hv'
       exact Finset.mem_filter.mpr ⟨by simp, hv''⟩
     · intro v1 hv1 v2 hv2 h
       exact σ.injective h
@@ -58,7 +58,10 @@ def margin_pos {V A : Type} [Fintype V] [Fintype A]
       have hv' : Prefers P v a b := (Finset.mem_filter.mp hv).2
       refine ⟨σ.symm v, ?_, by simp⟩
       have : Prefers (permuteVoters P σ) (σ.symm v) a b := by
-        simpa [permuteVoters, Prefers] using hv'
+        unfold Prefers at hv' ⊢
+        rw [show (permuteVoters P σ).pref (σ.symm v) = P.pref v by
+          simp [permuteVoters]]
+        exact hv'
       exact Finset.mem_filter.mpr ⟨by simp, this⟩
   have hcard_ba :
       (Finset.univ.filter (fun v => Prefers (permuteVoters P σ) v b a)).card =
@@ -70,7 +73,7 @@ def margin_pos {V A : Type} [Fintype V] [Fintype A]
     · intro v hv
       have hv' : Prefers (permuteVoters P σ) v b a := (Finset.mem_filter.mp hv).2
       have hv'' : Prefers P (σ v) b a := by
-        simpa [permuteVoters, Prefers] using hv'
+        exact hv'
       exact Finset.mem_filter.mpr ⟨by simp, hv''⟩
     · intro v1 hv1 v2 hv2 h
       exact σ.injective h
@@ -78,7 +81,10 @@ def margin_pos {V A : Type} [Fintype V] [Fintype A]
       have hv' : Prefers P v b a := (Finset.mem_filter.mp hv).2
       refine ⟨σ.symm v, ?_, by simp⟩
       have : Prefers (permuteVoters P σ) (σ.symm v) b a := by
-        simpa [permuteVoters, Prefers] using hv'
+        unfold Prefers at hv' ⊢
+        rw [show (permuteVoters P σ).pref (σ.symm v) = P.pref v by
+          simp [permuteVoters]]
+        exact hv'
       exact Finset.mem_filter.mpr ⟨by simp, this⟩
   simp [margin, hcard_ab, hcard_ba]
 
@@ -268,9 +274,11 @@ lemma margin_addVoter_eq_of_prefers {V A : Type} [Fintype V] [Fintype A]
       cases v with
       | inl v =>
           simp [S, S0, addVoter, Prefers, Finset.mem_image]
+          rfl
       | inr u =>
           cases u
-          simp [S, S0, addVoter, Prefers, Finset.mem_image, h]
+          simp [S, S0, addVoter, Prefers, Finset.mem_image]
+          exact h
     have hnotmem : Sum.inr () ∉ S0.image (Sum.inl : V → V ⊕ Unit) := by
       simp [Finset.mem_image]
     have hinj : Function.Injective (Sum.inl : V → V ⊕ Unit) := by
@@ -302,9 +310,11 @@ lemma margin_addVoter_eq_of_prefers {V A : Type} [Fintype V] [Fintype A]
       cases v with
       | inl v =>
           simp [S, S0, addVoter, Prefers, Finset.mem_image]
+          rfl
       | inr u =>
           cases u
-          simp [S, S0, addVoter, Prefers, Finset.mem_image, hba]
+          simp [S, S0, addVoter, Prefers, Finset.mem_image]
+          exact hba
     have hinj : Function.Injective (Sum.inl : V → V ⊕ Unit) := by
       intro a b hEq
       cases hEq
@@ -355,7 +365,8 @@ lemma margin_add_newVoter_eq_of_prefers {U A : Type} [DecidableEq U] [Fintype A]
         apply Subtype.ext
         rfl
       have hpref : Prefers Q v a b ↔ Prefers P v' a b := by
-        simp [Prefers, hv_eq, hagree]
+        unfold Prefers
+        rw [hv_eq, hagree]
       have himage : v ∈ S0.image (liftVoter (u := u)) ↔ v' ∈ S0 := by
         constructor
         · intro hvimg
@@ -438,7 +449,8 @@ lemma margin_add_newVoter_eq_of_prefers {U A : Type} [DecidableEq U] [Fintype A]
         apply Subtype.ext
         rfl
       have hpref : Prefers Q v b a ↔ Prefers P v' b a := by
-        simp [Prefers, hv_eq, hagree]
+        unfold Prefers
+        rw [hv_eq, hagree]
       have himage : v ∈ T0.image (liftVoter (u := u)) ↔ v' ∈ T0 := by
         constructor
         · intro hvimg
@@ -707,7 +719,8 @@ lemma margin_constantProfile_of_lt {V A : Type} [Fintype V] [Fintype A]
   classical
   apply unanimous_margin_eq_card
   intro v
-  simp [constantProfile, Prefers, h]
+  simp [constantProfile, Prefers]
+  exact h
 
 lemma margin_constantProfile_of_gt {V A : Type} [Fintype V] [Fintype A]
     (r : LinearOrder A) {a b : A} (h : r.lt b a) :
@@ -740,8 +753,10 @@ lemma card_votersPreferring_unionProfiles {V W A : Type} [Fintype V] [Fintype W]
     cases v with
     | inl v =>
         simp [S, SV, SW, votersPreferring, unionProfiles, Prefers, Finset.mem_image]
+        rfl
     | inr w =>
         simp [S, SV, SW, votersPreferring, unionProfiles, Prefers, Finset.mem_image]
+        rfl
   have hdisj : Disjoint (SV.image Sum.inl) (SW.image Sum.inr) := by
     refine Finset.disjoint_left.2 ?_
     intro v hvL hvR

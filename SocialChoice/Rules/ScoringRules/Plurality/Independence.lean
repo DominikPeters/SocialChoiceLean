@@ -62,16 +62,17 @@ theorem plurality_independence_of_dominated_nonempty :
     constructor
     · intro htop b hb
       by_cases hbd : b = d
-      · by_contra hnot
+      · subst b
+        by_contra hnot
         have hda : Prefers P v d a := by
           let _ := P.pref v
           have htrich := lt_trichotomy (a := a) (b := d)
           cases htrich with
-          | inl hlt => exact (hnot (by simpa [hbd] using hlt)).elim
+          | inl hlt => exact (hnot hlt).elim
           | inr hrest =>
               cases hrest with
               | inl hEq =>
-                  exact (hb (by simpa [hbd] using hEq.symm)).elim
+                  exact (hb hEq.symm).elim
               | inr hlt => exact hlt
         have htop_d : TopRank P v d := by
           intro b hb'
@@ -87,7 +88,8 @@ theorem plurality_independence_of_dominated_nonempty :
                 apply hba
                 exact congrArg Subtype.val hEq
               have hab' := htop ⟨b, hne'⟩ hne''
-              simpa [P', Prefers, restrictCandidates, restrictBallot] using hab'
+              exact (prefers_restrictCandidates_iff P (fun x => x ≠ d) v
+                ⟨a, hne⟩ ⟨b, hne'⟩).mp hab'
             let _ := P.pref v
             exact lt_trans hda hab
         exact (hnot_top_d v htop_d)
@@ -96,7 +98,8 @@ theorem plurality_independence_of_dominated_nonempty :
           apply hb
           exact congrArg Subtype.val hEq
         have hab' := htop ⟨b, hbd⟩ hne'
-        simpa [P', Prefers, restrictCandidates, restrictBallot] using hab'
+        exact (prefers_restrictCandidates_iff P (fun x => x ≠ d) v
+          ⟨a, hne⟩ ⟨b, hbd⟩).mp hab'
     · intro htop b hb
       have hb' : (b : A) ≠ a := by
         intro hEq
@@ -104,7 +107,8 @@ theorem plurality_independence_of_dominated_nonempty :
         ext
         simpa using hEq
       have hab : Prefers P v a b := htop b hb'
-      simpa [P', Prefers, restrictCandidates, restrictBallot] using hab
+      exact (prefers_restrictCandidates_iff P (fun x => x ≠ d) v
+        ⟨a, hne⟩ b).mpr hab
   have topCount_restrict (a : A) (hne : a ≠ d) :
       topCount P' ⟨a, hne⟩ = topCount P a := by
     unfold topCount
@@ -231,7 +235,7 @@ lemma cloneSet_profile : CloneSet profile cloneSet := by
             subst hx1
             simp [profile, ballots, prefers_iff_prefersInList, prefersInList]; decide)
 
-def scoreVec : Nat → Int := fun r => pluralityScore (Fintype.card (Fin 3)) r
+abbrev scoreVec : Nat → Int := fun r => pluralityScore (Fintype.card (Fin 3)) r
 
 lemma topCount_profile_a : topCount profile (0 : Fin 3) = 2 := by
   calc
@@ -288,7 +292,7 @@ lemma plurality_profile_has_c : (2 : Fin 3) ∈ plurality profile := by
     simpa [scoringRule, scoreVec] using hc'
   simpa [plurality_eq_scoringRule] using hc
 
-def q : Fin 3 → Prop := fun a => a ≠ (1 : Fin 3)
+abbrev q : Fin 3 → Prop := fun a => a ≠ (1 : Fin 3)
 
 instance : DecidablePred q := by
   intro a
@@ -310,7 +314,8 @@ def candCclone : {a : Fin 3 // clonePred cloneSet (0 : Fin 3) a} :=
 noncomputable def profileQ : Profile (Fin 7) {a : Fin 3 // q a} :=
   restrictCandidates profile q
 
-def scoreVecQ : Nat → Int := fun r => pluralityScore (Fintype.card {a : Fin 3 // q a}) r
+noncomputable abbrev scoreVecQ : Nat → Int :=
+  fun r => pluralityScore (Fintype.card {a : Fin 3 // q a}) r
 
 lemma card_q : Fintype.card {a : Fin 3 // q a} = 2 := by
   classical
@@ -372,7 +377,7 @@ lemma score_restrict_a :
     have h' := congrArg Finset.card
       (votersPreferring_restrictCandidates_eq (P := profile) (p := q)
         (a := candAq) (b := candCq))
-    simpa [profileQ, candAq, candCq] using h'
+    exact h'
   calc
     scoreCandidate profileQ scoreVecQ candAq =
         (votersPreferring profileQ candAq candCq).card := by
@@ -394,7 +399,7 @@ lemma score_restrict_c :
     have h' := congrArg Finset.card
       (votersPreferring_restrictCandidates_eq (P := profile) (p := q)
         (a := candCq) (b := candAq))
-    simpa [profileQ, candAq, candCq] using h'
+    exact h'
   calc
     scoreCandidate profileQ scoreVecQ candCq =
         (votersPreferring profileQ candCq candAq).card := by
@@ -428,7 +433,7 @@ lemma plurality_cloneProfile_not_c :
     have hmaxa' :
         scoreCandidate profileQ scoreVecQ candAq ≤
           scoreCandidate profileQ scoreVecQ candCq := by
-      simpa [profileQ] using hmaxa
+      exact hmaxa
     have : (4 : Int) ≤ 3 := by
       have hmaxa'' := hmaxa'
       simp [score_restrict_a, score_restrict_c] at hmaxa''

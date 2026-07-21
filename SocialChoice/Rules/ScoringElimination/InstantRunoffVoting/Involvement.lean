@@ -68,7 +68,7 @@ theorem instantRunoffVoting_positive_involvement : PositiveInvolvement instantRu
           exact hdx
         have hlt : (Q.pref (newVoter (u := u) (V := V) hu)).lt x d := htop d hd'
         have hpref : Prefers Q (newVoter (u := u) (V := V) hu) x' d := by
-          simpa [Prefers] using hlt
+          exact hlt
         have hpref' :
             Prefers (restrictProfile Q c) (newVoter (u := u) (V := V) hu) x' d := by
           exact (prefers_restrictProfile_iff (P := Q) (c := c)

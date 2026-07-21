@@ -82,7 +82,7 @@ lemma veto_profile_has_0 : (0 : Fin 3) ∈ veto profile := by
 lemma veto_profile_not_2 : (2 : Fin 3) ∉ veto profile := by
   decide
 
-def q : Fin 3 → Prop := fun a => a ≠ (1 : Fin 3)
+@[reducible] def q : Fin 3 → Prop := fun a => a ≠ (1 : Fin 3)
 
 instance : DecidablePred q := by
   intro a
@@ -148,7 +148,8 @@ lemma votersPreferring_profile_0_2 :
                 (ballots := ballots) (a := 0) (b := 2))
     _ = 1 := rfl
 
-def scoreVecQ : Nat → Int := fun r => vetoScore (Fintype.card {a : Fin 3 // q a}) r
+@[reducible] noncomputable def scoreVecQ : Nat → Int :=
+  fun r => vetoScore (Fintype.card {a : Fin 3 // q a}) r
 
 lemma card_q : Fintype.card {a : Fin 3 // q a} = 2 := by
   classical
@@ -164,9 +165,8 @@ lemma score_restrict_2 :
   have hcd : cand2q ≠ cand0q := cand2q_ne_cand0q
   have hscore :
       scoreCandidate profileQ scoreVecQ cand2q = topCount profileQ cand2q := by
-    simpa [scoreVecQ] using
-      (vetoScore_eq_topCount_of_two (P := profileQ) (hcard := hcard)
-        (c := cand2q) (d := cand0q) (hcd := hcd))
+    exact vetoScore_eq_topCount_of_two (P := profileQ) (hcard := hcard)
+      (c := cand2q) (d := cand0q) (hcd := hcd)
   have htop :
       topCount profileQ cand2q =
         (votersPreferring profileQ cand2q cand0q).card := by
@@ -197,9 +197,8 @@ lemma score_restrict_0 :
   have hcd : cand0q ≠ cand2q := cand0q_ne_cand2q
   have hscore :
       scoreCandidate profileQ scoreVecQ cand0q = topCount profileQ cand0q := by
-    simpa [scoreVecQ] using
-      (vetoScore_eq_topCount_of_two (P := profileQ) (hcard := hcard)
-        (c := cand0q) (d := cand2q) (hcd := hcd))
+    exact vetoScore_eq_topCount_of_two (P := profileQ) (hcard := hcard)
+      (c := cand0q) (d := cand2q) (hcd := hcd)
   have htop :
       topCount profileQ cand0q =
         (votersPreferring profileQ cand0q cand2q).card := by
@@ -246,9 +245,10 @@ lemma veto_cloneProfile_has_2 :
     have hc' :=
       (scoringWinners_iff_forall_le (P := profileQ) (score := scoreVecQ)
         (hA := hA) (c := cand2q)).2 hmax
-    simpa [scoringRule, scoreVecQ] using hc'
+    change cand2q ∈ scoringWinners profileQ scoreVecQ
+    exact hc'
   have hpred : q = clonePred cloneSet (0 : Fin 3) := by
-    simpa [q] using clonePred_eq_ne.symm
+    exact clonePred_eq_ne.symm
   have hc_cast :
       (cast (congrArg (fun r => {a : Fin 3 // r a}) hpred) cand2q :
         {a : Fin 3 // clonePred cloneSet (0 : Fin 3) a}) ∈

@@ -327,7 +327,6 @@ lemma prefers_restrictElectorate_iff_prefersInList (S : Finset U450)
     Prefers (restrictElectorate FullProfile S (by intro x _; exact Finset.mem_univ x)) v a b ↔
       prefersInList (ballotsAll v.1).ranking a b = true := by
   unfold Prefers restrictElectorate FullProfile prefersInList
-  simp only
   rw [ListBallot.lt_iff_idxOf]
   simp [decide_eq_true_eq]
 
@@ -618,7 +617,8 @@ lemma P2Profile_eq_addCopiesProfile_P1 :
         (addCopiesProfile (V := votersP1) (W := votersP1_9) P1Profile
           ballot_adbec.toLinearOrder) := by
   classical
-  ext v
+  apply Profile.ext
+  intro v
   by_cases hv : v.1 ∈ votersP1
   ·
     unfold P2Profile P1Profile FullProfile restrictElectorate castProfile addCopiesProfile
@@ -643,7 +643,8 @@ lemma P2Profile_eq_addCopiesProfile_P3 :
         (addCopiesProfile (V := votersP3) (W := votersP1_2) P3Profile
           ballot_daceb.toLinearOrder) := by
   classical
-  ext v
+  apply Profile.ext
+  intro v
   by_cases hv : v.1 ∈ votersP3
   ·
     unfold P2Profile P3Profile FullProfile restrictElectorate castProfile addCopiesProfile
@@ -668,7 +669,8 @@ lemma P4Profile_eq_addCopiesProfile_P3 :
         (addCopiesProfile (V := votersP3) (W := votersP1_10) P3Profile
           ballot_bdeac.toLinearOrder) := by
   classical
-  ext v
+  apply Profile.ext
+  intro v
   by_cases hv : v.1 ∈ votersP3
   ·
     unfold P4Profile P3Profile FullProfile restrictElectorate castProfile addCopiesProfile
@@ -693,7 +695,8 @@ lemma P4Profile_eq_addCopiesProfile_P5 :
         (addCopiesProfile (V := votersP5) (W := votersP1_7) P5Profile
           ballot_dbace.toLinearOrder) := by
   classical
-  ext v
+  apply Profile.ext
+  intro v
   by_cases hv : v.1 ∈ votersP5
   ·
     unfold P4Profile P5Profile FullProfile restrictElectorate castProfile addCopiesProfile

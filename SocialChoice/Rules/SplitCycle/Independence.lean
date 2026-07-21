@@ -41,27 +41,27 @@ lemma marginBlocks_b_d : marginBlocks blocks b d = 10 := by decide
 lemma marginBlocks_d_c : marginBlocks blocks d c = 4 := by decide
 
 lemma margin_profile_b_a : margin profile b a = 22 := by
-  simpa [marginBlocks_b_a] using
+  simpa [profile, marginBlocks_b_a] using
     (margin_profileOfBlocks (blocks := blocks) (a := b) (b := a) (hne := by decide))
 
 lemma margin_profile_a_d : margin profile a d = 8 := by
-  simpa [marginBlocks_a_d] using
+  simpa [profile, marginBlocks_a_d] using
     (margin_profileOfBlocks (blocks := blocks) (a := a) (b := d) (hne := by decide))
 
 lemma margin_profile_c_a : margin profile c a = 6 := by
-  simpa [marginBlocks_c_a] using
+  simpa [profile, marginBlocks_c_a] using
     (margin_profileOfBlocks (blocks := blocks) (a := c) (b := a) (hne := by decide))
 
 lemma margin_profile_c_b : margin profile c b = 2 := by
-  simpa [marginBlocks_c_b] using
+  simpa [profile, marginBlocks_c_b] using
     (margin_profileOfBlocks (blocks := blocks) (a := c) (b := b) (hne := by decide))
 
 lemma margin_profile_b_d : margin profile b d = 10 := by
-  simpa [marginBlocks_b_d] using
+  simpa [profile, marginBlocks_b_d] using
     (margin_profileOfBlocks (blocks := blocks) (a := b) (b := d) (hne := by decide))
 
 lemma margin_profile_d_c : margin profile d c = 4 := by
-  simpa [marginBlocks_d_c] using
+  simpa [profile, marginBlocks_d_c] using
     (margin_profileOfBlocks (blocks := blocks) (a := d) (b := c) (hne := by decide))
 
 lemma margin_profile_a_c : margin profile a c = (-6 : Int) := by
@@ -201,10 +201,7 @@ lemma no_path_from_c_to_d :
       | cons y t' =>
           have hrel :
               margin profile' candD candC ≤ margin profile' x y := by
-            simpa using
-              (List.IsChain.rel_head
-                (R := fun x y => margin profile' candD candC ≤ margin profile' x y)
-                (h := hchain))
+            simpa using hchain.rel
           have hrel' : margin profile' candD candC ≤ margin profile' candC y := by
             simpa [hx] using hrel
           exact (no_rel_from_c y) hrel'

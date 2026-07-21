@@ -23,9 +23,11 @@ theorem instantRunoffVoting_not_optimistParticipation :
       (instantRunoffVoting_eq_pluralityWithRunoff_of_card_le_three
         (A := Fin 3) (hcard := by decide) (P := profile4OP))
   have hweak :
-      OptimistWeak r (pluralityWithRunoff profile5OP) (pluralityWithRunoff profile4OP) := by
+      @OptimistWeak (Fin 3) (fun a b => r.toDecidableEq a b) r
+        (pluralityWithRunoff profile5OP) (pluralityWithRunoff profile4OP) := by
     have hweakIRV :
-        OptimistWeak r (instantRunoffVoting profile5OP) (instantRunoffVoting profile4OP) := by
+        @OptimistWeak (Fin 3) (fun a b => r.toDecidableEq a b) r
+          (instantRunoffVoting profile5OP) (instantRunoffVoting profile4OP) := by
       simpa [OptimistParticipation, StrongParticipation, OptimistExtension, r] using
         hopt (V := voters4OP) (u := (0 : Fin 5)) (hu := voters4OP_not_mem)
           (P := profile4OP) (Q := profile5OP) profiles_agreeOP

@@ -190,10 +190,18 @@ theorem scoringRule_reinforcement (score : Nat → Nat → Int) :
     cases vw with
     | inl v =>
         have := congrArg (fun prof => prof.pref v) hRV
-        simpa [R', unionProfiles] using this
+        change R.pref (e.symm (Sum.inl v)) = P.pref v
+        rw [show e.symm (Sum.inl v) = ⟨v.1, by simp⟩ by
+          apply Subtype.ext
+          rfl]
+        exact this
     | inr w =>
         have := congrArg (fun prof => prof.pref w) hRW
-        simpa [R', unionProfiles] using this
+        change R.pref (e.symm (Sum.inr w)) = Q.pref w
+        rw [show e.symm (Sum.inr w) = ⟨w.1, by simp⟩ by
+          apply Subtype.ext
+          rfl]
+        exact this
 
   -- Scores/Winners are invariant under reindexing along `e`.
   have hscoreCand : ∀ c, scoreCandidate R' scoreFun c = scoreCandidate R scoreFun c := by

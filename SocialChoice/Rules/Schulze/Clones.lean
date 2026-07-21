@@ -239,7 +239,7 @@ lemma pathStrength_ge_of_chain
         List.IsChain.rel_head (R := fun a b => m ≤ margin P a b) hchain
       cases t with
       | nil =>
-          simpa [pathStrength] using hab
+          exact hab
       | cons c t' =>
           have htail : List.IsChain (fun a b => m ≤ margin P a b) (b :: c :: t') :=
             hchain.tail

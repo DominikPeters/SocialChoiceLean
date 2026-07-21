@@ -24,7 +24,7 @@ noncomputable def topCount {V A : Type} [Fintype V] [Fintype A]
       have hv'' : TopRank P (σ v) c := by
         intro d hd
         have : Prefers (permuteVoters P σ) v c d := hv' d hd
-        simpa [permuteVoters, Prefers] using this
+        exact this
       exact Finset.mem_filter.mpr ⟨by simp, hv''⟩
     · intro v1 hv1 v2 hv2 h
       exact σ.injective h
@@ -34,7 +34,9 @@ noncomputable def topCount {V A : Type} [Fintype V] [Fintype A]
       have : TopRank (permuteVoters P σ) (σ.symm v) c := by
         intro d hd
         have : Prefers P v c d := hv' d hd
-        simpa [permuteVoters, Prefers] using this
+        change (P.pref (σ (σ.symm v))).lt c d
+        rw [Equiv.apply_symm_apply]
+        exact this
       exact Finset.mem_filter.mpr ⟨by simp, this⟩
   simpa [topCount] using hcard
 

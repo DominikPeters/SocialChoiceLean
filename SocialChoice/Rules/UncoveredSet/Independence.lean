@@ -56,9 +56,9 @@ abbrev cand3 : {x : A4 // x ≠ a} := ⟨d, by decide⟩
 
 lemma prefers_3_0 : ∀ v : Fin 4, Prefers profile v d a := by
   intro v
-  fin_cases v <;>
-    (simp [profile, profileOfListBallots, ballots, ballot2130, ballot3021, ballot3102,
-      Prefers, ListBallot.lt_iff_idxOf]; decide)
+  change Prefers (profileOfListBallots ballots) v d a
+  rw [prefers_iff_prefersInList]
+  fin_cases v <;> decide
 
 lemma margin_eq_card_diff {V A : Type} [Fintype V] [Fintype A]
     (P : Profile V A) (x y : A) :
@@ -68,95 +68,90 @@ lemma margin_eq_card_diff {V A : Type} [Fintype V] [Fintype A]
   classical
   simp [margin, votersPreferring]
 
+private lemma votersPreferring_profile_eq_filter (x y : A4) :
+    votersPreferring profile x y =
+      Finset.univ.filter (fun v => prefersInList (ballots v).ranking x y) := by
+  simpa [profile] using votersPreferring_eq_filter_prefersInList ballots x y
+
 lemma votersPreferring_profile_1_0 :
     votersPreferring profile (1 : A4) (0 : A4) =
       ({0, 1, 3} : Finset (Fin 4)) := by
   classical
+  rw [votersPreferring_profile_eq_filter]
   ext v
-  fin_cases v <;>
-    (simp [votersPreferring, profile, profileOfListBallots, ballots,
-      ballot2130, ballot3021, ballot3102, Prefers, ListBallot.lt_iff_idxOf]; decide)
+  fin_cases v <;> decide
 
 lemma votersPreferring_profile_0_1 :
     votersPreferring profile (0 : A4) (1 : A4) =
       ({2} : Finset (Fin 4)) := by
   classical
+  rw [votersPreferring_profile_eq_filter]
   ext v
-  fin_cases v <;>
-    (simp [votersPreferring, profile, profileOfListBallots, ballots,
-      ballot2130, ballot3021, ballot3102, Prefers, ListBallot.lt_iff_idxOf]; decide)
+  fin_cases v <;> decide
 
 lemma votersPreferring_profile_2_0 :
     votersPreferring profile (2 : A4) (0 : A4) =
       ({0, 1} : Finset (Fin 4)) := by
   classical
+  rw [votersPreferring_profile_eq_filter]
   ext v
-  fin_cases v <;>
-    (simp [votersPreferring, profile, profileOfListBallots, ballots,
-      ballot2130, ballot3021, ballot3102, Prefers, ListBallot.lt_iff_idxOf]; decide)
+  fin_cases v <;> decide
 
 lemma votersPreferring_profile_0_2 :
     votersPreferring profile (0 : A4) (2 : A4) =
       ({2, 3} : Finset (Fin 4)) := by
   classical
+  rw [votersPreferring_profile_eq_filter]
   ext v
-  fin_cases v <;>
-    (simp [votersPreferring, profile, profileOfListBallots, ballots,
-      ballot2130, ballot3021, ballot3102, Prefers, ListBallot.lt_iff_idxOf]; decide)
+  fin_cases v <;> decide
 
 lemma votersPreferring_profile_2_1 :
     votersPreferring profile (2 : A4) (1 : A4) =
       ({0, 1, 2} : Finset (Fin 4)) := by
   classical
+  rw [votersPreferring_profile_eq_filter]
   ext v
-  fin_cases v <;>
-    (simp [votersPreferring, profile, profileOfListBallots, ballots,
-      ballot2130, ballot3021, ballot3102, Prefers, ListBallot.lt_iff_idxOf]; decide)
+  fin_cases v <;> decide
 
 lemma votersPreferring_profile_1_2 :
     votersPreferring profile (1 : A4) (2 : A4) =
       ({3} : Finset (Fin 4)) := by
   classical
+  rw [votersPreferring_profile_eq_filter]
   ext v
-  fin_cases v <;>
-    (simp [votersPreferring, profile, profileOfListBallots, ballots,
-      ballot2130, ballot3021, ballot3102, Prefers, ListBallot.lt_iff_idxOf]; decide)
+  fin_cases v <;> decide
 
 lemma votersPreferring_profile_3_1 :
     votersPreferring profile (3 : A4) (1 : A4) =
       ({2, 3} : Finset (Fin 4)) := by
   classical
+  rw [votersPreferring_profile_eq_filter]
   ext v
-  fin_cases v <;>
-    (simp [votersPreferring, profile, profileOfListBallots, ballots,
-      ballot2130, ballot3021, ballot3102, Prefers, ListBallot.lt_iff_idxOf]; decide)
+  fin_cases v <;> decide
 
 lemma votersPreferring_profile_1_3 :
     votersPreferring profile (1 : A4) (3 : A4) =
       ({0, 1} : Finset (Fin 4)) := by
   classical
+  rw [votersPreferring_profile_eq_filter]
   ext v
-  fin_cases v <;>
-    (simp [votersPreferring, profile, profileOfListBallots, ballots,
-      ballot2130, ballot3021, ballot3102, Prefers, ListBallot.lt_iff_idxOf]; decide)
+  fin_cases v <;> decide
 
 lemma votersPreferring_profile_3_2 :
     votersPreferring profile (3 : A4) (2 : A4) =
       ({2, 3} : Finset (Fin 4)) := by
   classical
+  rw [votersPreferring_profile_eq_filter]
   ext v
-  fin_cases v <;>
-    (simp [votersPreferring, profile, profileOfListBallots, ballots,
-      ballot2130, ballot3021, ballot3102, Prefers, ListBallot.lt_iff_idxOf]; decide)
+  fin_cases v <;> decide
 
 lemma votersPreferring_profile_2_3 :
     votersPreferring profile (2 : A4) (3 : A4) =
       ({0, 1} : Finset (Fin 4)) := by
   classical
+  rw [votersPreferring_profile_eq_filter]
   ext v
-  fin_cases v <;>
-    (simp [votersPreferring, profile, profileOfListBallots, ballots,
-      ballot2130, ballot3021, ballot3102, Prefers, ListBallot.lt_iff_idxOf]; decide)
+  fin_cases v <;> decide
 
 private lemma margin_profile_1_0 : margin profile (1 : A4) (0 : A4) = 2 := by
   classical
@@ -245,8 +240,8 @@ private lemma margin_pos_profile'_2_1 : margin_pos profile' cand2 cand1 := by
     simpa [cand1, cand2] using margin_profile_2_1
   have hEq :
       margin profile cand2 cand1 = margin profile' cand2 cand1 := by
-    simpa using
-      (margin_eq_margin_restrictProfile (P := profile) (c := a) (a := cand2) (b := cand1))
+    change margin profile cand2 cand1 = margin (restrictProfile profile a) cand2 cand1
+    exact margin_eq_margin_restrictProfile
   have hmargin' : margin profile' cand2 cand1 = 2 := by
     calc
       margin profile' cand2 cand1 = margin profile cand2 cand1 := by
@@ -259,8 +254,8 @@ private lemma not_margin_pos_profile'_1_2 : ¬ margin_pos profile' cand1 cand2 :
     simpa [cand1, cand2] using margin_profile_1_2
   have hEq :
       margin profile cand1 cand2 = margin profile' cand1 cand2 := by
-    simpa using
-      (margin_eq_margin_restrictProfile (P := profile) (c := a) (a := cand1) (b := cand2))
+    change margin profile cand1 cand2 = margin (restrictProfile profile a) cand1 cand2
+    exact margin_eq_margin_restrictProfile
   have hmargin' : margin profile' cand1 cand2 = -2 := by
     calc
       margin profile' cand1 cand2 = margin profile cand1 cand2 := by
@@ -273,8 +268,8 @@ private lemma not_margin_pos_profile'_1_3 : ¬ margin_pos profile' cand1 cand3 :
     simpa [cand1, cand3] using margin_profile_1_3
   have hEq :
       margin profile cand1 cand3 = margin profile' cand1 cand3 := by
-    simpa using
-      (margin_eq_margin_restrictProfile (P := profile) (c := a) (a := cand1) (b := cand3))
+    change margin profile cand1 cand3 = margin (restrictProfile profile a) cand1 cand3
+    exact margin_eq_margin_restrictProfile
   have hmargin' : margin profile' cand1 cand3 = 0 := by
     calc
       margin profile' cand1 cand3 = margin profile cand1 cand3 := by
@@ -287,8 +282,8 @@ private lemma not_margin_pos_profile'_3_2 : ¬ margin_pos profile' cand3 cand2 :
     simpa [cand2, cand3] using margin_profile_3_2
   have hEq :
       margin profile cand3 cand2 = margin profile' cand3 cand2 := by
-    simpa using
-      (margin_eq_margin_restrictProfile (P := profile) (c := a) (a := cand3) (b := cand2))
+    change margin profile cand3 cand2 = margin (restrictProfile profile a) cand3 cand2
+    exact margin_eq_margin_restrictProfile
   have hmargin' : margin profile' cand3 cand2 = 0 := by
     calc
       margin profile' cand3 cand2 = margin profile cand3 cand2 := by

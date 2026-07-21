@@ -27,7 +27,7 @@ def ballot41302 : ListBallot 5 := ListBallot.mk' [a4, a1, a3, a0, a2]
 def blocks : List (Nat × ListBallot 5) :=
   [(1, ballot24310), (1, ballot30214), (1, ballot41302)]
 
-noncomputable def profile : Profile (Fin (ballotList blocks).length) A5 :=
+@[reducible] noncomputable def profile : Profile (Fin (ballotList blocks).length) A5 :=
   profileOfBlocks blocks
 
 lemma marginBlocks_1_0 : marginBlocks blocks a1 a0 = 1 := by decide

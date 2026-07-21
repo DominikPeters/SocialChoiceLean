@@ -224,7 +224,7 @@ lemma notBottom_card {V A : Type} [Fintype V] [Fintype A]
     _ = Fintype.card V - k := by
           simp [hsum']
 
-def scoreVec : Nat → Int := fun r => vetoScore (Fintype.card (Fin 3)) r
+@[reducible] def scoreVec : Nat → Int := fun r => vetoScore (Fintype.card (Fin 3)) r
 
 lemma votersBottom_profile1_list_0_card :
     (votersBottom profile1_list (0 : Fin 3)).card = 0 := by
@@ -326,7 +326,7 @@ lemma scoreCandidate_profile1_list_0 :
   calc
     scoreCandidate profile1_list scoreVec (0 : Fin 3) =
         ((Finset.univ.filter (fun v => ¬ BottomRank profile1_list v (0 : Fin 3))).card : Int) := by
-          simpa [scoreVec, vetoScore] using
+          exact
             (vetoScore_scoreCandidate_eq_notBottom_card (P := profile1_list) (c := (0 : Fin 3)))
     _ = (2 : Int) := by exact_mod_cast hnotBottom
 
@@ -340,7 +340,7 @@ lemma scoreCandidate_profile1_list_1 :
   calc
     scoreCandidate profile1_list scoreVec (1 : Fin 3) =
         ((Finset.univ.filter (fun v => ¬ BottomRank profile1_list v (1 : Fin 3))).card : Int) := by
-          simpa [scoreVec, vetoScore] using
+          exact
             (vetoScore_scoreCandidate_eq_notBottom_card (P := profile1_list) (c := (1 : Fin 3)))
     _ = (1 : Int) := by exact_mod_cast hnotBottom
 
@@ -354,7 +354,7 @@ lemma scoreCandidate_profile1_list_2 :
   calc
     scoreCandidate profile1_list scoreVec (2 : Fin 3) =
         ((Finset.univ.filter (fun v => ¬ BottomRank profile1_list v (2 : Fin 3))).card : Int) := by
-          simpa [scoreVec, vetoScore] using
+          exact
             (vetoScore_scoreCandidate_eq_notBottom_card (P := profile1_list) (c := (2 : Fin 3)))
     _ = (1 : Int) := by exact_mod_cast hnotBottom
 
@@ -368,7 +368,7 @@ lemma scoreCandidate_profile2_list_0 :
   calc
     scoreCandidate profile2_list scoreVec (0 : Fin 3) =
         ((Finset.univ.filter (fun v => ¬ BottomRank profile2_list v (0 : Fin 3))).card : Int) := by
-          simpa [scoreVec, vetoScore] using
+          exact
             (vetoScore_scoreCandidate_eq_notBottom_card (P := profile2_list) (c := (0 : Fin 3)))
     _ = (1 : Int) := by exact_mod_cast hnotBottom
 
@@ -382,7 +382,7 @@ lemma scoreCandidate_profile2_list_1 :
   calc
     scoreCandidate profile2_list scoreVec (1 : Fin 3) =
         ((Finset.univ.filter (fun v => ¬ BottomRank profile2_list v (1 : Fin 3))).card : Int) := by
-          simpa [scoreVec, vetoScore] using
+          exact
             (vetoScore_scoreCandidate_eq_notBottom_card (P := profile2_list) (c := (1 : Fin 3)))
     _ = (1 : Int) := by exact_mod_cast hnotBottom
 
@@ -396,7 +396,7 @@ lemma scoreCandidate_profile2_list_2 :
   calc
     scoreCandidate profile2_list scoreVec (2 : Fin 3) =
         ((Finset.univ.filter (fun v => ¬ BottomRank profile2_list v (2 : Fin 3))).card : Int) := by
-          simpa [scoreVec, vetoScore] using
+          exact
             (vetoScore_scoreCandidate_eq_notBottom_card (P := profile2_list) (c := (2 : Fin 3)))
     _ = (2 : Int) := by exact_mod_cast hnotBottom
 
@@ -410,7 +410,7 @@ lemma scoreCandidate_profileAll_list_0 :
   calc
     scoreCandidate profileAll_list scoreVec (0 : Fin 3) =
         ((Finset.univ.filter (fun v => ¬ BottomRank profileAll_list v (0 : Fin 3))).card : Int) := by
-          simpa [scoreVec, vetoScore] using
+          exact
             (vetoScore_scoreCandidate_eq_notBottom_card (P := profileAll_list) (c := (0 : Fin 3)))
     _ = (3 : Int) := by exact_mod_cast hnotBottom
 
@@ -424,7 +424,7 @@ lemma scoreCandidate_profileAll_list_1 :
   calc
     scoreCandidate profileAll_list scoreVec (1 : Fin 3) =
         ((Finset.univ.filter (fun v => ¬ BottomRank profileAll_list v (1 : Fin 3))).card : Int) := by
-          simpa [scoreVec, vetoScore] using
+          exact
             (vetoScore_scoreCandidate_eq_notBottom_card (P := profileAll_list) (c := (1 : Fin 3)))
     _ = (2 : Int) := by exact_mod_cast hnotBottom
 
@@ -438,7 +438,7 @@ lemma scoreCandidate_profileAll_list_2 :
   calc
     scoreCandidate profileAll_list scoreVec (2 : Fin 3) =
         ((Finset.univ.filter (fun v => ¬ BottomRank profileAll_list v (2 : Fin 3))).card : Int) := by
-          simpa [scoreVec, vetoScore] using
+          exact
             (vetoScore_scoreCandidate_eq_notBottom_card (P := profileAll_list) (c := (2 : Fin 3)))
     _ = (3 : Int) := by exact_mod_cast hnotBottom
 
@@ -662,7 +662,7 @@ lemma coombs_profile1_has_1 : (1 : Fin 3) ∈ coombs profile1 := by
       scoringEliminationAux vetoScore (Fin 3) profile1 =
         (lowestScoring profile1 scoreVec).biUnion
           (fun c => liftFinset (scoringEliminationAux vetoScore _ (restrictProfile profile1 c))) := by
-    simpa [scoreVec] using haux
+    exact haux
   have hcoombs :
       coombs profile1 = scoringEliminationAux vetoScore (Fin 3) profile1 := by
     classical
@@ -682,7 +682,7 @@ lemma coombs_profile1_has_1 : (1 : Fin 3) ∈ coombs profile1 := by
         margin profile1 (1 : Fin 3) (0 : Fin 3) := by
     simpa [cand1_2, cand0_2] using
       (margin_eq_margin_restrictProfile (P := profile1) (c := (2 : Fin 3))
-        (a := cand1_2) (b := cand0_2))
+        (a := cand1_2) (b := cand0_2)).symm
   have hmargin_val :
       margin (restrictProfile profile1 (2 : Fin 3)) cand1_2 cand0_2 = (0 : Int) := by
     simpa [hmargin] using margin_profile1_1_0
@@ -727,7 +727,7 @@ lemma coombs_profile2_has_1 : (1 : Fin 3) ∈ coombs profile2 := by
       scoringEliminationAux vetoScore (Fin 3) profile2 =
         (lowestScoring profile2 scoreVec).biUnion
           (fun c => liftFinset (scoringEliminationAux vetoScore _ (restrictProfile profile2 c))) := by
-    simpa [scoreVec] using haux
+    exact haux
   have hcoombs :
       coombs profile2 = scoringEliminationAux vetoScore (Fin 3) profile2 := by
     classical
@@ -747,7 +747,7 @@ lemma coombs_profile2_has_1 : (1 : Fin 3) ∈ coombs profile2 := by
         margin profile2 (1 : Fin 3) (2 : Fin 3) := by
     simpa [cand1_0, cand2_0] using
       (margin_eq_margin_restrictProfile (P := profile2) (c := (0 : Fin 3))
-        (a := cand1_0) (b := cand2_0))
+        (a := cand1_0) (b := cand2_0)).symm
   have hmargin_val :
       margin (restrictProfile profile2 (0 : Fin 3)) cand1_0 cand2_0 = (0 : Int) := by
     simpa [hmargin] using margin_profile2_1_2
@@ -792,7 +792,7 @@ lemma coombs_profileAll_not_1 : (1 : Fin 3) ∉ coombs profileAll := by
       scoringEliminationAux vetoScore (Fin 3) profileAll =
         (lowestScoring profileAll scoreVec).biUnion
           (fun c => liftFinset (scoringEliminationAux vetoScore _ (restrictProfile profileAll c))) := by
-    simpa [scoreVec] using haux
+    exact haux
   have haux'' :
       scoringEliminationAux vetoScore (Fin 3) profileAll =
         ({1} : Finset (Fin 3)).biUnion

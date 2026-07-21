@@ -14,7 +14,7 @@ def clonePred {A : Type} (X : Set A) (x : A) : A → Prop := fun a => a ∉ X �
 noncomputable instance instDecidablePredClonePred {A : Type} (X : Set A) (x : A) :
     DecidablePred (clonePred X x) := by
   classical
-  simpa [clonePred] using (instDecidablePredClone (A := A) X x)
+  exact instDecidablePredClone X x
 
 noncomputable instance instFintypeClonePred {A : Type} [Fintype A] (X : Set A) (x : A) :
     Fintype {a : A // clonePred X x a} := by

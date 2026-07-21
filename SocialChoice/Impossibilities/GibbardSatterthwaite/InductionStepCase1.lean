@@ -118,7 +118,8 @@ theorem gs_case1
 
   -- Claim: P = updateProfile Q₁₁ v₂ (P.pref v₂)
   have hP_from_Q₁₁ : P = updateProfile Q₁₁ v₂ (P.pref v₂) := by
-    ext w
+    apply Profile.ext
+    intro w
     by_cases hwv₂ : w = v₂
     · subst hwv₂; simp [updateProfile, Q₁₁, expandProfile, P'_v1]
     · simp [updateProfile, Q₁₁, expandProfile, P'_v1, hwv₂]
@@ -139,7 +140,8 @@ theorem gs_case1
 
   -- Claim: P = updateProfile Q₂₂ v₁ (P.pref v₁)
   have hP_from_Q₂₂ : P = updateProfile Q₂₂ v₁ (P.pref v₁) := by
-    ext w
+    apply Profile.ext
+    intro w
     by_cases hwv₁ : w = v₁
     · subst hwv₁; simp [updateProfile, Q₂₂, expandProfile, P'_v2]
     · by_cases hwv₂ : w = v₂
@@ -165,7 +167,8 @@ theorem gs_case1
 
   -- f P = {b}, and if we change v₂'s ballot to P.pref v₁:
   have hQ₁₁_from_P : Q₁₁ = updateProfile P v₂ (P.pref v₁) := by
-    ext v
+    apply Profile.ext
+    intro v
     by_cases hv : v = v₂
     · subst hv; simp [Q₁₁, updateProfile, expandProfile, P'_v1]
     · simp [Q₁₁, updateProfile, expandProfile, P'_v1, hv]
@@ -178,7 +181,8 @@ theorem gs_case1
 
   -- Similarly in the other direction for v₁:
   have hQ₂₂_from_P : Q₂₂ = updateProfile P v₁ (P.pref v₂) := by
-    ext v
+    apply Profile.ext
+    intro v
     by_cases hv₁ : v = v₁
     · subst hv₁; simp [Q₂₂, updateProfile, expandProfile, P'_v2, hne]
     · by_cases hv₂ : v = v₂
@@ -204,7 +208,8 @@ theorem gs_case1
     simp [Q₁₁, expandProfile, P'_v1]
 
   have hsp1' : ¬ (P.pref v₁).lt b a := by
-    simpa [hQ₁₁_v₂] using hsp1
+    rw [hQ₁₁_v₂] at hsp1
+    exact hsp1
 
   have hsp4' : ¬ (P.pref v₁).lt a b := by
     simpa using hsp4

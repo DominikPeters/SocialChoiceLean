@@ -231,7 +231,7 @@ def cand1_0 : {x : Fin 4 // x ≠ (0 : Fin 4)} := ⟨1, by decide⟩
 def cand2_0 : {x : Fin 4 // x ≠ (0 : Fin 4)} := ⟨2, by decide⟩
 def cand3_0 : {x : Fin 4 // x ≠ (0 : Fin 4)} := ⟨3, by decide⟩
 
-def scoreVec : Nat → Int := fun r => vetoScore (Fintype.card (Fin 4)) r
+@[reducible] def scoreVec : Nat → Int := fun r => vetoScore (Fintype.card (Fin 4)) r
 
 lemma prefers_3_0 : ∀ v : Fin 4, Prefers profile v (3 : Fin 4) (0 : Fin 4) := by
   intro v
@@ -297,7 +297,7 @@ lemma scoreCandidate_profile_0 :
   calc
     scoreCandidate profile scoreVec (0 : Fin 4) =
         ((Finset.univ.filter (fun v => ¬ BottomRank profile v (0 : Fin 4))).card : Int) := by
-          simpa [scoreVec, vetoScore] using
+          exact
             (vetoScore_scoreCandidate_eq_notBottom_card (P := profile) (c := (0 : Fin 4)))
     _ = (3 : Int) := by exact_mod_cast hnotBottom
 
@@ -310,7 +310,7 @@ lemma scoreCandidate_profile_1 :
   calc
     scoreCandidate profile scoreVec (1 : Fin 4) =
         ((Finset.univ.filter (fun v => ¬ BottomRank profile v (1 : Fin 4))).card : Int) := by
-          simpa [scoreVec, vetoScore] using
+          exact
             (vetoScore_scoreCandidate_eq_notBottom_card (P := profile) (c := (1 : Fin 4)))
     _ = (3 : Int) := by exact_mod_cast hnotBottom
 
@@ -323,7 +323,7 @@ lemma scoreCandidate_profile_2 :
   calc
     scoreCandidate profile scoreVec (2 : Fin 4) =
         ((Finset.univ.filter (fun v => ¬ BottomRank profile v (2 : Fin 4))).card : Int) := by
-          simpa [scoreVec, vetoScore] using
+          exact
             (vetoScore_scoreCandidate_eq_notBottom_card (P := profile) (c := (2 : Fin 4)))
     _ = (2 : Int) := by exact_mod_cast hnotBottom
 
@@ -336,7 +336,7 @@ lemma scoreCandidate_profile_3 :
   calc
     scoreCandidate profile scoreVec (3 : Fin 4) =
         ((Finset.univ.filter (fun v => ¬ BottomRank profile v (3 : Fin 4))).card : Int) := by
-          simpa [scoreVec, vetoScore] using
+          exact
             (vetoScore_scoreCandidate_eq_notBottom_card (P := profile) (c := (3 : Fin 4)))
     _ = (4 : Int) := by exact_mod_cast hnotBottom
 
@@ -409,7 +409,7 @@ lemma coombs_profile_not_2 : (2 : Fin 4) ∉ coombs profile := by
       scoringEliminationAux vetoScore (Fin 4) profile =
         (lowestScoring profile scoreVec).biUnion
           (fun c => liftFinset (scoringEliminationAux vetoScore _ (restrictProfile profile c))) := by
-    simpa [scoreVec] using haux
+    exact haux
   have haux'' :
       scoringEliminationAux vetoScore (Fin 4) profile =
         ({2} : Finset (Fin 4)).biUnion
@@ -438,7 +438,7 @@ lemma coombs_profile_not_2 : (2 : Fin 4) ∉ coombs profile := by
       (s := scoringEliminationAux vetoScore _ (restrictProfile profile (2 : Fin 4)))
   exact hnot hmem_c
 
-noncomputable def scoreVec0 : Nat → Int := fun r =>
+@[reducible] noncomputable def scoreVec0 : Nat → Int := fun r =>
   vetoScore (Fintype.card {x : Fin 4 // x ≠ (0 : Fin 4)}) r
 
 lemma scoreCandidate_profile0_1 :
@@ -508,7 +508,7 @@ lemma coombs_profile0_has_2 : cand2_0 ∈ coombs profile0 := by
       scoringEliminationAux vetoScore {x : Fin 4 // x ≠ (0 : Fin 4)} profile0 =
         (lowestScoring profile0 scoreVec0).biUnion
           (fun c => liftFinset (scoringEliminationAux vetoScore _ (restrictProfile profile0 c))) := by
-    simpa [scoreVec0] using haux
+    exact haux
   have hcoombs :
       coombs profile0 = scoringEliminationAux vetoScore {x : Fin 4 // x ≠ (0 : Fin 4)} profile0 := by
     classical
@@ -529,12 +529,12 @@ lemma coombs_profile0_has_2 : cand2_0 ∈ coombs profile0 := by
         margin profile0 cand2_0 cand3_0 := by
     simpa [cand2_0_1, cand3_0_1] using
       (margin_eq_margin_restrictProfile (P := profile0) (c := cand1_0)
-        (a := cand2_0_1) (b := cand3_0_1))
+        (a := cand2_0_1) (b := cand3_0_1)).symm
   have hmargin2 :
       margin profile0 cand2_0 cand3_0 = margin profile (2 : Fin 4) (3 : Fin 4) := by
-    simpa [cand2_0, cand3_0] using
+    simpa [profile0, cand2_0, cand3_0] using
       (margin_eq_margin_restrictProfile (P := profile) (c := (0 : Fin 4))
-        (a := cand2_0) (b := cand3_0))
+        (a := cand2_0) (b := cand3_0)).symm
   have hmargin_val :
       margin (restrictProfile profile0 cand1_0) cand2_0_1 cand3_0_1 = (0 : Int) := by
     simpa [hmargin1, hmargin2] using margin_profile_2_3

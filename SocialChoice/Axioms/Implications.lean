@@ -227,7 +227,7 @@ lemma margin_relabelProfileVoters {V W A : Type} [Fintype V] [Fintype W] [Fintyp
     · intro w hw
       have hw' : Prefers (relabelProfileVoters e P) w a b := (Finset.mem_filter.mp hw).2
       have hw'' : Prefers P (e w) a b := by
-        simpa [relabelProfileVoters, Prefers] using hw'
+        exact hw'
       exact Finset.mem_filter.mpr ⟨by simp, hw''⟩
     · intro w1 _ w2 _ h
       exact e.injective h
@@ -235,7 +235,10 @@ lemma margin_relabelProfileVoters {V W A : Type} [Fintype V] [Fintype W] [Fintyp
       have hv' : Prefers P v a b := (Finset.mem_filter.mp hv).2
       refine ⟨e.symm v, ?_, by simp⟩
       have : Prefers (relabelProfileVoters e P) (e.symm v) a b := by
-        simpa [relabelProfileVoters, Prefers] using hv'
+        unfold Prefers at hv' ⊢
+        rw [show (relabelProfileVoters e P).pref (e.symm v) = P.pref v by
+          simp [relabelProfileVoters]]
+        exact hv'
       exact Finset.mem_filter.mpr ⟨by simp, this⟩
   have hcard_ba :
       (Finset.univ.filter (fun w => Prefers (relabelProfileVoters e P) w b a)).card =
@@ -247,7 +250,7 @@ lemma margin_relabelProfileVoters {V W A : Type} [Fintype V] [Fintype W] [Fintyp
     · intro w hw
       have hw' : Prefers (relabelProfileVoters e P) w b a := (Finset.mem_filter.mp hw).2
       have hw'' : Prefers P (e w) b a := by
-        simpa [relabelProfileVoters, Prefers] using hw'
+        exact hw'
       exact Finset.mem_filter.mpr ⟨by simp, hw''⟩
     · intro w1 _ w2 _ h
       exact e.injective h
@@ -255,7 +258,10 @@ lemma margin_relabelProfileVoters {V W A : Type} [Fintype V] [Fintype W] [Fintyp
       have hv' : Prefers P v b a := (Finset.mem_filter.mp hv).2
       refine ⟨e.symm v, ?_, by simp⟩
       have : Prefers (relabelProfileVoters e P) (e.symm v) b a := by
-        simpa [relabelProfileVoters, Prefers] using hv'
+        unfold Prefers at hv' ⊢
+        rw [show (relabelProfileVoters e P).pref (e.symm v) = P.pref v by
+          simp [relabelProfileVoters]]
+        exact hv'
       exact Finset.mem_filter.mpr ⟨by simp, this⟩
   simp [margin, hcard_ab, hcard_ba]
 
@@ -323,7 +329,7 @@ theorem marginBased_implies_neutralReversal :
         have h1 : margin (addVoter P r) a b = margin P a b + 1 :=
           margin_addVoter_eq_of_prefers P r a b (by simpa using hlt)
         have hrev : (reverse_ballot r).lt b a := by
-          simpa [reverse_ballot] using hlt
+          exact hlt
         have h2 :
             margin (addVoter (addVoter P r) (reverse_ballot r)) a b =
               margin (addVoter P r) a b - 1 :=
@@ -339,7 +345,7 @@ theorem marginBased_implies_neutralReversal :
         have h1 : margin (addVoter P r) a b = margin P a b - 1 :=
           margin_addVoter_eq_of_prefers_rev P r a b (by simpa using hgt)
         have hrev : (reverse_ballot r).lt a b := by
-          simpa [reverse_ballot] using hgt
+          exact hgt
         have h2 :
             margin (addVoter (addVoter P r) (reverse_ballot r)) a b =
               margin (addVoter P r) a b + 1 :=
@@ -415,7 +421,7 @@ theorem marginBased_positiveInvolvement_iff_negativeInvolvement :
       have htop' : BallotTop (reverse_ballot (Q.pref (newVoter (u := u) (V := V) hu))) c := by
         intro d hd
         have := hbot d hd
-        simpa [BallotTop, BallotBottom, reverse_ballot] using this
+        exact this
       simpa [hnew] using htop'
     -- Show c ∉ f Q'' using MarginBased (margins are unchanged from P).
     have hmarginP :
@@ -440,10 +446,11 @@ theorem marginBased_positiveInvolvement_iff_negativeInvolvement :
                 margin Q' a b = margin Q a b := hmarginQ' a b
                 _ = margin P a b + 1 := hQP
             have hrev : (reverse_ballot L).lt b a := by
-              simpa [reverse_ballot] using hlt
+              exact hlt
             have hrev' :
                 (Q''.pref (newVoter (u := w) (V := V') hw)).lt b a := by
-              simpa [hnew] using hrev
+              rw [hnew]
+              exact hrev
             have hQ'' :
                 margin Q'' a b = margin Q' a b - 1 :=
               margin_add_newVoter_eq_of_prefers_rev
@@ -463,10 +470,11 @@ theorem marginBased_positiveInvolvement_iff_negativeInvolvement :
                 margin Q' a b = margin Q a b := hmarginQ' a b
                 _ = margin P a b - 1 := hQP
             have hrev : (reverse_ballot L).lt a b := by
-              simpa [reverse_ballot] using hgt
+              exact hgt
             have hrev' :
                 (Q''.pref (newVoter (u := w) (V := V') hw)).lt a b := by
-              simpa [hnew] using hrev
+              rw [hnew]
+              exact hrev
             have hQ'' :
                 margin Q'' a b = margin Q' a b + 1 :=
               margin_add_newVoter_eq_of_prefers
@@ -533,7 +541,7 @@ theorem marginBased_positiveInvolvement_iff_negativeInvolvement :
       have hbot' : BallotBottom (reverse_ballot (Q.pref (newVoter (u := u) (V := V) hu))) c := by
         intro d hd
         have := htop d hd
-        simpa [BallotTop, BallotBottom, reverse_ballot] using this
+        exact this
       simpa [hnew] using hbot'
     -- Show c ∈ f Q'' using MarginBased (margins are unchanged from P).
     have hmarginP :
@@ -558,10 +566,11 @@ theorem marginBased_positiveInvolvement_iff_negativeInvolvement :
                 margin Q' a b = margin Q a b := hmarginQ' a b
                 _ = margin P a b + 1 := hQP
             have hrev : (reverse_ballot L).lt b a := by
-              simpa [reverse_ballot] using hlt
+              exact hlt
             have hrev' :
                 (Q''.pref (newVoter (u := w) (V := V') hw)).lt b a := by
-              simpa [hnew] using hrev
+              rw [hnew]
+              exact hrev
             have hQ'' :
                 margin Q'' a b = margin Q' a b - 1 :=
               margin_add_newVoter_eq_of_prefers_rev
@@ -581,10 +590,11 @@ theorem marginBased_positiveInvolvement_iff_negativeInvolvement :
                 margin Q' a b = margin Q a b := hmarginQ' a b
                 _ = margin P a b - 1 := hQP
             have hrev : (reverse_ballot L).lt a b := by
-              simpa [reverse_ballot] using hgt
+              exact hgt
             have hrev' :
                 (Q''.pref (newVoter (u := w) (V := V') hw)).lt a b := by
-              simpa [hnew] using hrev
+              rw [hnew]
+              exact hrev
             have hQ'' :
                 margin Q'' a b = margin Q' a b + 1 :=
               margin_add_newVoter_eq_of_prefers

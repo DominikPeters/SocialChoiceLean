@@ -71,16 +71,16 @@ def cand3_1_0_2 :
     {x : {x : {x : Fin 4 // x ≠ (1 : Fin 4)} // x ≠ cand0_1} // x ≠ cand2_1_0} :=
   ⟨cand3_1_0, by decide⟩
 
-noncomputable def scoreVec : Nat → Int := fun r =>
+@[reducible] noncomputable def scoreVec : Nat → Int := fun r =>
   bordaScore (Fintype.card (Fin 4)) r
 
-noncomputable def scoreVec0 : Nat → Int := fun r =>
+@[reducible] noncomputable def scoreVec0 : Nat → Int := fun r =>
   bordaScore (Fintype.card {x : Fin 4 // x ≠ (0 : Fin 4)}) r
 
-noncomputable def scoreVec1 : Nat → Int := fun r =>
+@[reducible] noncomputable def scoreVec1 : Nat → Int := fun r =>
   bordaScore (Fintype.card {x : Fin 4 // x ≠ (1 : Fin 4)}) r
 
-noncomputable def scoreVec1_0 : Nat → Int := fun r =>
+@[reducible] noncomputable def scoreVec1_0 : Nat → Int := fun r =>
   bordaScore (Fintype.card {x : {x : Fin 4 // x ≠ (1 : Fin 4)} // x ≠ cand0_1}) r
 
 private lemma baldwin_eq_aux {V A : Type} [Fintype V] [Fintype A] [DecidableEq A]
@@ -125,7 +125,7 @@ lemma baldwin_profile1_0_has_3 :
       scoringEliminationAux bordaScore _ profile1_0 =
         (lowestScoring profile1_0 scoreVec1_0).biUnion
           (fun c => liftFinset (scoringEliminationAux bordaScore _ (restrictProfile profile1_0 c))) := by
-    simpa [scoreVec1_0] using haux
+    exact haux
   have hmem_lift :
       cand3_1_0 ∈
         liftFinset (scoringEliminationAux bordaScore _ (restrictProfile profile1_0 cand2_1_0)) := by
@@ -167,15 +167,20 @@ lemma baldwin_profile1_has_3 : cand3_1 ∈ baldwin profile1 := by
       scoringEliminationAux bordaScore _ profile1 =
         (lowestScoring profile1 scoreVec1).biUnion
           (fun c => liftFinset (scoringEliminationAux bordaScore _ (restrictProfile profile1 c))) := by
-    simpa [scoreVec1] using haux
+    exact haux
   have hmem_lift :
       cand3_1 ∈
         liftFinset (scoringEliminationAux bordaScore _ (restrictProfile profile1 cand0_1)) := by
     have hmem_sub : cand3_1_0 ∈ scoringEliminationAux bordaScore _ profile1_0 :=
       baldwin_profile1_0_has_3
+    have hcand :
+        (⟨cand3_1, by decide⟩ : {x : {x : Fin 4 // x ≠ (1 : Fin 4)} // x ≠ cand0_1}) =
+          cand3_1_0 := by
+      apply Subtype.ext
+      rfl
     exact (mem_liftFinset_iff_subtype
       (s := scoringEliminationAux bordaScore _ (restrictProfile profile1 cand0_1))
-      (x := cand3_1)).2 ⟨by decide, by simpa [profile1_0] using hmem_sub⟩
+      (x := cand3_1)).2 ⟨by decide, by simpa only [profile1_0, hcand] using hmem_sub⟩
   have hmem_union :
       cand3_1 ∈
         ({cand0_1} : Finset _).biUnion
@@ -198,7 +203,7 @@ lemma baldwin_profile_has_3 : (3 : Fin 4) ∈ baldwin profile := by
       scoringEliminationAux bordaScore (Fin 4) profile =
         (lowestScoring profile scoreVec).biUnion
           (fun c => liftFinset (scoringEliminationAux bordaScore _ (restrictProfile profile c))) := by
-    simpa [scoreVec] using haux
+    exact haux
   have hmem_lift :
       (3 : Fin 4) ∈
         liftFinset (scoringEliminationAux bordaScore _ (restrictProfile profile (1 : Fin 4))) := by
@@ -232,7 +237,7 @@ lemma baldwin_profile0_not_3 : cand3_0 ∉ baldwin profile0 := by
       scoringEliminationAux bordaScore _ profile0 =
         (lowestScoring profile0 scoreVec0).biUnion
           (fun c => liftFinset (scoringEliminationAux bordaScore _ (restrictProfile profile0 c))) := by
-    simpa [scoreVec0] using haux
+    exact haux
   have hbaldwin :
       baldwin profile0 = scoringEliminationAux bordaScore _ profile0 :=
     baldwin_eq_aux (P := profile0)

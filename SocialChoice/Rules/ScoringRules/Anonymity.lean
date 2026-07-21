@@ -17,7 +17,7 @@ theorem scoringRule_anonymous (score : Nat → Nat → Int) : Anonymity (scoring
     · intro v
       simp
     · intro v hv
-      simp [permuteVoters, rank]
+      exact rfl
   unfold scoringRule
   by_cases h : (Finset.univ : Finset A).Nonempty
   · simp [scoringWinners, h, score_perm]

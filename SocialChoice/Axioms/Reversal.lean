@@ -3,7 +3,7 @@ import SocialChoice.Meta
 
 namespace SocialChoice
 
-def reverse_ballot {A : Type} (r : LinearOrder A) : LinearOrder A :=
+@[implicit_reducible] def reverse_ballot {A : Type} (r : LinearOrder A) : LinearOrder A :=
   LinearOrder.swap A r
 
 def reverse_profile {V A : Type} [Fintype V] [Fintype A] (P : Profile V A) : Profile V A :=

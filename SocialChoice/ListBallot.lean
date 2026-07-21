@@ -32,7 +32,7 @@ variable {A : Type} [DecidableEq A]
 Construct a `LinearOrder` from a nodup list that covers all elements of a type.
 The order is: `a < b` iff `a` appears before `b` in the list.
 -/
-noncomputable def linearOrderOfList (l : List A)
+@[reducible] noncomputable def linearOrderOfList (l : List A)
     (hnodup : l.Nodup) (hcomplete : ∀ a, a ∈ l) : LinearOrder A :=
   let e := List.Nodup.getEquivOfForallMemList l hnodup hcomplete
   LinearOrder.lift' e.symm e.symm.injective
@@ -93,7 +93,7 @@ lemma complete (b : ListBallot n) (a : Fin n) : a ∈ b.ranking :=
   b.perm.mem_iff.mpr (List.mem_finRange a)
 
 /-- Convert a ListBallot to a LinearOrder. -/
-noncomputable def toLinearOrder (b : ListBallot n) : LinearOrder (Fin n) :=
+@[reducible] noncomputable def toLinearOrder (b : ListBallot n) : LinearOrder (Fin n) :=
   linearOrderOfList b.ranking b.nodup b.complete
 
 /-- The lt relation of toLinearOrder corresponds to idxOf comparison. -/
@@ -439,7 +439,6 @@ variable {m n : ℕ}
 lemma prefers_iff_prefersInList (ballots : Fin m → ListBallot n) (v : Fin m) (a b : Fin n) :
     Prefers (profileOfListBallots ballots) v a b ↔ prefersInList (ballots v).ranking a b = true := by
   unfold Prefers profileOfListBallots prefersInList
-  simp only
   rw [(ballots v).lt_iff_idxOf]
   simp only [decide_eq_true_eq]
 
@@ -474,7 +473,6 @@ lemma topRank_iff_isTopOfList (ballots : Fin m → ListBallot n) (v : Fin m) (c 
       have hhead_ne_c : (ballots v).ranking.head hne ≠ c := hne'
       have := htop ((ballots v).ranking.head hne) hhead_ne_c
       unfold Prefers profileOfListBallots at this
-      simp only at this
       rw [(ballots v).lt_iff_idxOf] at this
       have hidx_c := List.idxOf_lt_length_of_mem hc_mem
       omega
@@ -483,7 +481,6 @@ lemma topRank_iff_isTopOfList (ballots : Fin m → ListBallot n) (v : Fin m) (c 
     simp only [decide_eq_true_eq] at htop
     intro d hd
     unfold Prefers profileOfListBallots
-    simp only
     rw [(ballots v).lt_iff_idxOf]
     have hne : (ballots v).ranking ≠ [] := by
       intro h

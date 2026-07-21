@@ -74,7 +74,7 @@ theorem coombs_negative_involvement : NegativeInvolvement coombs := by
             exact hdx
           have hlt : (Q.pref (newVoter (u := u) (V := V) hu)).lt d x := hbottom d hd'
           have hpref : Prefers Q (newVoter (u := u) (V := V) hu) d x' := by
-            simpa [Prefers] using hlt
+            exact hlt
           have hpref' :
               Prefers (restrictProfile Q c) (newVoter (u := u) (V := V) hu) d x' := by
             exact (prefers_restrictProfile_iff (P := Q) (c := c)

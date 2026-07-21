@@ -159,12 +159,11 @@ theorem p5_condorcetWinner (x : Fin 3) :
     CondorcetWinner (p5Profile x) x := by
   classical
   intro d hd
-  fin_cases x <;> fin_cases d <;> try (cases hd rfl)
-  all_goals
-    simp [StrictMajority, votersPreferring, Prefers, p5Profile, p5Ballot,
-      ballotXZY, ballotZXY, ballotXYZ, nextCandidate, prevCandidate,
-      ListBallot.lt_iff_idxOf]
-    decide
+  unfold StrictMajority p5Profile
+  rw [votersPreferring_eq_filter_prefersInList]
+  fin_cases x <;> fin_cases d <;>
+    simp_all [p5Ballot, ballotXZY, ballotZXY, ballotXYZ, nextCandidate,
+      prevCandidate, prefersInList] <;> decide +revert
 
 /-- The 4-voter profile `P²_xyz`. -/
 def p2Ballot (x : Fin 3) : Fin 4 → ListBallot 3
@@ -216,12 +215,11 @@ theorem cyclePlusP2_condorcetWinner_prev (x : Fin 3) :
     CondorcetWinner (cyclePlusP2Profile x) (prevCandidate x) := by
   classical
   intro d hd
-  fin_cases x <;> fin_cases d <;> try (cases hd rfl)
-  all_goals
-    simp [StrictMajority, votersPreferring, Prefers, cyclePlusP2Profile,
-      cyclePlusP2Ballot, ballotXYZ, ballotYZX, ballotZXY, ballotXZY,
-      nextCandidate, prevCandidate, ListBallot.lt_iff_idxOf]
-    decide
+  unfold StrictMajority cyclePlusP2Profile
+  rw [votersPreferring_eq_filter_prefersInList]
+  fin_cases x <;> fin_cases d <;>
+    simp_all [cyclePlusP2Ballot, ballotXYZ, ballotYZX, ballotZXY, ballotXZY,
+      nextCandidate, prevCandidate, prefersInList] <;> decide +revert
 
 /-- The anonymous profile `C_xyz + P³_xyz`. -/
 def cyclePlusP3Ballot (x : Fin 3) : Fin 7 → ListBallot 3
@@ -241,12 +239,11 @@ theorem cyclePlusP3_condorcetWinner_prev (x : Fin 3) :
     CondorcetWinner (cyclePlusP3Profile x) (prevCandidate x) := by
   classical
   intro d hd
-  fin_cases x <;> fin_cases d <;> try (cases hd rfl)
-  all_goals
-    simp [StrictMajority, votersPreferring, Prefers, cyclePlusP3Profile,
-      cyclePlusP3Ballot, ballotXYZ, ballotYZX, ballotZXY, ballotXZY,
-      nextCandidate, prevCandidate, ListBallot.lt_iff_idxOf]
-    decide
+  unfold StrictMajority cyclePlusP3Profile
+  rw [votersPreferring_eq_filter_prefersInList]
+  fin_cases x <;> fin_cases d <;>
+    simp_all [cyclePlusP3Ballot, ballotXYZ, ballotYZX, ballotZXY, ballotXZY,
+      nextCandidate, prevCandidate, prefersInList] <;> decide +revert
 
 /-- The anonymous profile `P²_xyz` plus one voter with ballot `y ≻ x ≻ z`. -/
 def p2PlusYXZBallot (x : Fin 3) : Fin 5 → ListBallot 3
@@ -264,12 +261,11 @@ theorem p2PlusYXZ_condorcetWinner (x : Fin 3) :
     CondorcetWinner (p2PlusYXZProfile x) x := by
   classical
   intro d hd
-  fin_cases x <;> fin_cases d <;> try (cases hd rfl)
-  all_goals
-    simp [StrictMajority, votersPreferring, Prefers, p2PlusYXZProfile,
-      p2PlusYXZBallot, ballotXYZ, ballotZXY, ballotXZY, ballotYXZ,
-      nextCandidate, prevCandidate, ListBallot.lt_iff_idxOf]
-    decide
+  unfold StrictMajority p2PlusYXZProfile
+  rw [votersPreferring_eq_filter_prefersInList]
+  fin_cases x <;> fin_cases d <;>
+    simp_all [p2PlusYXZBallot, ballotXYZ, ballotZXY, ballotXZY, ballotYXZ,
+      nextCandidate, prevCandidate, prefersInList] <;> decide +revert
 
 /-- The anonymous profile `P³_xyz` plus one voter with ballot `y ≻ x ≻ z`. -/
 def p3PlusYXZBallot (x : Fin 3) : Fin 5 → ListBallot 3
@@ -287,12 +283,11 @@ theorem p3PlusYXZ_condorcetWinner (x : Fin 3) :
     CondorcetWinner (p3PlusYXZProfile x) x := by
   classical
   intro d hd
-  fin_cases x <;> fin_cases d <;> try (cases hd rfl)
-  all_goals
-    simp [StrictMajority, votersPreferring, Prefers, p3PlusYXZProfile,
-      p3PlusYXZBallot, ballotYZX, ballotZXY, ballotXZY, ballotYXZ,
-      nextCandidate, prevCandidate, ListBallot.lt_iff_idxOf]
-    decide
+  unfold StrictMajority p3PlusYXZProfile
+  rw [votersPreferring_eq_filter_prefersInList]
+  fin_cases x <;> fin_cases d <;>
+    simp_all [p3PlusYXZBallot, ballotYZX, ballotZXY, ballotXZY, ballotYXZ,
+      nextCandidate, prevCandidate, prefersInList] <;> decide +revert
 
 section NamedProfiles
 
@@ -314,13 +309,18 @@ theorem votersPreferring_reindexVoters_card {V W : Type} [Fintype V] [Fintype W]
     (i := fun w _ => e w) ?_ ?_ ?_
   · intro w hw
     have hpref : Prefers (reindexVoters P e) w a b := (Finset.mem_filter.mp hw).2
-    exact Finset.mem_filter.mpr ⟨by simp, by simpa [reindexVoters, Prefers] using hpref⟩
+    change @LT.lt A (P.pref (e w)).toLT a b at hpref
+    exact Finset.mem_filter.mpr ⟨by simp, hpref⟩
   · intro w₁ _ w₂ _ h
     exact e.injective h
   · intro v hv
     refine ⟨e.symm v, ?_, by simp⟩
     have hpref : Prefers P v a b := (Finset.mem_filter.mp hv).2
-    exact Finset.mem_filter.mpr ⟨by simp, by simpa [reindexVoters, Prefers] using hpref⟩
+    refine Finset.mem_filter.mpr ⟨by simp, ?_⟩
+    change @LT.lt A ((reindexVoters P e).pref (e.symm v)).toLT a b
+    rw [show (reindexVoters P e).pref (e.symm v) = P.pref v by
+      simp [reindexVoters]]
+    exact hpref
 
 theorem condorcetWinner_reindexVoters_iff {V W : Type} [Fintype V] [Fintype W]
     (P : Profile V A) (e : W ≃ V) (c : A) :
@@ -698,7 +698,8 @@ theorem restrict_unionNamedProfiles_left (V W : Finset U)
     restrictElectorate (unionNamedProfiles V W P Q) V
         (by intro x hx; exact Finset.mem_union.mpr (Or.inl hx)) =
       P := by
-  ext v
+  apply Profile.ext
+  intro v
   simp [unionNamedProfiles, restrictElectorate]
 
 theorem restrict_unionNamedProfiles_right (V W : Finset U) (hdisj : Disjoint V W)
@@ -706,7 +707,8 @@ theorem restrict_unionNamedProfiles_right (V W : Finset U) (hdisj : Disjoint V W
     restrictElectorate (unionNamedProfiles V W P Q) W
         (by intro x hx; exact Finset.mem_union.mpr (Or.inr hx)) =
       Q := by
-  ext v
+  apply Profile.ext
+  intro v
   have hvnot : v.1 ∉ V := by
     intro hv
     exact (Finset.disjoint_left.mp hdisj) hv v.2
@@ -803,18 +805,19 @@ theorem p5Named_eq_reindex_p5
       reindexVoters (p5Profile x) (fiveVoterEquiv hab hac had hae hbc hbd hbe hcd hce hde) := by
   apply Profile.ext
   intro r
-  have hr : r.1 = a ∨ r.1 = b ∨ r.1 = c ∨ r.1 = d ∨ r.1 = e := by
-    have hr' := r.2
-    change r.1 ∈ ({a, b, c, d, e} : Finset (Fin 8)) at hr'
+  rcases r with ⟨r, hrmem⟩
+  have hr : r = a ∨ r = b ∨ r = c ∨ r = d ∨ r = e := by
+    have hr' := hrmem
+    change r ∈ ({a, b, c, d, e} : Finset (Fin 8)) at hr'
     rw [Finset.mem_insert, Finset.mem_insert, Finset.mem_insert, Finset.mem_insert,
       Finset.mem_singleton] at hr'
     exact hr'
-  rcases hr with hr | hr | hr | hr | hr
+  rcases hr with rfl | rfl | rfl | rfl | rfl
   all_goals
     simp [p5NamedProfile, p5NamedBallot, reindexVoters, p5Profile, p5Ballot,
-      profileOfListBallots, fiveVoterEquiv, fiveVoterIndex, hr, hab, hac, had, hae, hbc,
+      profileOfListBallots, fiveVoterEquiv, fiveVoterIndex, hab, hac, had, hae, hbc,
       hbd, hbe, hcd, hce, hde, hab.symm, hac.symm, had.symm, hae.symm, hbc.symm,
-      hbd.symm, hbe.symm, hcd.symm, hce.symm, hde.symm]
+      hbd.symm, hbe.symm, hcd.symm, hce.symm, hde.symm] <;> rfl
 
 theorem p5Named_condorcetWinner
     (x : Fin 3) {a b c d e : Fin 8}
@@ -1150,21 +1153,22 @@ theorem cast_union_cycle_p2_eq_reindex_cyclePlusP2
           hpu hpv hpw huv huw hvw) := by
   apply Profile.ext
   intro r
-  have hr : r.1 = a ∨ r.1 = b ∨ r.1 = c ∨ r.1 = p ∨ r.1 = u ∨ r.1 = v ∨ r.1 = w := by
-    have hr' := r.2
-    change r.1 ∈ ({a, b, c, p, u, v, w} : Finset (Fin 8)) at hr'
+  rcases r with ⟨r, hrmem⟩
+  have hr : r = a ∨ r = b ∨ r = c ∨ r = p ∨ r = u ∨ r = v ∨ r = w := by
+    have hr' := hrmem
+    change r ∈ ({a, b, c, p, u, v, w} : Finset (Fin 8)) at hr'
     rw [Finset.mem_insert, Finset.mem_insert, Finset.mem_insert, Finset.mem_insert,
       Finset.mem_insert, Finset.mem_insert, Finset.mem_singleton] at hr'
     exact hr'
-  rcases hr with hr | hr | hr | hr | hr | hr | hr
+  rcases hr with rfl | rfl | rfl | rfl | rfl | rfl | rfl
   all_goals
     simp [castProfile, unionNamedProfiles, reindexVoters, cycleNamedProfile, cycleNamedBallot,
       p2NamedProfile, p2NamedBallot, cyclePlusP2Profile, cyclePlusP2Ballot, profileOfListBallots,
-      sevenVoterEquiv, sevenVoterIndex, hr, hab, hac, hap, hau, hav, haw, hbc, hbp, hbu,
+      sevenVoterEquiv, sevenVoterIndex, hab, hac, hap, hau, hav, haw, hbc, hbp, hbu,
       hbv, hbw, hcp, hcu, hcv, hcw, hpu, hpv, hpw, huv, huw, hvw,
       hab.symm, hac.symm, hap.symm, hau.symm, hav.symm, haw.symm, hbc.symm, hbp.symm,
       hbu.symm, hbv.symm, hbw.symm, hcp.symm, hcu.symm, hcv.symm, hcw.symm,
-      hpu.symm, hpv.symm, hpw.symm, huv.symm, huw.symm, hvw.symm]
+      hpu.symm, hpv.symm, hpw.symm, huv.symm, huw.symm, hvw.symm] <;> rfl
 
 theorem cast_union_cycle_p3_eq_reindex_cyclePlusP3
     (x : Fin 3) {a b c p u q w : Fin 8}
@@ -1182,21 +1186,22 @@ theorem cast_union_cycle_p3_eq_reindex_cyclePlusP3
           hpu hpq hpw huq huw hqw) := by
   apply Profile.ext
   intro r
-  have hr : r.1 = a ∨ r.1 = b ∨ r.1 = c ∨ r.1 = p ∨ r.1 = u ∨ r.1 = q ∨ r.1 = w := by
-    have hr' := r.2
-    change r.1 ∈ ({a, b, c, p, u, q, w} : Finset (Fin 8)) at hr'
+  rcases r with ⟨r, hrmem⟩
+  have hr : r = a ∨ r = b ∨ r = c ∨ r = p ∨ r = u ∨ r = q ∨ r = w := by
+    have hr' := hrmem
+    change r ∈ ({a, b, c, p, u, q, w} : Finset (Fin 8)) at hr'
     rw [Finset.mem_insert, Finset.mem_insert, Finset.mem_insert, Finset.mem_insert,
       Finset.mem_insert, Finset.mem_insert, Finset.mem_singleton] at hr'
     exact hr'
-  rcases hr with hr | hr | hr | hr | hr | hr | hr
+  rcases hr with rfl | rfl | rfl | rfl | rfl | rfl | rfl
   all_goals
     simp [castProfile, unionNamedProfiles, reindexVoters, cycleNamedProfile, cycleNamedBallot,
       p3NamedProfile, p3NamedBallot, cyclePlusP3Profile, cyclePlusP3Ballot, profileOfListBallots,
-      sevenVoterEquiv, sevenVoterIndex, hr, hab, hac, hap, hau, haq, haw, hbc, hbp, hbu,
+      sevenVoterEquiv, sevenVoterIndex, hab, hac, hap, hau, haq, haw, hbc, hbp, hbu,
       hbq, hbw, hcp, hcu, hcq, hcw, hpu, hpq, hpw, huq, huw, hqw,
       hab.symm, hac.symm, hap.symm, hau.symm, haq.symm, haw.symm, hbc.symm, hbp.symm,
       hbu.symm, hbq.symm, hbw.symm, hcp.symm, hcu.symm, hcq.symm, hcw.symm,
-      hpu.symm, hpq.symm, hpw.symm, huq.symm, huw.symm, hqw.symm]
+      hpu.symm, hpq.symm, hpw.symm, huq.symm, huw.symm, hqw.symm] <;> rfl
 
 theorem cast_union_cycle_p2_condorcetWinner_prev
     (x : Fin 3) {a b c p u v w : Fin 8}
@@ -1363,12 +1368,20 @@ theorem singletonYXZ_condorcetWinner_next (x : Fin 3) (u : Fin 8) :
     CondorcetWinner (singletonYXZProfile x u) (nextCandidate x) := by
   classical
   intro d hd
-  fin_cases x <;> fin_cases d <;> try (cases hd rfl)
-  all_goals
-    simp [StrictMajority, votersPreferring, Prefers, singletonYXZProfile,
-      singletonYXZBallot, ballotYXZ, nextCandidate, prevCandidate,
-      ListBallot.lt_iff_idxOf]
-    decide +revert
+  have hvoters (a b : Fin 3) :
+      votersPreferring (singletonYXZProfile x u) a b =
+        Finset.univ.filter
+          (fun v => prefersInList (singletonYXZBallot x v).ranking a b) := by
+    ext v
+    simp only [votersPreferring, Finset.mem_filter, Finset.mem_univ, true_and]
+    unfold Prefers singletonYXZProfile prefersInList
+    rw [ListBallot.lt_iff_idxOf]
+    simp [decide_eq_true_eq]
+  unfold StrictMajority
+  rw [hvoters]
+  fin_cases x <;> fin_cases d <;>
+    simp_all [singletonYXZBallot, ballotYXZ, nextCandidate, prevCandidate,
+      prefersInList, ListBallot.mk'] <;> norm_num
 
 theorem cast_union_p2_singletonYXZ_eq_reindex_p2PlusYXZ
     (x : Fin 3) {p u v w yv : Fin 8}
@@ -1383,19 +1396,20 @@ theorem cast_union_p2_singletonYXZ_eq_reindex_p2PlusYXZ
         (fiveVoterEquiv hpu hpv hpw hpy huv huw huy hvw hvy hwy) := by
   apply Profile.ext
   intro r
-  have hr : r.1 = p ∨ r.1 = u ∨ r.1 = v ∨ r.1 = w ∨ r.1 = yv := by
-    have hr' := r.2
-    change r.1 ∈ ({p, u, v, w, yv} : Finset (Fin 8)) at hr'
+  rcases r with ⟨r, hrmem⟩
+  have hr : r = p ∨ r = u ∨ r = v ∨ r = w ∨ r = yv := by
+    have hr' := hrmem
+    change r ∈ ({p, u, v, w, yv} : Finset (Fin 8)) at hr'
     rw [Finset.mem_insert, Finset.mem_insert, Finset.mem_insert, Finset.mem_insert,
       Finset.mem_singleton] at hr'
     exact hr'
-  rcases hr with hr | hr | hr | hr | hr
+  rcases hr with rfl | rfl | rfl | rfl | rfl
   all_goals
     simp [castProfile, unionNamedProfiles, reindexVoters, p2NamedProfile, p2NamedBallot,
       singletonYXZProfile, singletonYXZBallot, p2PlusYXZProfile, p2PlusYXZBallot,
-      profileOfListBallots, fiveVoterEquiv, fiveVoterIndex, hr, hpu, hpv, hpw, hpy,
+      profileOfListBallots, fiveVoterEquiv, fiveVoterIndex, hpu, hpv, hpw, hpy,
       huv, huw, huy, hvw, hvy, hwy, hpu.symm, hpv.symm, hpw.symm, hpy.symm,
-      huv.symm, huw.symm, huy.symm, hvw.symm, hvy.symm, hwy.symm]
+      huv.symm, huw.symm, huy.symm, hvw.symm, hvy.symm, hwy.symm] <;> rfl
 
 theorem cast_union_p3_singletonYXZ_eq_reindex_p3PlusYXZ
     (x : Fin 3) {p u q w yv : Fin 8}
@@ -1410,19 +1424,20 @@ theorem cast_union_p3_singletonYXZ_eq_reindex_p3PlusYXZ
         (fiveVoterEquiv hpu hpq hpw hpy huq huw huy hqw hqy hwy) := by
   apply Profile.ext
   intro r
-  have hr : r.1 = p ∨ r.1 = u ∨ r.1 = q ∨ r.1 = w ∨ r.1 = yv := by
-    have hr' := r.2
-    change r.1 ∈ ({p, u, q, w, yv} : Finset (Fin 8)) at hr'
+  rcases r with ⟨r, hrmem⟩
+  have hr : r = p ∨ r = u ∨ r = q ∨ r = w ∨ r = yv := by
+    have hr' := hrmem
+    change r ∈ ({p, u, q, w, yv} : Finset (Fin 8)) at hr'
     rw [Finset.mem_insert, Finset.mem_insert, Finset.mem_insert, Finset.mem_insert,
       Finset.mem_singleton] at hr'
     exact hr'
-  rcases hr with hr | hr | hr | hr | hr
+  rcases hr with rfl | rfl | rfl | rfl | rfl
   all_goals
     simp [castProfile, unionNamedProfiles, reindexVoters, p3NamedProfile, p3NamedBallot,
       singletonYXZProfile, singletonYXZBallot, p3PlusYXZProfile, p3PlusYXZBallot,
-      profileOfListBallots, fiveVoterEquiv, fiveVoterIndex, hr, hpu, hpq, hpw, hpy,
+      profileOfListBallots, fiveVoterEquiv, fiveVoterIndex, hpu, hpq, hpw, hpy,
       huq, huw, huy, hqw, hqy, hwy, hpu.symm, hpq.symm, hpw.symm, hpy.symm,
-      huq.symm, huw.symm, huy.symm, hqw.symm, hqy.symm, hwy.symm]
+      huq.symm, huw.symm, huy.symm, hqw.symm, hqy.symm, hwy.symm] <;> rfl
 
 theorem cast_union_p2_singletonYXZ_condorcetWinner
     (x : Fin 3) {p u v w yv : Fin 8}

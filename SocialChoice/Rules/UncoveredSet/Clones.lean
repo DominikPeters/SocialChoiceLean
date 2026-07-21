@@ -291,7 +291,8 @@ lemma covers_reduced_nonclone_rep_iff
           · exact hEq
         have hxc : margin_pos P x c := by
           have hzx : margin_pos P' rep (⟨c, Or.inl hc⟩ : {a : A // clonePred X x a}) := by
-            simpa [zx] using hz
+            have hzrep : z = rep := Subtype.ext zx
+            simpa [hzrep] using hz
           exact (margin_pos_removeClonesExcept_iff (P := P) (X := X) (x := x)
             (a := rep) (b := ⟨c, Or.inl hc⟩)).1 hzx
         exact (False.elim ((margin_pos_asymm (P := P) c x h1) hxc))

@@ -107,11 +107,11 @@ lemma strictMajority_votersPreferring_iff_margin_pos {V A : Type} [Fintype V] [F
       Int.ofNat_lt_ofNat_of_lt hlt
     have hmargin :
         0 < Int.ofNat S.card - Int.ofNat T.card := sub_pos.mpr hlt'
-    simpa [margin_pos, margin, S, T] using hmargin
+    exact hmargin
   · intro hmargin
     have hlt' : (Int.ofNat T.card) < Int.ofNat S.card := by
       have : 0 < Int.ofNat S.card - Int.ofNat T.card := by
-        simpa [margin_pos, margin, S, T] using hmargin
+        exact hmargin
       exact (sub_pos.mp this)
     have hlt : T.card < S.card := Int.lt_of_ofNat_lt_ofNat hlt'
     have hlt'' : S.card + T.card < S.card + S.card :=

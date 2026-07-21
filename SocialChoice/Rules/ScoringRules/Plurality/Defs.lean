@@ -34,7 +34,7 @@ theorem plurality_isVotingRule : IsVotingRule plurality := by
 
 /-! ### Equivalent definition as a scoring rule -/
 
-def pluralityScore (_m r : Nat) : Int := if r = 0 then 1 else 0
+@[reducible] def pluralityScore (_m r : Nat) : Int := if r = 0 then 1 else 0
 
 /-- Plurality score equals cards of votersTop. -/
 lemma pluralityScore_eq_votersTop_card {V A : Type} [Fintype V] [Fintype A]

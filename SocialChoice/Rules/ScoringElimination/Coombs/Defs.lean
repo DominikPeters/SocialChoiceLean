@@ -16,6 +16,19 @@ them in the last position. The candidate(s) with the lowest score (i.e., the mos
 last-place rankings) are eliminated, and the process repeats until one candidate remains.
 
 When there are ties for elimination, we use parallel-universe tie-breaking.
+
+**Definitional variant.** This formalization eliminates until a single
+candidate remains, with *no majority-stopping condition*. Coombs' original
+rule stops as soon as some candidate has a strict majority of first places,
+and — unlike for instant-runoff voting, where the two conventions coincide —
+this genuinely matters: a strict-majority-top candidate can simultaneously be
+(tied for) most-last-placed and get eliminated. Consequently the rule
+formalized here does **not** satisfy `MajorityCriterion` (only
+`MajorityLoserCriterion`, see `Coombs/Majority.lean`), whereas
+majority-stopping Coombs trivially satisfies it. Example (n = 100 over
+{a,b,c}): 49 × a≻b≻c, 2 × a≻c≻b, 47 × b≻c≻a, 2 × c≻b≻a — candidate `a` has 51
+first places but ties with `c` for most last places, and this rule returns
+{a, b}.
 -/
 
 /-- Coombs' method (veto/anti-plurality elimination). -/

@@ -7,6 +7,16 @@ import Mathlib.Data.Fintype.EquivFin
 
 namespace SocialChoice
 
+/-- A (cyclic) chain in the relation `P`: the list `c` is nonempty and each
+element is `P`-related to its successor, with the last related back to the
+first.
+
+**Caveat:** this admits length-1 and length-2 lists and repeated vertices, so
+for a *reflexive or weak* relation (e.g. `fun a b => 0 ≤ margin P a b`),
+`cycle P [x]` reduces to `P x x` and `acyclic` becomes trivially false. This
+is harmless for the asymmetric irreflexive relations used in this library
+(e.g. `margin_pos`, where 1- and 2-cycles are impossible), but do not apply
+`cycle`/`acyclic` to weak relations. -/
 def cycle {X : Type} (P : X -> X -> Prop) (c : List X) : Prop :=
   ∃ h : c ≠ [], List.IsChain P (List.getLast c h :: c)
 

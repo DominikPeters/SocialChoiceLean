@@ -16,7 +16,7 @@ The project includes:
 ## Project Structure
 
 - `SocialChoice/`: The main library directory.
-    - `Basic.lean` / `Profile.lean` / `Margins.lean` / ...: Fundamental definitions for preference profiles and voting rules.
+    - `Profile.lean` / `Margin.lean` / ...: Fundamental definitions for preference profiles and voting rules.
     - `Meta.lean`: Meta-level predicates (`Refines`, `Implies`, etc.) and custom attributes.
     - `ListBallot.lean`: Utilities for handling ballots as lists for counterexamples.
     - `Axioms/`: Formal definitions of social choice properties.
@@ -24,13 +24,8 @@ The project includes:
         - `ScoringRules/`: Borda, Plurality, Veto, etc.
         - `SplitCycle/`: Implementation and properties of the SplitCycle rule.
     - `Impossibilities/`: Formalized impossibility results.
-- `Main.lean`: The executable entry point.
 - `lakefile.toml`: Configuration for the Lake build system.
 - `lean-toolchain`: Specifies the Lean 4 version used (currently `v4.27.0-rc1`).
-
-## Suggesting Next Steps
-
-When the agent suggests next steps, it should either only give 1 suggestion, or otherwise label one of its suggestions as "(primary suggestion)" or "(recommended)". This will help the user to focus on the most important next step. If the user responds positively (e.g. "continue"), the agent should interpret that as approval to proceed with the primary or recommended suggestion.
 
 ## Testing
 
@@ -85,7 +80,7 @@ The user prefers that agents read files directly from the file system using sed 
 
 For most other tasks, the user prefers that agents use tools provided by the lean-lsp mcp plugin.
 
-When using lean-lsp for the first time, it is useful to call the `lean_diagnostics` tool to make sure that the Lean server is fully initialized and ready to respond to further requests. Occasionally a second call to `lean_diagnostics` may be needed if the first call returns `[]`. Agents should be suspicious of empty diagnostics results, especially if we expect the linter to complain about warnings that have not yet been fixed.
+When using lean-lsp for the first time, it is useful to call the `lean_diagnostics` tool to make sure that the Lean server is fully initialized and ready to respond to further requests. Occasionally a second call to `lean_diagnostics` may be needed if the first call returns `"success": false` AND `[]`.
 
 Occasionally lean_diagnostics may be broken (transport closed, stale errors, displaying errors in other files). In that case the agent is allowed to run `lake build [filename]` as a fallback, even though this gives less-detailed output.
 

@@ -2,6 +2,7 @@
 -- Import modules here that should be built as part of the library.
 import SocialChoice.Basic
 import SocialChoice.Profile
+import SocialChoice.ArgExtrema
 import SocialChoice.Rank
 import SocialChoice.Margin
 import SocialChoice.Cycles

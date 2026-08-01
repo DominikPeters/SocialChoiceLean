@@ -20,6 +20,16 @@ noncomputable def secondPluralitySet {V A : Type} [Fintype V] [Fintype A] [Decid
     exact R.filter (fun c => topCount P c = maxScore)
   · exact ∅
 
+/-- `secondPluralitySet` is an instance of the generic `argmaxSet`, over the
+candidates outside `S`. -/
+lemma secondPluralitySet_eq_argmaxSet {V A : Type} [Fintype V] [Fintype A] [DecidableEq A]
+    (P : Profile V A) (S : Finset A) :
+    secondPluralitySet P S =
+      argmaxSet (Finset.univ.filter (fun c => c ∉ S)) (topCount P) := by
+  classical
+  unfold secondPluralitySet argmaxSet
+  by_cases hR : (Finset.univ.filter (fun c : A => c ∉ S)).Nonempty <;> simp [hR]
+
 noncomputable def pluralityWithRunoffPairs {V A : Type} [Fintype V] [Fintype A] [DecidableEq A]
     (P : Profile V A) : Finset (Finset A) := by
   classical

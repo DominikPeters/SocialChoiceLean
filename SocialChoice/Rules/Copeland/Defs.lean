@@ -2,6 +2,7 @@ import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Int.Basic
 import SocialChoice.Profile
 import SocialChoice.Margin
+import SocialChoice.ArgExtrema
 import SocialChoice.Meta
 
 namespace SocialChoice
@@ -80,23 +81,24 @@ noncomputable def copeland : VotingRule := by
   else
     exact ∅
 
+/-- `copeland` is an instance of the generic `argmaxSet`. -/
+lemma copeland_eq_argmaxSet {V A : Type} [Fintype V] [Fintype A] (P : Profile V A) :
+    copeland P = argmaxSet Finset.univ (copelandScore2 P) := by
+  classical
+  unfold copeland argmaxSet
+  by_cases hA : Nonempty A
+  · have hAuniv : (Finset.univ : Finset A).Nonempty := Finset.univ_nonempty
+    simp [hA, hAuniv, copelandMaxScore2]
+  · have hAuniv : ¬ (Finset.univ : Finset A).Nonempty := by
+      rintro ⟨a, -⟩
+      exact hA ⟨a⟩
+    simp [hA, hAuniv]
+
 theorem copeland_isVotingRule : IsVotingRule copeland := by
   intro V A _ _ _ P
-  classical
-  have hAuniv : (Finset.univ : Finset A).Nonempty := Finset.univ_nonempty
-  let scores : Finset Int := Finset.univ.image (fun a => copelandScore2 P a)
-  have hScores : scores.Nonempty := hAuniv.image (fun a => copelandScore2 P a)
-  let maxScore : Int := Finset.max' scores hScores
-  have hmaxmem : maxScore ∈ scores := Finset.max'_mem scores hScores
-  rcases Finset.mem_image.mp hmaxmem with ⟨a, ha, hscore⟩
-  have hmem :
-      a ∈ Finset.univ.filter (fun a => copelandScore2 P a = maxScore) := by
-    exact Finset.mem_filter.mpr ⟨by simp [ha], hscore⟩
-  have hA : Nonempty A := inferInstance
-  have hmax_eq : copelandMaxScore2 (V := V) (A := A) P = maxScore := by
-    simp [copelandMaxScore2, hAuniv, scores, maxScore]
-  refine ⟨a, ?_⟩
-  simpa [copeland, hA, hmax_eq] using hmem
+  show (copeland P).Nonempty
+  rw [copeland_eq_argmaxSet]
+  exact argmaxSet_nonempty Finset.univ_nonempty _
 
 end Copeland
 

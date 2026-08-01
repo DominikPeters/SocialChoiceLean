@@ -36,7 +36,7 @@ private lemma vetoUnanimity_one_mem : (1 : Fin 3) ∈ veto vetoUnanimityProfile 
       (1 : Fin 3) ∈ scoringWinners vetoUnanimityProfile (fun r => vetoScore 3 r) := by
     apply
       (scoringWinners_iff_forall_le (P := vetoUnanimityProfile)
-        (score := fun r => vetoScore 3 r) (hA := hA) (c := (1 : Fin 3))).2
+        (score := fun r => vetoScore 3 r) (_hA := hA) (c := (1 : Fin 3))).2
     intro d
     fin_cases d <;> simp [vetoUnanimity_score]
   simpa [veto, scoringRule] using h1mem

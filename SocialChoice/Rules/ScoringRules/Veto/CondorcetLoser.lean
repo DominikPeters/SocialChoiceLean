@@ -105,7 +105,7 @@ private lemma vetoCondorcetLoser_has_zero : (0 : Fin 3) ∈ veto vetoCondorcetLo
       (0 : Fin 3) ∈ scoringWinners vetoCondorcetLoserProfile (fun r => vetoScore 3 r) := by
     exact
       (scoringWinners_iff_forall_le (P := vetoCondorcetLoserProfile)
-        (score := fun r => vetoScore 3 r) (hA := hA) (c := (0 : Fin 3))).2 hmax
+        (score := fun r => vetoScore 3 r) (_hA := hA) (c := (0 : Fin 3))).2 hmax
   simpa [veto, scoringRule] using hmem
 
 private lemma vetoCondorcetLoser_marginList_10 :

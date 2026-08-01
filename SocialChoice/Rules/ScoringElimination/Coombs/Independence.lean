@@ -77,7 +77,7 @@ private lemma lowestScoring_eq_singleton_of_universal_bottom
   constructor
   · intro ha
     have hle :=
-      (lowestScoring_iff_forall_le (P := P) (score := scoreVec) (hA := hA) (c := a)).1 ha
+      (lowestScoring_iff_forall_le (P := P) (score := scoreVec) (_hA := hA) (c := a)).1 ha
     by_cases had : a = d
     · subst a
       simp
@@ -89,7 +89,7 @@ private lemma lowestScoring_eq_singleton_of_universal_bottom
     have had : a = d := by
       simpa using (Finset.mem_singleton.mp ha)
     subst a
-    apply (lowestScoring_iff_forall_le (P := P) (score := scoreVec) (hA := hA) (c := d)).2
+    apply (lowestScoring_iff_forall_le (P := P) (score := scoreVec) (_hA := hA) (c := d)).2
     intro e
     by_cases hed : e = d
     · subst hed

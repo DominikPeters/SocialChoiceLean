@@ -244,7 +244,7 @@ lemma veto_cloneProfile_has_2 :
       cand2q ∈ scoringRule vetoScore profileQ := by
     have hc' :=
       (scoringWinners_iff_forall_le (P := profileQ) (score := scoreVecQ)
-        (hA := hA) (c := cand2q)).2 hmax
+        (_hA := hA) (c := cand2q)).2 hmax
     change cand2q ∈ scoringWinners profileQ scoreVecQ
     exact hc'
   have hpred : q = clonePred cloneSet (0 : Fin 3) := by

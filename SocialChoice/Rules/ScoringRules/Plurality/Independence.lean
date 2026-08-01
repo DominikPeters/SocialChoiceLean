@@ -288,7 +288,7 @@ lemma plurality_profile_has_c : (2 : Fin 3) ∈ plurality profile := by
       (2 : Fin 3) ∈ scoringRule pluralityScore profile := by
     have hc' :=
       (scoringWinners_iff_forall_le (P := profile) (score := scoreVec)
-        (hA := hA) (c := (2 : Fin 3))).2 hmax
+        (_hA := hA) (c := (2 : Fin 3))).2 hmax
     simpa [scoringRule, scoreVec] using hc'
   simpa [plurality_eq_scoringRule] using hc
 
@@ -428,7 +428,7 @@ lemma plurality_cloneProfile_not_c :
       simpa [scoringRule, scoreVecQ] using hcq
     have hmax :=
       (scoringWinners_iff_forall_le (P := restrictCandidates profile q) (score := scoreVecQ)
-        (hA := hA) (c := candCq)).1 hcq'
+        (_hA := hA) (c := candCq)).1 hcq'
     have hmaxa := hmax candAq
     have hmaxa' :
         scoreCandidate profileQ scoreVecQ candAq ≤

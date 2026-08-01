@@ -80,7 +80,7 @@ theorem veto_majority_loser_criterion : MajorityLoserCriterion veto := by
   have hnot : c ∉ scoringWinners P scoreVec := by
     intro hc
     have hforall :=
-      (scoringWinners_iff_forall_le (P := P) (score := scoreVec) (hA := hA) (c := c)).1 hc
+      (scoringWinners_iff_forall_le (P := P) (score := scoreVec) (_hA := hA) (c := c)).1 hc
     have hlt := hscore_lt d0 hd0c
     have hle := hforall d0
     exact (not_lt_of_ge hle) hlt

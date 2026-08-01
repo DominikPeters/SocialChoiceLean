@@ -96,7 +96,7 @@ theorem scoringRule_not_condorcet (score : Nat → Nat → Int) :
       simpa [scoringRule] using h0mem
     exact
       (scoringWinners_iff_forall_le (P := scoringCondorcetProfile)
-        (score := fun r => score 3 r) (hA := hA) (c := (0 : Fin 3))).1 h0mem'
+        (score := fun r => score 3 r) (_hA := hA) (c := (0 : Fin 3))).1 h0mem'
   have hscore_eq :
       scoreCandidate scoringCondorcetProfile (fun r => score 3 r) (0 : Fin 3) =
         scoreCandidate scoringCondorcetProfile (fun r => score 3 r) 1 := by
@@ -105,7 +105,7 @@ theorem scoringRule_not_condorcet (score : Nat → Nat → Int) :
       (1 : Fin 3) ∈ scoringWinners scoringCondorcetProfile (fun r => score 3 r) := by
     apply
       (scoringWinners_iff_forall_le (P := scoringCondorcetProfile)
-        (score := fun r => score 3 r) (hA := hA) (c := (1 : Fin 3))).2
+        (score := fun r => score 3 r) (_hA := hA) (c := (1 : Fin 3))).2
     intro d
     have hle := h0max d
     simpa [hscore_eq] using hle

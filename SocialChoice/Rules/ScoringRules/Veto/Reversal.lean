@@ -92,7 +92,7 @@ private lemma veto_profile_has_0 : (0 : Fin 3) ∈ veto profile := by
       (0 : Fin 3) ∈ scoringWinners profile (fun r => vetoScore 3 r) := by
     exact
       (scoringWinners_iff_forall_le (P := profile)
-        (score := fun r => vetoScore 3 r) (hA := hA) (c := (0 : Fin 3))).2 hmax
+        (score := fun r => vetoScore 3 r) (_hA := hA) (c := (0 : Fin 3))).2 hmax
   simpa [veto, scoringRule] using hmem
 
 private lemma veto_profile_not_1 : (1 : Fin 3) ∉ veto profile := by
@@ -105,7 +105,7 @@ private lemma veto_profile_not_1 : (1 : Fin 3) ∉ veto profile := by
     simpa [veto, scoringRule] using h
   have hmax :=
     (scoringWinners_iff_forall_le (P := profile)
-      (score := fun r => vetoScore 3 r) (hA := hA) (c := (1 : Fin 3))).1 hmem
+      (score := fun r => vetoScore 3 r) (_hA := hA) (c := (1 : Fin 3))).1 hmem
   have h0le : (2 : Int) ≤ 1 := by
     simpa [veto_score] using hmax (0 : Fin 3)
   exact (by decide : ¬ ((2 : Int) ≤ 1)) h0le
@@ -120,7 +120,7 @@ private lemma veto_profile_not_2 : (2 : Fin 3) ∉ veto profile := by
     simpa [veto, scoringRule] using h
   have hmax :=
     (scoringWinners_iff_forall_le (P := profile)
-      (score := fun r => vetoScore 3 r) (hA := hA) (c := (2 : Fin 3))).1 hmem
+      (score := fun r => vetoScore 3 r) (_hA := hA) (c := (2 : Fin 3))).1 hmem
   have h0le : (2 : Int) ≤ 1 := by
     simpa [veto_score] using hmax (0 : Fin 3)
   exact (by decide : ¬ ((2 : Int) ≤ 1)) h0le
@@ -215,7 +215,7 @@ lemma reverse_profile_has_0 : (0 : Fin 3) ∈ veto (reverse_profile profile) := 
         scoringWinners (reverse_profile profile) (fun r => vetoScore 3 r) := by
     exact
       (scoringWinners_iff_forall_le (P := reverse_profile profile)
-        (score := fun r => vetoScore 3 r) (hA := hA) (c := (0 : Fin 3))).2 hmax
+        (score := fun r => vetoScore 3 r) (_hA := hA) (c := (0 : Fin 3))).2 hmax
   simpa [veto, scoringRule] using hmem
 
 end VetoReversalCounterexample

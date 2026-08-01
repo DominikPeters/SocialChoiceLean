@@ -40,21 +40,19 @@ noncomputable def lowestScoring {V A : Type} [Fintype V] [Fintype A]
     exact (Finset.univ.filter (fun c => scoreCandidate P score c = minScore))
   · exact ∅
 
+/-- `lowestScoring` is an instance of the generic `argminSet`. -/
+lemma lowestScoring_eq_argminSet {V A : Type} [Fintype V] [Fintype A]
+    (P : Profile V A) (score : Nat → Int) :
+    lowestScoring P score = argminSet Finset.univ (scoreCandidate P score) := by
+  classical
+  unfold lowestScoring argminSet
+  by_cases hA : (Finset.univ : Finset A).Nonempty <;> simp [hA]
+
 lemma lowestScoring_nonempty {V A : Type} [Fintype V] [Fintype A] [DecidableEq A]
     (P : Profile V A) (score : Nat → Int) (hA : (Finset.univ : Finset A).Nonempty) :
     (lowestScoring P score).Nonempty := by
-  classical
-  simp only [lowestScoring, hA, dite_true]
-  let scoreSet := Finset.univ.image (fun c => scoreCandidate P score c)
-  have hScoreNonempty : scoreSet.Nonempty := by
-    simpa [scoreSet, Finset.Nonempty] using hA.image (fun c => scoreCandidate P score c)
-  let minScore := scoreSet.min' hScoreNonempty
-  have hMinMem : minScore ∈ scoreSet := Finset.min'_mem scoreSet hScoreNonempty
-  rcases Finset.mem_image.mp hMinMem with ⟨c, _, hc⟩
-  refine ⟨c, ?_⟩
-  simp only [Finset.mem_filter, Finset.mem_univ, true_and]
-  -- hc : scoreCandidate P score c = minScore, goal needs the same
-  convert hc using 2
+  rw [lowestScoring_eq_argminSet]
+  exact argminSet_nonempty hA _
 
 lemma lowestScoring_subset {V A : Type} [Fintype V] [Fintype A]
     (P : Profile V A) (score : Nat → Int) :
@@ -66,60 +64,16 @@ lemma scoreCandidate_le_of_mem_lowestScoring {V A : Type} [Fintype V] [Fintype A
     (P : Profile V A) (score : Nat → Int) {c e : A}
     (hc : c ∈ lowestScoring P score) :
     scoreCandidate P score c ≤ scoreCandidate P score e := by
-  classical
-  by_cases hA : (Finset.univ : Finset A).Nonempty
-  · -- Unfold `lowestScoring` in the nonempty case.
-    simp [lowestScoring, hA] at hc
-    -- Work with the score-set and its minimum.
-    set scoreSet : Finset Int := (Finset.univ.image (fun a : A => scoreCandidate P score a))
-    have hScoreNonempty : scoreSet.Nonempty := by
-      simpa [scoreSet, Finset.Nonempty] using hA.image (fun a : A => scoreCandidate P score a)
-    set minScore : Int := scoreSet.min' hScoreNonempty
-    have hcEq : scoreCandidate P score c = minScore := by
-      simpa [scoreSet, minScore] using hc
-    have heMem : scoreCandidate P score e ∈ scoreSet := by
-      refine Finset.mem_image.mpr ?_
-      exact ⟨e, by simp, rfl⟩
-    have hminle : minScore ≤ scoreCandidate P score e := by
-      -- `min'` is below every member.
-      simpa [minScore] using (Finset.min'_le (s := scoreSet) (x := scoreCandidate P score e) heMem)
-    -- Rewrite `minScore` as `scoreCandidate ... c`.
-    simpa [hcEq.symm] using hminle
-  · -- Empty candidate set: `lowestScoring` is empty, so membership is impossible.
-    simp [lowestScoring, hA] at hc
+  rw [lowestScoring_eq_argminSet] at hc
+  exact (mem_argminSet_iff.mp hc).2 e (Finset.mem_univ e)
 
 lemma lowestScoring_iff_forall_le {V A : Type} [Fintype V] [Fintype A] [DecidableEq A]
     (P : Profile V A) (score : Nat → Int)
-    (hA : (Finset.univ : Finset A).Nonempty) (c : A) :
+    (_hA : (Finset.univ : Finset A).Nonempty) (c : A) :
     c ∈ lowestScoring P score ↔
       ∀ d : A, scoreCandidate P score c ≤ scoreCandidate P score d := by
-  classical
-  let scoreSet : Finset Int := Finset.univ.image (fun a => scoreCandidate P score a)
-  have hScoreNonempty : scoreSet.Nonempty := by
-    simpa [scoreSet, Finset.Nonempty] using hA.image (fun a => scoreCandidate P score a)
-  let minScore : Int := scoreSet.min' hScoreNonempty
-  constructor
-  · intro hc d
-    have hc' : scoreCandidate P score c = minScore := by
-      simpa [lowestScoring, hA, scoreSet, minScore] using hc
-    have hmem : scoreCandidate P score d ∈ scoreSet := by
-      exact Finset.mem_image.mpr ⟨d, by simp, rfl⟩
-    have hminle : minScore ≤ scoreCandidate P score d :=
-      Finset.min'_le scoreSet _ hmem
-    simpa [hc'] using hminle
-  · intro hle
-    have hmem : scoreCandidate P score c ∈ scoreSet := by
-      exact Finset.mem_image.mpr ⟨c, by simp, rfl⟩
-    have hminle : minScore ≤ scoreCandidate P score c :=
-      Finset.min'_le scoreSet _ hmem
-    have hmin_mem : minScore ∈ scoreSet := Finset.min'_mem scoreSet hScoreNonempty
-    rcases Finset.mem_image.mp hmin_mem with ⟨d, _hd, hdeq⟩
-    have hle' : scoreCandidate P score c ≤ minScore := by
-      simpa [hdeq] using hle d
-    have hmin_eq : scoreCandidate P score c = minScore := le_antisymm hle' hminle
-    have hc : c ∈ (Finset.univ.filter (fun a => scoreCandidate P score a = minScore)) := by
-      exact Finset.mem_filter.mpr ⟨by simp, hmin_eq⟩
-    simpa [lowestScoring, hA, scoreSet, minScore] using hc
+  rw [lowestScoring_eq_argminSet, mem_argminSet_iff]
+  simp
 
 -- Cardinality decreases when removing a candidate
 -- These are aliases to the generic lemmas in Profile.lean
@@ -130,11 +84,19 @@ lemma card_restrict_lt {A : Type} [Fintype A] [DecidableEq A] (c : A) :
 -- Note: The generic version is `SocialChoice.card_subtype_ne_eq` in Profile.lean.
 -- This alias preserves backward compatibility for code using the `A` naming convention.
 
--- Lift a finset from a subtype back to the original type
+-- Lift a finset from a subtype back to the original type.
+-- NOTE: this duplicates `liftWinners` (Profile.lean) up to instance arguments;
+-- see `liftFinset_eq_liftWinners` below. New code should prefer `liftWinners`.
 noncomputable def liftFinset {A : Type} [DecidableEq A] {p : A → Prop}
     (s : Finset {x : A // p x}) : Finset A := by
   classical
   exact s.image (fun x => x.val)
+
+lemma liftFinset_eq_liftWinners {A : Type} [DecidableEq A] {p : A → Prop} [DecidablePred p]
+    (s : Finset {x : A // p x}) : liftFinset s = liftWinners s := by
+  classical
+  ext x
+  simp [liftFinset, liftWinners]
 
 lemma liftFinset_subset_of_prop {A : Type} [DecidableEq A] {p : A → Prop}
     (s : Finset {x : A // p x}) :

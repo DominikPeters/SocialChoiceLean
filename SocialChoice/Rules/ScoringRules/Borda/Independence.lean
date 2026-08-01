@@ -121,13 +121,13 @@ theorem borda_independence_of_universally_least_preferred_nonempty :
       a ∈ borda P ↔
         ∀ b : A, scoreCandidate P score b ≤ scoreCandidate P score a := by
     simpa [borda, scoringRule, score] using
-      (scoringWinners_iff_forall_le (P := P) (score := score) (hA := hA) (c := a))
+      (scoringWinners_iff_forall_le (P := P) (score := score) (_hA := hA) (c := a))
   have hwinP' (a : A) (hne : a ≠ d) :
       (⟨a, hne⟩ : {x : A // x ≠ d}) ∈ borda P' ↔
         ∀ b : {x : A // x ≠ d},
           scoreCandidate P' score' b ≤ scoreCandidate P' score' ⟨a, hne⟩ := by
     simpa [borda, scoringRule, score'] using
-      (scoringWinners_iff_forall_le (P := P') (score := score') (hA := hA') (c := ⟨a, hne⟩))
+      (scoringWinners_iff_forall_le (P := P') (score := score') (_hA := hA') (c := ⟨a, hne⟩))
   have hscore_d : scoreCandidate P score d = 0 := by
     unfold scoreCandidate
     have hzero : ∀ v : V, score (rank (P.pref v) d) = 0 := by

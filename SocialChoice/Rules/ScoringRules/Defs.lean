@@ -1,5 +1,6 @@
 import Mathlib.Data.Fintype.BigOperators
 import Mathlib.Data.Finset.Max
+import SocialChoice.ArgExtrema
 import SocialChoice.Rank
 
 namespace SocialChoice
@@ -23,43 +24,20 @@ noncomputable def scoringWinners {V A : Type} [Fintype V] [Fintype A]
       (Finset.univ.filter (fun c => scoreCandidate P score c = maxScore))
   · exact ∅
 
+/-- `scoringWinners` is an instance of the generic `argmaxSet`. -/
+lemma scoringWinners_eq_argmaxSet {V A : Type} [Fintype V] [Fintype A]
+    (P : Profile V A) (score : Nat → Int) :
+    scoringWinners P score = argmaxSet Finset.univ (scoreCandidate P score) := by
+  classical
+  unfold scoringWinners argmaxSet
+  by_cases hA : (Finset.univ : Finset A).Nonempty <;> simp [hA]
+
 lemma scoringWinners_iff_forall_le {V A : Type} [Fintype V] [Fintype A] [DecidableEq A]
-    (P : Profile V A) (score : Nat → Int) (hA : (Finset.univ : Finset A).Nonempty) (c : A) :
+    (P : Profile V A) (score : Nat → Int) (_hA : (Finset.univ : Finset A).Nonempty) (c : A) :
     c ∈ scoringWinners P score ↔
       ∀ d : A, scoreCandidate P score d ≤ scoreCandidate P score c := by
-  classical
-  let scoreSet : Finset Int :=
-    (Finset.univ.image (fun x => scoreCandidate P score x))
-  let maxScore : Int :=
-    scoreSet.max' (hA.image _)
-  constructor
-  · intro hc
-    have hc' : scoreCandidate P score c = maxScore := by
-      simpa [scoringWinners, hA, scoreSet, maxScore] using hc
-    intro d
-    have hmem : scoreCandidate P score d ∈ scoreSet := by
-      exact Finset.mem_image.mpr ⟨d, by simp, rfl⟩
-    have hle : scoreCandidate P score d ≤ maxScore :=
-      Finset.le_max' scoreSet _ hmem
-    simpa [hc'] using hle
-  · intro hle
-    have hscoreSet_nonempty : scoreSet.Nonempty := by
-      simpa [scoreSet, Finset.Nonempty] using hA.image
-        (fun x => scoreCandidate P score x)
-    have hmax_le : maxScore ≤ scoreCandidate P score c := by
-      refine (Finset.max'_le_iff scoreSet hscoreSet_nonempty).2 ?_
-      intro z hz
-      rcases Finset.mem_image.mp hz with ⟨d, _hd, rfl⟩
-      exact hle d
-    have hle_max : scoreCandidate P score c ≤ maxScore := by
-      have hmem : scoreCandidate P score c ∈ scoreSet := by
-        exact Finset.mem_image.mpr ⟨c, by simp, rfl⟩
-      exact Finset.le_max' scoreSet _ hmem
-    have hmax_eq : scoreCandidate P score c = maxScore := le_antisymm hle_max hmax_le
-    have hc' :
-        c ∈ (Finset.univ.filter (fun x => scoreCandidate P score x = maxScore)) := by
-      exact Finset.mem_filter.mpr ⟨by simp, hmax_eq⟩
-    simpa [scoringWinners, hA, scoreSet, maxScore] using hc'
+  rw [scoringWinners_eq_argmaxSet, mem_argmaxSet_iff]
+  simp
 
 -- Generic positional scoring rule.
 noncomputable def scoringRule (score : Nat → Nat → Int) : VotingRule :=
@@ -82,15 +60,8 @@ lemma mem_scoringRule_castCandidates_iff {V A : Type} [Fintype V] [Fintype A]
 
 lemma scoringWinners_nonempty {V A : Type} [Fintype V] [Fintype A] [Nonempty A]
     (P : Profile V A) (score : Nat → Int) : (scoringWinners P score).Nonempty := by
-  classical
-  have hA : (Finset.univ : Finset A).Nonempty := Finset.univ_nonempty
-  let scoreSet : Finset Int := (Finset.univ.image (fun c => scoreCandidate P score c))
-  have hscoreSet : scoreSet.Nonempty := hA.image (fun c => scoreCandidate P score c)
-  let maxScore : Int := scoreSet.max' hscoreSet
-  have hmaxmem : maxScore ∈ scoreSet := Finset.max'_mem scoreSet hscoreSet
-  rcases Finset.mem_image.mp hmaxmem with ⟨c, _hc, hscore⟩
-  refine ⟨c, ?_⟩
-  simp [scoringWinners, hA, scoreSet, maxScore, hscore]
+  rw [scoringWinners_eq_argmaxSet]
+  exact argmaxSet_nonempty Finset.univ_nonempty _
 
 theorem scoringRule_isVotingRule (score : Nat → Nat → Int) : IsVotingRule (scoringRule score) := by
   intro V A _ _ _ P

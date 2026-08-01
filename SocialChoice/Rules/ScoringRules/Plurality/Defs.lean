@@ -1,5 +1,6 @@
 import SocialChoice.Margin
 import SocialChoice.Rules
+import SocialChoice.ArgExtrema
 import SocialChoice.Meta
 
 namespace SocialChoice
@@ -9,23 +10,19 @@ noncomputable def plurality : VotingRule :=
   fun {V A} _ _ (P : Profile V A) =>
     (Finset.univ.filter (fun c => ∀ d : A, topCount P d ≤ topCount P c))
 
+/-- `plurality` is an instance of the generic `argmaxSet`. -/
+lemma plurality_eq_argmaxSet {V A : Type} [Fintype V] [Fintype A] (P : Profile V A) :
+    plurality P = argmaxSet Finset.univ (topCount P) := by
+  classical
+  ext c
+  rw [mem_argmaxSet_univ_iff]
+  simp [plurality]
+
 lemma plurality_nonempty {V A : Type} [Fintype V] [Fintype A] [DecidableEq A] [Nonempty A]
     (P : Profile V A) : (plurality P).Nonempty := by
   classical
-  let scoreSet : Finset Nat := (Finset.univ.image (fun c => topCount P c))
-  have hscoreSet : scoreSet.Nonempty :=
-    (Finset.univ_nonempty : (Finset.univ : Finset A).Nonempty).image (fun c => topCount P c)
-  let maxScore : Nat := scoreSet.max' hscoreSet
-  have hmaxmem : maxScore ∈ scoreSet := Finset.max'_mem scoreSet hscoreSet
-  rcases Finset.mem_image.mp hmaxmem with ⟨c, _hc, hscore⟩
-  have hmax : ∀ d : A, topCount P d ≤ topCount P c := by
-    intro d
-    have hmem : topCount P d ∈ scoreSet := by
-      exact Finset.mem_image.mpr ⟨d, by simp, rfl⟩
-    have hle : topCount P d ≤ maxScore := Finset.le_max' scoreSet _ hmem
-    simpa [hscore] using hle
-  refine ⟨c, ?_⟩
-  simp [plurality, hmax]
+  rw [plurality_eq_argmaxSet]
+  exact argmaxSet_nonempty Finset.univ_nonempty _
 
 theorem plurality_isVotingRule : IsVotingRule plurality := by
   intro V A _ _ _ P

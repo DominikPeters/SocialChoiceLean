@@ -16,6 +16,21 @@ This package is a "vibe-proving" effort; the code is written mostly by by gpt-5.
 
 Theorems about the Split Cycle rule were translated from the `Formalized-Voting` lean3 package (https://github.com/chasenorman/Formalized-Voting) described in the paper "[Voting Theory in the Lean Theorem Prover](https://arxiv.org/abs/2110.08453)" by Wesley H. Holliday, Chase Norman, and Eric Pacuit.
 
+## Future Work
+
+* Unify definitions of independence of clones
+* Independence of universal bottom -> into own file; prove Black satisfies it
+* Additional voting rules: Schulze, Ranked Pairs, Copeland etc.
+* More axioms: Smith criterion.
+* Set extension infrastructure; strong Fishburn participation / strong Fishburn strategyproofness, implication to resolute participation / resolute strategyproofness after lexicographic tie-breaking. Kelly implies Fishburn type stuff.
+* Metric distortion: lower bound 3, upper bounds for various rules.
+* Elementary scoring rule characterizations of plurality, veto, and Borda.
+* May's theorem
+* All scoring elimination rules fail monotonicity.
+* Campbell-Kelly theorem on the Condorcet domain.
+* Proportional veto core
+* Stretch goal: Young's scoring rule characterization.
+
 ## Building
 
 This project requires Lean 4 and Mathlib. To build:

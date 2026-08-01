@@ -1,6 +1,6 @@
 import SocialChoice.Impossibilities.DugganSchwartz.TopSet
 import SocialChoice.Impossibilities.DugganSchwartz.DownMonotonicity
-import SocialChoice.Impossibilities.DugganSchwartz.Viable
+import SocialChoice.Axioms.Core
 
 namespace SocialChoice
 
@@ -630,7 +630,7 @@ lemma aXb_of_exists_profile (f : VotingRule) (hf : DownMonotonicitySingleton f)
 /-! Lemma 2.7 (Taylor 2002) -/
 omit [DecidableEq V] in
 lemma dictatingSet_univ_of_downMonotonicitySingleton_viable
-    (f : VotingRule) (hf : DownMonotonicitySingleton f) (hviable : Viable f) :
+    (f : VotingRule) (hf : DownMonotonicitySingleton f) [Nonempty V] (hviable : Onto f) :
     DictatingSet (V := V) (A := A) f (Finset.univ : Finset V) := by
   classical
   intro a b hab P hall hfb
@@ -762,7 +762,7 @@ lemma aXb_partition_of_opt_pess_viable (f : VotingRule)
     (hf_total : IsVotingRule f)
     (hf_opt : OptimistStrategyproof f)
     (hf_pess : PessimistStrategyproof f)
-    (hviable : Viable f)
+    [Nonempty V] (hviable : Onto f)
     (X Y Z : Finset V) (a b c : A)
     (hab : a ≠ b) (hac : a ≠ c) (hbc : b ≠ c)
     (hX : aXb (V := V) (A := A) f X a b)
@@ -1224,7 +1224,7 @@ lemma aXb_partition_of_opt_pess_viable (f : VotingRule)
 /-! Lemma 2.9 (Taylor 2002) -/
 
 omit [DecidableEq V] [DecidableEq A] in
-lemma not_aXb_empty_of_viable (f : VotingRule) (hviable : Viable f) (a b : A) :
+lemma not_aXb_empty_of_viable (f : VotingRule) [Nonempty V] (hviable : Onto f) (a b : A) :
     ¬ aXb (V := V) (A := A) f (∅ : Finset V) a b := by
   classical
   intro h
@@ -1255,7 +1255,7 @@ lemma aXb_left_right_of_opt_pess_viable (f : VotingRule)
     (hf_total : IsVotingRule f)
     (hf_opt : OptimistStrategyproof f)
     (hf_pess : PessimistStrategyproof f)
-    (hviable : Viable f)
+    [Nonempty V] (hviable : Onto f)
     (X : Finset V) (a b : A) (hab : a ≠ b)
     (hX : aXb (V := V) (A := A) f X a b) :
     (∀ c : A, c ≠ a → aXb (V := V) (A := A) f X a c) ∧
@@ -1300,7 +1300,7 @@ lemma dictatingSet_of_aXb_of_opt_pess_viable (f : VotingRule)
     (hf_total : IsVotingRule f)
     (hf_opt : OptimistStrategyproof f)
     (hf_pess : PessimistStrategyproof f)
-    (hviable : Viable f)
+    [Nonempty V] (hviable : Onto f)
     (hcard : 3 ≤ Fintype.card A)
     (X : Finset V) (a b : A) (hab : a ≠ b)
     (hX : aXb (V := V) (A := A) f X a b) :
@@ -1349,7 +1349,7 @@ lemma dictatingSet_partition_of_opt_pess_viable (f : VotingRule)
     (hf_total : IsVotingRule f)
     (hf_opt : OptimistStrategyproof f)
     (hf_pess : PessimistStrategyproof f)
-    (hviable : Viable f)
+    [Nonempty V] (hviable : Onto f)
     (hcard : 3 ≤ Fintype.card A)
     (X Y Z : Finset V)
     (hX : DictatingSet (V := V) (A := A) f X)
@@ -1384,7 +1384,7 @@ lemma exists_voter_topRank_of_singleton_winner (f : VotingRule)
     (hf_total : IsVotingRule f)
     (hf_opt : OptimistStrategyproof f)
     (hf_pess : PessimistStrategyproof f)
-    (hviable : Viable f)
+    [Nonempty V] (hviable : Onto f)
     (hcard : 3 ≤ Fintype.card A) :
     ∃ i : V, ∀ P : Profile V A, ∀ a : A, f P = {a} → TopRank P i a := by
   classical

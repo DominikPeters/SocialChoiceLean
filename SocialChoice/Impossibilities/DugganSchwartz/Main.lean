@@ -201,7 +201,7 @@ lemma singleton_winner_of_topSet (f : VotingRule)
     (hf_total : IsVotingRule f)
     (hf_opt : OptimistStrategyproof f)
     (hf_pess : PessimistStrategyproof f)
-    (hviable : Viable f)
+    [Nonempty V] (hviable : Onto f)
     (P : Profile V A) (a : A)
     (hTop : TopSet P {a}) :
     f P = {a} := by
@@ -230,7 +230,7 @@ theorem duggan_schwartz
     (hf_total : IsVotingRule f)
     (hf_opt : OptimistStrategyproof f)
     (hf_pess : PessimistStrategyproof f)
-    (hviable : Viable f)
+    [Nonempty V] (hviable : Onto f)
     (hcard : 3 ≤ Fintype.card A) :
     ∃ i : V, ∀ P : Profile V A, topChoice P i ∈ f P := by
   classical

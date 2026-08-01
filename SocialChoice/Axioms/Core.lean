@@ -19,9 +19,13 @@ def NonTrivial (f : VotingRule) : Prop :=
     let _ := instA
     ∃ (P : Profile V A) (c : A), c ∉ f P
 
-/-- A voting rule is onto if every candidate can win. -/
+/-- A voting rule is onto if every candidate can be the unique winner at some profile.
+
+The `[Nonempty V]` guard is essential: without it the axiom is unsatisfiable,
+since over the empty electorate there is exactly one profile, whose winner set
+cannot equal `{c}` for two distinct candidates `c`. -/
 @[scAxiom]
 def Onto (f : VotingRule) : Prop :=
-  ∀ {V A : Type} [Fintype V] [Fintype A] (c : A), ∃ P : Profile V A, f P = {c}
+  ∀ {V A : Type} [Fintype V] [Fintype A] [Nonempty V] (c : A), ∃ P : Profile V A, f P = {c}
 
 end SocialChoice

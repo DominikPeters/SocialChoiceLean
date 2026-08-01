@@ -169,6 +169,11 @@ def parse_axioms() -> dict[str, Axiom]:
                 )
             i += 1
 
+    del axioms["tops_only"]
+    del axioms["margin_based"]
+    del axioms["singleton_positive_involvement"]
+    del axioms["independence_of_universally_least_preferred"]
+
     return axioms
 
 def parse_rules() -> dict[str, Rule]:
@@ -215,10 +220,13 @@ def parse_rules() -> dict[str, Rule]:
             family = "Condorcet Methods"
         elif "TopCycle" in relative_path:
             family = "Condorcet Methods"
-        elif "River" in relative_path:
+        elif "UncoveredSet" in relative_path:
             family = "Condorcet Methods"
+        elif "River" in relative_path:
+            # family = "Condorcet Methods"
+            continue
         elif "PluralityWithRunoff" in relative_path:
-            family = "Runoff Methods"
+            family = "Runoff"
 
         i = 0
         while i < len(lines):
@@ -244,9 +252,14 @@ def parse_rules() -> dict[str, Rule]:
                         continue
 
                 normalized = normalize_name(name)
+                display_name = to_display_name(name)
+                if name == "instantRunoffVoting":
+                    display_name = "IRV"
+                if name == "pluralityWithRunoff":
+                    display_name = "Pl. Runoff"
                 rules[normalized] = Rule(
                     name=name,
-                    display_name=to_display_name(name),
+                    display_name=display_name,
                     file_path=relative_path,
                     family=family,
                     is_scoring_rule=is_scoring_rule,
@@ -452,31 +465,31 @@ def generate_html(axioms: dict[str, Axiom], rules: dict[str, Rule],
     # Define family order
     family_order = [
         "Scoring Rules",
+        "Runoff",
         "Scoring Elimination Rules",
         "Condorcet Methods",
-        "Runoff Methods",
         "Other"
     ]
 
     # Sort axioms for display
     axiom_order = [
+        'anonymity', 'neutrality',
+        'pareto_efficiency', 'unanimity',
         'condorcet_criterion', 'condorcet_consistency',
         'condorcet_loser_criterion', 'condorcet_loser_avoidance',
         'smith_criterion',
         'majority_criterion', 'majority_loser_criterion', 'mutual_majority_criterion',
-        'pareto_efficiency', 'unanimity',
-        'monotonicity',
-        'positive_involvement', 'negative_involvement',
-        'anonymity', 'neutrality',
-        'reversal_symmetry', 'singleton_reversal_symmetry',
-        'reinforcement', 'subset_reinforcement',
         'independence_of_clones', 'independence_of_losers',
         'independence_of_dominated', 'independence_of_universally_least_preferred',
+        'reversal_symmetry', 'singleton_reversal_symmetry',
+        'monotonicity',
+        'positive_involvement', 'negative_involvement',
         'strong_participation', 'weak_participation',
         'strong_kelly_participation', 'weak_kelly_participation',
         'strong_fishburn_participation', 'weak_fishburn_participation',
         'optimist_participation', 'pessimist_participation',
         'resolute_participation',
+        'reinforcement', 'subset_reinforcement',
     ]
 
     families["Scoring Elimination Rules"].reverse()
@@ -741,19 +754,19 @@ def generate_html(axioms: dict[str, Axiom], rules: dict[str, Rule],
 '''
 
     # Statistics
-    total_cells = len(sorted_axioms) * len(ordered_rules)
-    satisfied_count = sum(1 for ax in results for r in results[ax] if results[ax][r][0])
-    failed_count = sum(1 for ax in results for r in results[ax] if not results[ax][r][0])
+    # total_cells = len(sorted_axioms) * len(ordered_rules)
+    # satisfied_count = sum(1 for ax in results for r in results[ax] if results[ax][r][0])
+    # failed_count = sum(1 for ax in results for r in results[ax] if not results[ax][r][0])
 
-    html += f'''
-    <div class="stats">
-        <h3>Statistics</h3>
-        <p>Total axiom-rule pairs: {total_cells}</p>
-        <p>Proved satisfied: {satisfied_count} ({100*satisfied_count/total_cells:.1f}%)</p>
-        <p>Proved failed: {failed_count} ({100*failed_count/total_cells:.1f}%)</p>
-        <p>Unknown: {total_cells - satisfied_count - failed_count} ({100*(total_cells - satisfied_count - failed_count)/total_cells:.1f}%)</p>
-    </div>
-'''
+    # html += f'''
+    #     <div class="stats">
+    #         <h3>Statistics</h3>
+    #         <p>Total axiom-rule pairs: {total_cells}</p>
+    #         <p>Proved satisfied: {satisfied_count} ({100*satisfied_count/total_cells:.1f}%)</p>
+    #         <p>Proved failed: {failed_count} ({100*failed_count/total_cells:.1f}%)</p>
+    #         <p>Unknown: {total_cells - satisfied_count - failed_count} ({100*(total_cells - satisfied_count - failed_count)/total_cells:.1f}%)</p>
+    #     </div>
+    # '''
 
     # JavaScript for transpose
     html += '''

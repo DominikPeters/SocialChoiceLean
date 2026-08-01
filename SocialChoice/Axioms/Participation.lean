@@ -1,6 +1,7 @@
 import SocialChoice.Profile
 import SocialChoice.Axioms.Core
 import SocialChoice.SetExtensions
+import SocialChoice.Rules
 import SocialChoice.Meta
 
 namespace SocialChoice

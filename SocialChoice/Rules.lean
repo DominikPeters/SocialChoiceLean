@@ -1,4 +1,5 @@
 import SocialChoice.Profile
+import SocialChoice.SetExtensions
 import SocialChoice.Rules.ScoringRules.Defs
 
 namespace SocialChoice
@@ -162,5 +163,80 @@ lemma topCount_eq_zero_of_dominated {V A : Type} [Fintype V] [Fintype A] [Nonemp
 -- Concrete rules.
 noncomputable def trivialRule : VotingRule :=
   fun {V A} _ _ (_ : Profile V A) => (Finset.univ : Finset A)
+
+/-! ## Tie-broken (resolute) rules -/
+
+noncomputable def tieBrokenRule {V A : Type} [Fintype V] [Fintype A] [Nonempty A]
+    (tb : LinearOrder A) (f : VotingRule) (hf : IsVotingRule f) : Profile V A → Finset A := by
+  classical
+  intro P
+  let _ := tb
+  exact {Finset.min' (f P) (hf P)}
+
+lemma tieBrokenRule_resolute {V A : Type} [Fintype V] [Fintype A] [Nonempty A]
+    (tb : LinearOrder A) (f : VotingRule) (hf : IsVotingRule f) (P : Profile V A) :
+    (tieBrokenRule tb f hf P).card = 1 := by
+  classical
+  simp [tieBrokenRule]
+
+lemma tieBrokenRule_fishburn_pref {V A : Type} [Fintype V] [Fintype A] [Nonempty A]
+    (tb r : LinearOrder A) (f : VotingRule) (hf : IsVotingRule f)
+    {P Q : Profile V A} {x y : A}
+    (hfish : FishburnWeak r (f P) (f Q))
+    (hx : tieBrokenRule tb f hf P = {x}) (hy : tieBrokenRule tb f hf Q = {y}) :
+    r.le x y := by
+  classical
+  have hneP : (f P).Nonempty := hf P
+  have hneQ : (f Q).Nonempty := hf Q
+  have hmin :
+      r.le (@Finset.min' A tb (f P) hneP) (@Finset.min' A tb (f Q) hneQ) :=
+    fishburn_min_tb_le (tb := tb) (r := r) (s := f P) (t := f Q) hneP hneQ hfish
+  have hxset : ({x} : Finset A) = {@Finset.min' A tb (f P) hneP} := by
+    simpa [tieBrokenRule] using hx.symm
+  have hyset : ({y} : Finset A) = {@Finset.min' A tb (f Q) hneQ} := by
+    simpa [tieBrokenRule] using hy.symm
+  have hx' : x = @Finset.min' A tb (f P) hneP := by
+    have hxmem : x ∈ ({@Finset.min' A tb (f P) hneP} : Finset A) := by
+      simpa [hxset] using (Finset.mem_singleton_self x)
+    exact (Finset.mem_singleton.mp hxmem)
+  have hy' : y = @Finset.min' A tb (f Q) hneQ := by
+    have hymem : y ∈ ({@Finset.min' A tb (f Q) hneQ} : Finset A) := by
+      simpa [hyset] using (Finset.mem_singleton_self y)
+    exact (Finset.mem_singleton.mp hymem)
+  rw [← hx', ← hy'] at hmin
+  exact hmin
+
+@[implicit_reducible] noncomputable def canonicalLinearOrder (A : Type) [Fintype A] [Nonempty A] : LinearOrder A := by
+  classical
+  let _ : NeZero (Fintype.card A) :=
+    ⟨Nat.ne_of_gt (Fintype.card_pos_iff.mpr ‹Nonempty A›)⟩
+  exact LinearOrder.lift' (Fintype.equivFin A) (Fintype.equivFin A).injective
+
+noncomputable def tieBrokenVotingRule (f : VotingRule) (hf : IsVotingRule f) : VotingRule := by
+  classical
+  intro V A instV instA P
+  letI : Fintype V := instV
+  letI : Fintype A := instA
+  by_cases hA : Nonempty A
+  · letI : Nonempty A := hA
+    let tb := canonicalLinearOrder (A := A)
+    exact tieBrokenRule tb f hf P
+  · exact ∅
+
+lemma tieBrokenVotingRule_isVotingRule (f : VotingRule) (hf : IsVotingRule f) :
+    IsVotingRule (tieBrokenVotingRule f hf) := by
+  intro V A _ _ _ P
+  classical
+  have hA : Nonempty A := inferInstance
+  simp [tieBrokenVotingRule, hA, tieBrokenRule]
+
+lemma tieBrokenVotingRule_resolute (f : VotingRule) (hf : IsVotingRule f) :
+    Resolute (tieBrokenVotingRule f hf) := by
+  intro V A _ _ _ P
+  classical
+  have hA : Nonempty A := inferInstance
+  let tb := canonicalLinearOrder (A := A)
+  simpa [tieBrokenVotingRule, hA, tb] using
+    tieBrokenRule_resolute (tb := tb) (f := f) (hf := hf) (P := P)
 
 end SocialChoice

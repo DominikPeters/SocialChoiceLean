@@ -9,7 +9,16 @@ namespace SocialChoice
 open Finset
 
 
-structure Profile (V A : Type) [Fintype V] [Fintype A] where
+/-- A preference profile: one strict linear order (ballot) per voter.
+
+The convention throughout the library is that *smaller is better*: voter `v`
+prefers `a` to `b` iff `(P.pref v).lt a b`, so a voter's top choice is the
+minimum of their ballot.
+
+Note that `Profile` itself places no finiteness assumptions on `V` or `A`;
+`Fintype` instances are required only where they are actually needed (e.g. by
+voting rules and counting helpers). -/
+structure Profile (V A : Type) where
   pref : V → LinearOrder A
 
 -- Constant profile where every voter has the same ballot.
@@ -73,6 +82,29 @@ noncomputable def relabelProfile {V A B : Type} [Fintype V] [Fintype A] [Fintype
     (P : Profile V A) (e : A ≃ B) : Profile V B :=
   { pref := fun v => relabelBallotEquiv (P.pref v) e }
 
+/-!
+### Variable-electorate encodings
+
+The library uses two complementary encodings for varying the electorate:
+
+* **Sum types** (`addVoter`, `unionProfiles` below): used to *construct*
+  extended profiles functorially, with definitional equations and no side
+  conditions. This is the right tool for axioms that assert an equation about
+  a concretely built extension, e.g. `NeutralReversal` in `Axioms/Reversal.lean`
+  and the margin bookkeeping in `Margin.lean`.
+
+* **Finset sub-electorates** (`Electorate U V` for `V : Finset U`, defined in
+  `Axioms/Participation.lean`): used to *constrain* profiles over a common
+  voter universe. This is the right tool for axioms quantifying over how a
+  profile restricts to sub-electorates (`Reinforcement`, `Participation`,
+  `Resolvability`), because `Electorate U (V ∪ W)` is literally the same type
+  regardless of how the union is presented — no anonymity assumption is needed
+  to relate differently-bracketed electorates.
+
+`unionElectorateEquivSum` (in `Rules/ScoringRules/Reinforcement.lean`) bridges
+the two encodings when both are in play.
+-/
+
 -- Add a voter via a sum type.
 def addVoter {V A : Type} [Fintype V] [Fintype A]
     (P : Profile V A) (ballot : LinearOrder A) : Profile (V ⊕ Unit) A :=
@@ -106,31 +138,22 @@ noncomputable def restrictCandidates {V A : Type} [Fintype V] [Fintype A]
     Prefers (restrictCandidates P p) v a b ↔ Prefers P v a b := by
   rfl
 
-noncomputable def castCandidates {V A : Type} [Fintype V] [Fintype A]
+def castCandidates {V A : Type} [Fintype V] [Fintype A]
     {p q : A → Prop} [DecidablePred p] [DecidablePred q]
     (h : p = q) (P : Profile V {a // p a}) : Profile V {a // q a} := by
-  classical
   cases h
-  rename_i instP instQ
-  have hinst : instP = instQ := Subsingleton.elim _ _
-  cases hinst
   exact P
 
 @[simp] lemma castCandidates_rfl {V A : Type} [Fintype V] [Fintype A]
     {p : A → Prop} [DecidablePred p]
-    (P : Profile V {a // p a}) : castCandidates (p := p) (q := p) rfl P = P := by
-  classical
-  simp [castCandidates]
+    (P : Profile V {a // p a}) : castCandidates (p := p) (q := p) rfl P = P :=
+  rfl
 
 @[simp] lemma castCandidates_restrictCandidates {V A : Type} [Fintype V] [Fintype A]
     {p q : A → Prop} [DecidablePred p] [DecidablePred q]
     (P : Profile V A) (h : p = q) :
     castCandidates (p := p) (q := q) h (restrictCandidates P p) = restrictCandidates P q := by
-  classical
   cases h
-  rename_i instP instQ
-  have hinst : instP = instQ := Subsingleton.elim _ _
-  cases hinst
   rfl
 
 -- Helper instance for restricted candidate types
@@ -148,20 +171,6 @@ noncomputable def restrictProfile {V A : Type} [Fintype V] [Fintype A] [Decidabl
     (P : Profile V A) (c : A) (v : V) (a b : {x : A // x ≠ c}) :
     Prefers (restrictProfile P c) v a b ↔ Prefers P v a b := by
   rfl
-
--- Tie back to ℕ via finite subtypes.
-abbrev NatElectorate (S : Finset Nat) := {n // n ∈ S}
-abbrev NatAgenda (S : Finset Nat) := {n // n ∈ S}
-
-instance (S : Finset Nat) : Fintype (NatElectorate S) := by
-  classical
-  simpa [NatElectorate] using (Fintype.subtype S (by intro x; rfl))
-
-instance (S : Finset Nat) : Fintype (NatAgenda S) := by
-  classical
-  simpa [NatAgenda] using (Fintype.subtype S (by intro x; rfl))
-
-abbrev ProfileOnNat (V A : Finset Nat) := Profile (NatElectorate V) (NatAgenda A)
 
 -- Helpers for counting voters.
 noncomputable def votersPreferring {V A : Type} [Fintype V] [Fintype A]

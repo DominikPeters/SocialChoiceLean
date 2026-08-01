@@ -1264,7 +1264,7 @@ noncomputable def diffVoters
   classical
   exact Finset.univ.filter (fun v => v ≠ v₁ ∧ v ≠ v₂ ∧ Pbar.pref v ≠ Pbar'.pref v)
 
-omit [Nonempty A] in
+omit [Fintype A] [Nonempty A] in
 lemma diffVoters_mem_iff
     (Pbar Pbar' : Profile V A) (v₁ v₂ v : V) :
     v ∈ diffVoters (V := V) (A := A) Pbar Pbar' v₁ v₂ ↔

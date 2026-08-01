@@ -20,17 +20,17 @@ lemma uncovered_eq_of_margins {V₁ V₂ A : Type} [Fintype V₁] [Fintype V₂]
 lemma uncoveredSet_eq_of_margins {V₁ V₂ A : Type} [Fintype V₁] [Fintype V₂] [Fintype A]
     (P₁ : Profile V₁ A) (P₂ : Profile V₂ A)
     (hmargin : ∀ x y : A, margin P₁ x y = margin P₂ x y) :
-    uncoveredSet (P := P₁) = uncoveredSet (P := P₂) := by
+    uncoveredSetOf (P := P₁) = uncoveredSetOf (P := P₂) := by
   classical
   ext x
-  simp [uncoveredSet, uncovered, covers, margin_pos, hmargin]
+  simp [uncoveredSetOf, uncovered, covers, margin_pos, hmargin]
 
-/-- UncoveredSet depends only on margins. -/
-theorem UncoveredSet_marginBased : MarginBased UncoveredSet := by
+/-- uncoveredSet depends only on margins. -/
+theorem uncoveredSet_marginBased : MarginBased uncoveredSet := by
   intro V₁ V₂ A _ _ _ P₁ P₂ hmargin
   classical
-  have hset : uncoveredSet (P := P₁) = uncoveredSet (P := P₂) :=
+  have hset : uncoveredSetOf (P := P₁) = uncoveredSetOf (P := P₂) :=
     uncoveredSet_eq_of_margins (P₁ := P₁) (P₂ := P₂) hmargin
-  simp [UncoveredSet, hset]
+  simp [uncoveredSet, hset]
 
 end SocialChoice

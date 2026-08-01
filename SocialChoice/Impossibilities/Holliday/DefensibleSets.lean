@@ -20,7 +20,7 @@ lemma margin_P1Profile_e_c : margin P1Profile e c = (-87 : Int) := by
   simp [margin_P1Profile_c_e] at h
   exact h
 
-lemma defensible_P1_a : a ∈ defensibleSet P1Profile := by
+lemma defensible_P1_a : a ∈ defensibleSetOf P1Profile := by
   classical
   refine (mem_defensibleSet_iff (P := P1Profile) (x := a)).2 ?_
   intro y
@@ -36,7 +36,7 @@ lemma defensible_P1_a : a ∈ defensibleSet P1Profile := by
   · refine ⟨a, ?_⟩
     simp [margin_P1Profile_a_e, margin_P1Profile_e_a]
 
-lemma defensible_P1_d : d ∈ defensibleSet P1Profile := by
+lemma defensible_P1_d : d ∈ defensibleSetOf P1Profile := by
   classical
   refine (mem_defensibleSet_iff (P := P1Profile) (x := d)).2 ?_
   intro y
@@ -52,7 +52,7 @@ lemma defensible_P1_d : d ∈ defensibleSet P1Profile := by
   · refine ⟨a, ?_⟩
     simp [margin_P1Profile_a_e, margin_P1Profile_e_d]
 
-lemma not_defensible_P1_b : b ∉ defensibleSet P1Profile := by
+lemma not_defensible_P1_b : b ∉ defensibleSetOf P1Profile := by
   classical
   intro hb
   have hb' := (mem_defensibleSet_iff (P := P1Profile) (x := b)).1 hb
@@ -74,7 +74,7 @@ lemma not_defensible_P1_b : b ∉ defensibleSet P1Profile := by
       simp [self_margin_zero, margin_P1Profile_e_b] at hz
     exact (by decide : ¬ (0 : Int) ≥ 91) hz'
 
-lemma not_defensible_P1_c : c ∉ defensibleSet P1Profile := by
+lemma not_defensible_P1_c : c ∉ defensibleSetOf P1Profile := by
   classical
   intro hc
   have hc' := (mem_defensibleSet_iff (P := P1Profile) (x := c)).1 hc
@@ -96,7 +96,7 @@ lemma not_defensible_P1_c : c ∉ defensibleSet P1Profile := by
       simp [margin_P1Profile_e_a, margin_P1Profile_a_c] at hz
     exact (by decide : ¬ (-47 : Int) ≥ 83) hz'
 
-lemma not_defensible_P1_e : e ∉ defensibleSet P1Profile := by
+lemma not_defensible_P1_e : e ∉ defensibleSetOf P1Profile := by
   classical
   intro he
   have he' := (mem_defensibleSet_iff (P := P1Profile) (x := e)).1 he
@@ -118,7 +118,7 @@ lemma not_defensible_P1_e : e ∉ defensibleSet P1Profile := by
       simp [margin_P1Profile_e_c, margin_P1Profile_c_e] at hz
     exact (by decide : ¬ (-87 : Int) ≥ 87) hz'
 
-lemma defensibleSet_P1 : defensibleSet P1Profile = ({a, d} : Finset A5) := by
+lemma defensibleSet_P1 : defensibleSetOf P1Profile = ({a, d} : Finset A5) := by
   classical
   ext x
   fin_cases x

@@ -69,44 +69,44 @@ lemma reversalCounterexample_zero_uncovered :
   exact (reversalCounterexample_no_margin_pos_to_0 y) hcov.1
 
 lemma reversalCounterexample_zero_mem_uncoveredSet :
-    (0 : Fin 3) ∈ UncoveredSet reversalCounterexampleProfile := by
+    (0 : Fin 3) ∈ uncoveredSet reversalCounterexampleProfile := by
   classical
-  simp [UncoveredSet, uncoveredSet, reversalCounterexample_zero_uncovered]
+  simp [uncoveredSet, uncoveredSetOf, reversalCounterexample_zero_uncovered]
 
 lemma reversalCounterexample_zero_mem_uncoveredSet_reverse :
-    (0 : Fin 3) ∈ UncoveredSet (reverse_profile reversalCounterexampleProfile) := by
+    (0 : Fin 3) ∈ uncoveredSet (reverse_profile reversalCounterexampleProfile) := by
   classical
-  simp [UncoveredSet, uncoveredSet]
+  simp [uncoveredSet, uncoveredSetOf]
   intro y _hy hcov
   have hpos : margin_pos reversalCounterexampleProfile (0 : Fin 3) y := by
     simpa [margin_pos, margin_reverse_eq] using hcov.1
   exact (reversalCounterexample_no_margin_pos_from_0 y) hpos
 
 lemma reversalCounterexample_two_not_mem_uncoveredSet :
-    (2 : Fin 3) ∉ UncoveredSet reversalCounterexampleProfile := by
+    (2 : Fin 3) ∉ uncoveredSet reversalCounterexampleProfile := by
   classical
   have hcover : covers reversalCounterexampleProfile (1 : Fin 3) (2 : Fin 3) :=
     reversalCounterexample_covers_12
   have hnot : ¬ uncovered reversalCounterexampleProfile (2 : Fin 3) := by
     intro huncov
     exact (huncov (1 : Fin 3) (by decide)) hcover
-  simpa [UncoveredSet, uncoveredSet] using hnot
+  simpa [uncoveredSet, uncoveredSetOf] using hnot
 
 lemma reversalCounterexample_uncoveredSet_ne_univ :
-    UncoveredSet reversalCounterexampleProfile ≠ Finset.univ := by
+    uncoveredSet reversalCounterexampleProfile ≠ Finset.univ := by
   intro hEq
-  have hmem : (2 : Fin 3) ∈ UncoveredSet reversalCounterexampleProfile := by
+  have hmem : (2 : Fin 3) ∈ uncoveredSet reversalCounterexampleProfile := by
     simp [hEq]
   exact reversalCounterexample_two_not_mem_uncoveredSet hmem
 
-theorem uncoveredSet_not_reversal_symmetry : ¬ ReversalSymmetry UncoveredSet := by
+theorem uncoveredSet_not_reversal_symmetry : ¬ ReversalSymmetry uncoveredSet := by
   intro h
-  have hne : UncoveredSet reversalCounterexampleProfile ≠ Finset.univ :=
+  have hne : uncoveredSet reversalCounterexampleProfile ≠ Finset.univ :=
     reversalCounterexample_uncoveredSet_ne_univ
   have hEq := h (P := reversalCounterexampleProfile) hne
   have hmem : (0 : Fin 3) ∈
-      UncoveredSet reversalCounterexampleProfile ∩
-        UncoveredSet (reverse_profile reversalCounterexampleProfile) := by
+      uncoveredSet reversalCounterexampleProfile ∩
+        uncoveredSet (reverse_profile reversalCounterexampleProfile) := by
     exact Finset.mem_inter.mpr
       ⟨reversalCounterexample_zero_mem_uncoveredSet,
        reversalCounterexample_zero_mem_uncoveredSet_reverse⟩

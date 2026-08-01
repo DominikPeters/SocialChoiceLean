@@ -22,7 +22,7 @@ Full profile (4 voters):
 1 voter : 3 > 0 > 2 > 1
 1 voter : 3 > 1 > 0 > 2
 
-Candidate 0 is Pareto-dominated by 3. UncoveredSet selects {1,2,3}.
+Candidate 0 is Pareto-dominated by 3. uncoveredSet selects {1,2,3}.
 Removing 0 yields winners {2,3}, so 1 drops out.
 -/
 
@@ -230,7 +230,7 @@ private lemma uncovered_profile_1 : uncovered profile (1 : A4) := by
   · exact not_covers_profile_2_1
   · exact not_covers_profile_3_1
 
-lemma uncoveredSet_profile_has_1 : (1 : A4) ∈ UncoveredSet profile := by
+lemma uncoveredSet_profile_has_1 : (1 : A4) ∈ uncoveredSet profile := by
   classical
   refine Finset.mem_filter.mpr ?_
   exact ⟨by simp, uncovered_profile_1⟩
@@ -316,7 +316,7 @@ private lemma covers_profile'_2_1 : covers profile' cand2 cand1 := by
           exact (margin_pos_irrefl (P := profile') (x := cand2) hz').elim
         · exact (not_margin_pos_profile'_3_2 (by simpa [cand3, cand2] using hz)).elim
 
-private lemma cand1_not_in_uncovered_profile' : cand1 ∉ UncoveredSet profile' := by
+private lemma cand1_not_in_uncovered_profile' : cand1 ∉ uncoveredSet profile' := by
   classical
   intro hmem
   have huncov : uncovered profile' cand1 := (Finset.mem_filter.mp hmem).2
@@ -329,11 +329,11 @@ lemma mem_liftWinners_iff {A : Type} [DecidableEq A] {p : A → Prop} [Decidable
   classical
   simp [liftWinners, Finset.mem_image, hx]
 
-lemma cand1_not_in_liftWinners_profile' : (b : A4) ∉ liftWinners (UncoveredSet profile') := by
+lemma cand1_not_in_liftWinners_profile' : (b : A4) ∉ liftWinners (uncoveredSet profile') := by
   intro hmem
   have hmem' :
-      (cand1 : {x : A4 // x ≠ a}) ∈ UncoveredSet profile' :=
-    (mem_liftWinners_iff (p := fun x => x ≠ a) (s := UncoveredSet profile') (x := b)
+      (cand1 : {x : A4 // x ≠ a}) ∈ uncoveredSet profile' :=
+    (mem_liftWinners_iff (p := fun x => x ≠ a) (s := uncoveredSet profile') (x := b)
       (by decide)).1 hmem
   exact (cand1_not_in_uncovered_profile' hmem').elim
 
@@ -341,15 +341,15 @@ end UncoveredSetIndependenceCounterexample
 
 open UncoveredSetIndependenceCounterexample
 
-theorem uncoveredSet_not_independenceOfDominated : ¬ IndependenceOfDominated UncoveredSet := by
+theorem uncoveredSet_not_independenceOfDominated : ¬ IndependenceOfDominated uncoveredSet := by
   intro hind
   have hpref : ∀ v : Fin 4, Prefers profile v d a := prefers_3_0
   have hEq := hind (P := profile) (c := d) (d := a) hpref
-  have hmem_full : (b : A4) ∈ UncoveredSet profile := uncoveredSet_profile_has_1
+  have hmem_full : (b : A4) ∈ uncoveredSet profile := uncoveredSet_profile_has_1
   have hmem_restrict :
-      (b : A4) ∈ liftWinners (UncoveredSet (restrictCandidates profile (fun x => x ≠ a))) := by
+      (b : A4) ∈ liftWinners (uncoveredSet (restrictCandidates profile (fun x => x ≠ a))) := by
     simpa [hEq] using hmem_full
-  have hmem_restrict' : (b : A4) ∈ liftWinners (UncoveredSet profile') := by
+  have hmem_restrict' : (b : A4) ∈ liftWinners (uncoveredSet profile') := by
     simpa [profile', restrictProfile] using hmem_restrict
   exact cand1_not_in_liftWinners_profile' hmem_restrict'
 

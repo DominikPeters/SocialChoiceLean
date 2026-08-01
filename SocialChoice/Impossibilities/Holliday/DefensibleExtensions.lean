@@ -9,7 +9,7 @@ namespace Holliday
 
 private lemma not_defensible_of_witness {V A : Type} [Fintype V] [Fintype A]
     (P : Profile V A) (x y : A)
-    (h : ∀ z, margin P z y < margin P y x) : x ∉ defensibleSet P := by
+    (h : ∀ z, margin P z y < margin P y x) : x ∉ defensibleSetOf P := by
   classical
   intro hx
   have hx' := (mem_defensibleSet_iff (P := P) (x := x)).1 hx
@@ -37,7 +37,7 @@ private lemma not_defensible_add_newVoter_of_gap4
     (Q : Profile (Electorate U450 (insert u votersP3)) A5)
     (hagree : ∀ v : Electorate U450 votersP3, Q.pref (liftVoter (u := u) v) = P3Profile.pref v)
     (hgap : ∀ z, margin P3Profile z y ≤ margin P3Profile y x - 4) :
-    x ∉ defensibleSet Q := by
+    x ∉ defensibleSetOf Q := by
   refine not_defensible_of_witness (P := Q) (x := x) (y := y) ?_
   intro z
   have hupper : margin Q z y ≤ margin P3Profile z y + 1 :=
@@ -91,7 +91,7 @@ private lemma not_defensible_add_twoVoters_of_gap6
       ∀ v : Electorate U450 (insert u2 votersP5),
         Q.pref (liftVoter (u := u4) v) = Q2.pref v)
     (hgap : ∀ z, margin P5Profile z y ≤ margin P5Profile y x - 6) :
-    x ∉ defensibleSet Q := by
+    x ∉ defensibleSetOf Q := by
   refine not_defensible_of_witness (P := Q) (x := x) (y := y) ?_
   intro z
   have hupper : margin Q z y ≤ margin P5Profile z y + 2 :=
@@ -116,28 +116,28 @@ private lemma P3_gap_ae : ∀ z, margin P3Profile z a ≤ margin P3Profile a e -
 lemma not_defensible_P3_add_newVoter_a {u : U450} (hu : u ∉ votersP3)
     (Q : Profile (Electorate U450 (insert u votersP3)) A5)
     (hagree : ∀ v : Electorate U450 votersP3, Q.pref (liftVoter (u := u) v) = P3Profile.pref v) :
-    a ∉ defensibleSet Q :=
+    a ∉ defensibleSetOf Q :=
   not_defensible_add_newVoter_of_gap4 (hu := hu) (Q := Q) (hagree := hagree) (x := a) (y := b)
     P3_gap_ba
 
 lemma not_defensible_P3_add_newVoter_c {u : U450} (hu : u ∉ votersP3)
     (Q : Profile (Electorate U450 (insert u votersP3)) A5)
     (hagree : ∀ v : Electorate U450 votersP3, Q.pref (liftVoter (u := u) v) = P3Profile.pref v) :
-    c ∉ defensibleSet Q :=
+    c ∉ defensibleSetOf Q :=
   not_defensible_add_newVoter_of_gap4 (hu := hu) (Q := Q) (hagree := hagree) (x := c) (y := a)
     P3_gap_ac
 
 lemma not_defensible_P3_add_newVoter_e {u : U450} (hu : u ∉ votersP3)
     (Q : Profile (Electorate U450 (insert u votersP3)) A5)
     (hagree : ∀ v : Electorate U450 votersP3, Q.pref (liftVoter (u := u) v) = P3Profile.pref v) :
-    e ∉ defensibleSet Q :=
+    e ∉ defensibleSetOf Q :=
   not_defensible_add_newVoter_of_gap4 (hu := hu) (Q := Q) (hagree := hagree) (x := e) (y := a)
     P3_gap_ae
 
 lemma defensibleSet_P3_add_newVoter_subset {u : U450} (hu : u ∉ votersP3)
     (Q : Profile (Electorate U450 (insert u votersP3)) A5)
     (hagree : ∀ v : Electorate U450 votersP3, Q.pref (liftVoter (u := u) v) = P3Profile.pref v) :
-    defensibleSet Q ⊆ ({b, d} : Finset A5) := by
+    defensibleSetOf Q ⊆ ({b, d} : Finset A5) := by
   intro x hx
   fin_cases x
   · exact (False.elim ((not_defensible_P3_add_newVoter_a (hu := hu) (Q := Q) hagree) hx))
@@ -171,7 +171,7 @@ lemma not_defensible_P5_add_twoVoters_a {u2 u4 : U450} (hu2 : u2 ∉ votersP5)
     (hagree4 :
       ∀ v : Electorate U450 (insert u2 votersP5),
         Q.pref (liftVoter (u := u4) v) = Q2.pref v) :
-    a ∉ defensibleSet Q :=
+    a ∉ defensibleSetOf Q :=
   not_defensible_add_twoVoters_of_gap6 (hu2 := hu2) (hu4 := hu4) (Q2 := Q2) (Q := Q)
     (hagree2 := hagree2) (hagree4 := hagree4) (x := a) (y := b) P5_gap_ba
 
@@ -184,7 +184,7 @@ lemma not_defensible_P5_add_twoVoters_b {u2 u4 : U450} (hu2 : u2 ∉ votersP5)
     (hagree4 :
       ∀ v : Electorate U450 (insert u2 votersP5),
         Q.pref (liftVoter (u := u4) v) = Q2.pref v) :
-    b ∉ defensibleSet Q :=
+    b ∉ defensibleSetOf Q :=
   not_defensible_add_twoVoters_of_gap6 (hu2 := hu2) (hu4 := hu4) (Q2 := Q2) (Q := Q)
     (hagree2 := hagree2) (hagree4 := hagree4) (x := b) (y := e) P5_gap_eb
 
@@ -197,7 +197,7 @@ lemma not_defensible_P5_add_twoVoters_c {u2 u4 : U450} (hu2 : u2 ∉ votersP5)
     (hagree4 :
       ∀ v : Electorate U450 (insert u2 votersP5),
         Q.pref (liftVoter (u := u4) v) = Q2.pref v) :
-    c ∉ defensibleSet Q :=
+    c ∉ defensibleSetOf Q :=
   not_defensible_add_twoVoters_of_gap6 (hu2 := hu2) (hu4 := hu4) (Q2 := Q2) (Q := Q)
     (hagree2 := hagree2) (hagree4 := hagree4) (x := c) (y := a) P5_gap_ac
 
@@ -210,7 +210,7 @@ lemma not_defensible_P5_add_twoVoters_e {u2 u4 : U450} (hu2 : u2 ∉ votersP5)
     (hagree4 :
       ∀ v : Electorate U450 (insert u2 votersP5),
         Q.pref (liftVoter (u := u4) v) = Q2.pref v) :
-    e ∉ defensibleSet Q :=
+    e ∉ defensibleSetOf Q :=
   not_defensible_add_twoVoters_of_gap6 (hu2 := hu2) (hu4 := hu4) (Q2 := Q2) (Q := Q)
     (hagree2 := hagree2) (hagree4 := hagree4) (x := e) (y := d) P5_gap_de
 
@@ -223,7 +223,7 @@ lemma defensibleSet_P5_add_twoVoters_subset {u2 u4 : U450} (hu2 : u2 ∉ votersP
     (hagree4 :
       ∀ v : Electorate U450 (insert u2 votersP5),
         Q.pref (liftVoter (u := u4) v) = Q2.pref v) :
-    defensibleSet Q ⊆ ({d} : Finset A5) := by
+    defensibleSetOf Q ⊆ ({d} : Finset A5) := by
   intro x hx
   fin_cases x
   · exact (False.elim ((not_defensible_P5_add_twoVoters_a (hu2 := hu2) (hu4 := hu4)

@@ -9,7 +9,7 @@ namespace Holliday
 
 lemma refines_defensible_P1 {f : VotingRule} (hpos : PositiveInvolvement f)
     (hcond : CondorcetConsistency f) :
-    f P1Profile ⊆ defensibleSet P1Profile := by
+    f P1Profile ⊆ defensibleSetOf P1Profile := by
   apply positiveInvolvement_condorcet_refines_defensible_of_gap (hpos := hpos) (hcond := hcond)
       (hcard := by decide) (P := P1Profile)
   intro x y _hx _hxy hy
@@ -20,7 +20,7 @@ lemma refines_defensible_P3_add_newVoter {f : VotingRule} (hpos : PositiveInvolv
     {u : U450} (hu : u ∉ votersP3)
     (Q : Profile (Electorate U450 (insert u votersP3)) A5)
     (hagree : ∀ v : Electorate U450 votersP3, Q.pref (liftVoter (u := u) v) = P3Profile.pref v) :
-    f Q ⊆ defensibleSet Q := by
+    f Q ⊆ defensibleSetOf Q := by
   apply positiveInvolvement_condorcet_refines_defensible_of_gap (hpos := hpos) (hcond := hcond)
       (hcard := by decide) (P := Q)
   intro x y _hx hxy hy
@@ -36,7 +36,7 @@ lemma refines_defensible_P5_add_twoVoters {f : VotingRule} (hpos : PositiveInvol
     (hagree4 :
       ∀ v : Electorate U450 (insert u2 votersP5),
         Q.pref (liftVoter (u := u4) v) = Q2.pref v) :
-    f Q ⊆ defensibleSet Q := by
+    f Q ⊆ defensibleSetOf Q := by
   apply positiveInvolvement_condorcet_refines_defensible_of_gap (hpos := hpos) (hcond := hcond)
       (hcard := by decide) (P := Q)
   intro x y _hx hxy hy
@@ -50,10 +50,10 @@ lemma resolvability_P3_defensible {f : VotingRule} (hpos : PositiveInvolvement f
       (Q : Profile (Electorate U450 (insert u votersP3)) A5),
       (∀ v : Electorate U450 votersP3, Q.pref (liftVoter (u := u) v) = P3Profile.pref v) ∧
       Q.pref (newVoter (u := u) (V := votersP3) hu) = r ∧
-      f Q = {x} ∧ x ∈ defensibleSet Q := by
+      f Q = {x} ∧ x ∈ defensibleSetOf Q := by
   obtain ⟨r, Q, hagree, hnew, hQ⟩ :=
     hres (V := votersP3) (u := u) (hu := hu) (P := P3Profile) (x := x) hx
-  have href : f Q ⊆ defensibleSet Q :=
+  have href : f Q ⊆ defensibleSetOf Q :=
     refines_defensible_P3_add_newVoter (hpos := hpos) (hcond := hcond) (hu := hu) (Q := Q) hagree
   have hxQ : x ∈ f Q := by
     simp [hQ]
@@ -71,10 +71,10 @@ lemma resolvability_P5_defensible {f : VotingRule} (hpos : PositiveInvolvement f
       (∀ v : Electorate U450 (insert u2 votersP5),
           Q.pref (liftVoter (u := u4) v) = Q2.pref v) ∧
       Q.pref (newVoter (u := u4) (V := insert u2 votersP5) hu4) = r ∧
-      f Q = {x} ∧ x ∈ defensibleSet Q := by
+      f Q = {x} ∧ x ∈ defensibleSetOf Q := by
   obtain ⟨r, Q, hagree4, hnew, hQ⟩ :=
     hres (V := insert u2 votersP5) (u := u4) (hu := hu4) (P := Q2) (x := x) hx
-  have href : f Q ⊆ defensibleSet Q :=
+  have href : f Q ⊆ defensibleSetOf Q :=
     refines_defensible_P5_add_twoVoters (hpos := hpos) (hcond := hcond)
       (hu2 := hu2) (hu4 := hu4) (Q2 := Q2) (Q := Q) (hagree2 := hagree2) (hagree4 := hagree4)
   have hxQ : x ∈ f Q := by

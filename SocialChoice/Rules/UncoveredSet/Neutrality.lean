@@ -106,8 +106,8 @@ lemma mem_permuteWinners_iff {A : Type} [DecidableEq A] (σ : Equiv.Perm A)
 
 lemma uncoveredSet_permuteCandidates {V A : Type} [Fintype V] [Fintype A]
     (P : Profile V A) (σ : Equiv.Perm A) :
-    uncoveredSet (P := permuteCandidates P σ) =
-      permuteWinners σ (uncoveredSet (P := P)) := by
+    uncoveredSetOf (P := permuteCandidates P σ) =
+      permuteWinners σ (uncoveredSetOf (P := P)) := by
   classical
   ext a
   constructor
@@ -116,26 +116,26 @@ lemma uncoveredSet_permuteCandidates {V A : Type} [Fintype V] [Fintype A]
       (Finset.mem_filter.mp ha).2
     have ha'' : uncovered P (σ.symm a) :=
       (uncovered_permuteCandidates_iff (P := P) (σ := σ) (x := a)).1 ha'
-    have : σ.symm a ∈ uncoveredSet (P := P) := by
+    have : σ.symm a ∈ uncoveredSetOf (P := P) := by
       exact (Finset.mem_filter.mpr ⟨by simp, ha''⟩)
-    exact (mem_permuteWinners_iff (σ := σ) (s := uncoveredSet (P := P)) (a := a)).2 this
+    exact (mem_permuteWinners_iff (σ := σ) (s := uncoveredSetOf (P := P)) (a := a)).2 this
   · intro ha
-    have ha' : σ.symm a ∈ uncoveredSet (P := P) :=
-      (mem_permuteWinners_iff (σ := σ) (s := uncoveredSet (P := P)) (a := a)).1 ha
+    have ha' : σ.symm a ∈ uncoveredSetOf (P := P) :=
+      (mem_permuteWinners_iff (σ := σ) (s := uncoveredSetOf (P := P)) (a := a)).1 ha
     have ha'' : uncovered P (σ.symm a) :=
       (Finset.mem_filter.mp ha').2
     have ha''' : uncovered (permuteCandidates P σ) a :=
       (uncovered_permuteCandidates_iff (P := P) (σ := σ) (x := a)).2 ha''
     exact Finset.mem_filter.mpr ⟨by simp, ha'''⟩
 
-/-- UncoveredSet is neutral. -/
-theorem UncoveredSet_neutral : Neutrality UncoveredSet := by
+/-- uncoveredSet is neutral. -/
+theorem uncoveredSet_neutral : Neutrality uncoveredSet := by
   intro V A _ _ P σ
   classical
   have hset :
-      uncoveredSet (P := permuteCandidates P σ) =
-        permuteWinners σ (uncoveredSet (P := P)) :=
+      uncoveredSetOf (P := permuteCandidates P σ) =
+        permuteWinners σ (uncoveredSetOf (P := P)) :=
     uncoveredSet_permuteCandidates (P := P) (σ := σ)
-  simpa [UncoveredSet] using hset.symm
+  simpa [uncoveredSet] using hset.symm
 
 end SocialChoice

@@ -21,10 +21,10 @@ Full profile (4 voters):
 1 voter : 0 > 2 > 1
 1 voter : 1 > 0 > 2
 2 voters: 2 > 1 > 0
-UncoveredSet selects {0,1,2}.
+uncoveredSet selects {0,1,2}.
 
 Remove the voter with ballot 0 > 2 > 1:
-UncoveredSet selects {2}.
+uncoveredSet selects {2}.
 
 Read backwards, this violates Negative Involvement for candidate 1.
 -/
@@ -246,7 +246,7 @@ private lemma covers_profile3_2_1 : covers profile3 (2 : Fin 3) (1 : Fin 3) := b
     · exact (not_margin_pos_profile3_1_2 hz).elim
     · exact (margin_pos_irrefl (P := profile3) (x := (2 : Fin 3)) hz).elim
 
-private lemma not_uncovered_profile3_1 : (1 : Fin 3) ∉ uncoveredSet (P := profile3) := by
+private lemma not_uncovered_profile3_1 : (1 : Fin 3) ∉ uncoveredSetOf (P := profile3) := by
   classical
   intro hmem
   have huncov : uncovered profile3 (1 : Fin 3) := (Finset.mem_filter.mp hmem).2
@@ -370,7 +370,7 @@ private lemma not_uncovered_profile4_1 : uncovered profile4 (1 : Fin 3) := by
   · cases hy rfl
   · exact not_covers_profile4_2_1
 
-private lemma uncoveredSet_profile4_has_1 : (1 : Fin 3) ∈ uncoveredSet (P := profile4) := by
+private lemma uncoveredSet_profile4_has_1 : (1 : Fin 3) ∈ uncoveredSetOf (P := profile4) := by
   classical
   refine Finset.mem_filter.mpr ?_
   exact ⟨by simp, not_uncovered_profile4_1⟩
@@ -379,16 +379,16 @@ end UncoveredSetNegativeInvolvementCounterexample
 
 open UncoveredSetNegativeInvolvementCounterexample
 
-theorem uncoveredSet_not_negativeInvolvement : ¬ NegativeInvolvement UncoveredSet := by
+theorem uncoveredSet_not_negativeInvolvement : ¬ NegativeInvolvement uncoveredSet := by
   intro hneg
-  have hnotmem : (1 : Fin 3) ∉ UncoveredSet profile3 :=
+  have hnotmem : (1 : Fin 3) ∉ uncoveredSet profile3 :=
     not_uncovered_profile3_1
   have hbottom :
       BallotBottom
         (profile4.pref (newVoter (u := (0 : Fin 4)) (V := voters3) voters3_not_mem))
         (1 : Fin 3) :=
     newVoter_bottom_1
-  have hmem : (1 : Fin 3) ∈ UncoveredSet profile4 :=
+  have hmem : (1 : Fin 3) ∈ uncoveredSet profile4 :=
     uncoveredSet_profile4_has_1
   have hcontra :=
     hneg (V := voters3) (u := (0 : Fin 4)) (hu := voters3_not_mem)

@@ -13,6 +13,11 @@ open Finset
 majority-dominated by `y` is strictly majority-dominated by `x`, and every
 alternative that strictly majority-dominates `x` also strictly
 majority-dominates `y`.
+
+This is **McKelvey covering** (left- and right-covering combined). All common
+covering variants (Fishburn, Gillies, McKelvey) coincide on tournaments, i.e.
+when there are no pairwise majority ties, but they differ in the presence of
+ties; theorems about `uncoveredSet` are claims about the McKelvey variant.
 -/
 def covers {V A : Type} [Fintype V] [Fintype A]
     (P : Profile V A) (x y : A) : Prop :=
@@ -45,13 +50,13 @@ def uncovered {V A : Type} [Fintype V] [Fintype A]
   ∀ y, y ≠ x → ¬ covers P y x
 
 /-- The uncovered set of a profile. -/
-noncomputable def uncoveredSet {V A : Type} [Fintype V] [Fintype A]
+noncomputable def uncoveredSetOf {V A : Type} [Fintype V] [Fintype A]
     (P : Profile V A) : Finset A := by
   classical
   exact Finset.univ.filter (fun x => uncovered P x)
 
 lemma uncoveredSet_nonempty {V A : Type} [Fintype V] [Fintype A] [Nonempty A]
-    (P : Profile V A) : (uncoveredSet (P := P)).Nonempty := by
+    (P : Profile V A) : (uncoveredSetOf (P := P)).Nonempty := by
   classical
   let _ : LE A := ⟨fun x y => x = y ∨ covers P y x⟩
   have _ : IsTrans A (· ≤ ·) := by
@@ -82,17 +87,17 @@ lemma uncoveredSet_nonempty {V A : Type} [Fintype V] [Fintype A] [Nonempty A]
   exact Finset.mem_filter.mpr ⟨by simp, hxuncov⟩
 
 @[scRule]
-noncomputable def UncoveredSet : VotingRule := by
+noncomputable def uncoveredSet : VotingRule := by
   intro V A _ _ P
   classical
-  exact uncoveredSet (P := P)
+  exact uncoveredSetOf (P := P)
 
-theorem UncoveredSet_isVotingRule : IsVotingRule UncoveredSet := by
+theorem uncoveredSet_isVotingRule : IsVotingRule uncoveredSet := by
   intro V A _ _ _ P
   classical
   have hA : Nonempty A := inferInstance
-  have hne : (uncoveredSet (P := P)).Nonempty :=
+  have hne : (uncoveredSetOf (P := P)).Nonempty :=
     uncoveredSet_nonempty (P := P)
-  simpa [UncoveredSet] using hne
+  simpa [uncoveredSet] using hne
 
 end SocialChoice

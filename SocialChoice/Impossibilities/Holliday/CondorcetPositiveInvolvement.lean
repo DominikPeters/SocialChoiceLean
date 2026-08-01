@@ -210,7 +210,7 @@ theorem positiveInvolvement_condorcet_refines_defensible_of_gap
         ∃ W : Finset U, Disjoint V W ∧
           (W.card : Int) < margin P y x ∧
           (∀ z, margin P z y < (W.card : Int))) :
-    f P ⊆ defensibleSet P := by
+    f P ⊆ defensibleSetOf P := by
   intro x hx
   classical
   by_contra hxdef

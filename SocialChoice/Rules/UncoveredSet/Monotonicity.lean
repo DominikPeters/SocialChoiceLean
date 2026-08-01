@@ -51,19 +51,19 @@ lemma covers_of_simpleLift {V A : Type} [Fintype V] [Fintype A]
     have hzx0' : 0 < margin P z x := lt_of_lt_of_le hzx0 hle3
     simpa [margin_pos] using hzx0'
 
-/-- UncoveredSet satisfies monotonicity under simple lifts. -/
-theorem uncoveredSet_monotonicity : Monotonicity UncoveredSet := by
+/-- uncoveredSet satisfies monotonicity under simple lifts. -/
+theorem uncoveredSet_monotonicity : Monotonicity uncoveredSet := by
   intro V A _ _ P P' x hx hLift
   classical
-  have hx' : x ∈ uncoveredSet (P := P) := by
-    simpa [UncoveredSet] using hx
+  have hx' : x ∈ uncoveredSetOf (P := P) := by
+    simpa [uncoveredSet] using hx
   have hx_uncov : uncovered P x := (Finset.mem_filter.mp hx').2
   have hx_uncov' : uncovered P' x := by
     intro y hyx hcov'
     have hcov : covers P y x := covers_of_simpleLift (P := P) (P' := P') (x := x) (y := y) hLift hcov'
     exact hx_uncov y hyx hcov
-  have hx'' : x ∈ uncoveredSet (P := P') :=
+  have hx'' : x ∈ uncoveredSetOf (P := P') :=
     Finset.mem_filter.mpr ⟨by simp, hx_uncov'⟩
-  simpa [UncoveredSet] using hx''
+  simpa [uncoveredSet] using hx''
 
 end SocialChoice

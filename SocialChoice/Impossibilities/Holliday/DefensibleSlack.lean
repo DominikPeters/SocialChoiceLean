@@ -15,9 +15,9 @@ def DefensibleSlack {V A : Type} [Fintype V] [Fintype A]
 
 lemma mem_defensibleSet_iff {V A : Type} [Fintype V] [Fintype A]
     (P : Profile V A) (x : A) :
-    x ∈ defensibleSet P ↔ ∀ y, ∃ z, margin P z y ≥ margin P y x := by
+    x ∈ defensibleSetOf P ↔ ∀ y, ∃ z, margin P z y ≥ margin P y x := by
   classical
-  simp [defensibleSet]
+  simp [defensibleSetOf]
 
 lemma defensibleSlack_add_newVoter
     {U A : Type} [DecidableEq U] [Fintype A]
@@ -44,7 +44,7 @@ lemma defensible_add_newVoter_of_slack2
     (Q : Profile (Electorate U (insert u V)) A)
     (hagree : ∀ v : Electorate U V, Q.pref (liftVoter (u := u) v) = P.pref v)
     {x : A} (hslack : DefensibleSlack P x 2) :
-    x ∈ defensibleSet Q := by
+    x ∈ defensibleSetOf Q := by
   classical
   have hslack' : DefensibleSlack Q x 0 :=
     defensibleSlack_add_newVoter (hu := hu) P Q hagree hslack
@@ -61,7 +61,7 @@ lemma defensible_add_newVoter_of_slack4
     (Q : Profile (Electorate U (insert u V)) A)
     (hagree : ∀ v : Electorate U V, Q.pref (liftVoter (u := u) v) = P.pref v)
     {x : A} (hslack : DefensibleSlack P x 4) :
-    x ∈ defensibleSet Q := by
+    x ∈ defensibleSetOf Q := by
   classical
   have hslack' : DefensibleSlack Q x 2 :=
     defensibleSlack_add_newVoter (hu := hu) P Q hagree hslack

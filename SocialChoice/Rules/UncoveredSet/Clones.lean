@@ -433,18 +433,18 @@ lemma uncovered_nonclone_iff_reduced
       exact (hunc _ hneq hred).elim
 
 set_option compiler.extract_closed false in
-theorem uncoveredSet_independenceOfClones : IndependenceOfClones UncoveredSet := by
+theorem uncoveredSet_independenceOfClones : IndependenceOfClones uncoveredSet := by
   intro V A _ _ _ P X x hX hx
   classical
   refine ⟨?_, ?_⟩
   · intro c hc
-    simpa [UncoveredSet, uncoveredSet] using
+    simpa [uncoveredSet, uncoveredSetOf] using
       (uncovered_nonclone_iff_reduced (P := P) (X := X) (x := x) (hX := hX) (hx := hx)
         (c := c) hc)
   · constructor
     · rintro ⟨y, hyX, hyMem⟩
       have hyUnc : uncovered P y := by
-        simpa [UncoveredSet, uncoveredSet] using hyMem
+        simpa [uncoveredSet, uncoveredSetOf] using hyMem
       have hrepUnc : uncovered (removeClonesExcept P X x) (repCand X x) := by
         intro t htrep hcov
         by_cases htX : (t : A) ∈ X
@@ -468,10 +468,10 @@ theorem uncoveredSet_independenceOfClones : IndependenceOfClones UncoveredSet :=
             intro hEq
             exact htX (by simpa [hEq] using hyX)
           exact (hyUnc (t : A) hneq hty).elim
-      simpa [UncoveredSet, uncoveredSet, repCand] using hrepUnc
+      simpa [uncoveredSet, uncoveredSetOf, repCand] using hrepUnc
     · intro hrepMem
       have hrepUnc : uncovered (removeClonesExcept P X x) (repCand X x) := by
-        simpa [UncoveredSet, uncoveredSet, repCand] using hrepMem
+        simpa [uncoveredSet, uncoveredSetOf, repCand] using hrepMem
       let Sx : Finset A := Finset.univ.filter (fun a => a ∈ X)
       have hSx_ne : Sx.Nonempty := by
         rcases hX.1 with ⟨a, haX⟩
@@ -519,7 +519,7 @@ theorem uncoveredSet_independenceOfClones : IndependenceOfClones UncoveredSet :=
             exact hzX (by simpa [this] using hx)
           exact (hrepUnc _ hneq hred).elim
       refine ⟨y, hyX, ?_⟩
-      simpa [UncoveredSet, uncoveredSet] using hyUnc
+      simpa [uncoveredSet, uncoveredSetOf] using hyUnc
 
 end
 

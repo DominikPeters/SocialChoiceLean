@@ -26,7 +26,7 @@ lemma covers_of_dominatesSet {V A : Type} [Fintype V] [Fintype A]
 
 lemma uncoveredSet_subset_of_dominatesSet {V A : Type} [Fintype V] [Fintype A]
     (P : Profile V A) {S : Finset A} (hS : dominatesSet P S) :
-    uncoveredSet (P := P) ⊆ S := by
+    uncoveredSetOf (P := P) ⊆ S := by
   classical
   intro x hx
   by_contra hxS
@@ -39,19 +39,19 @@ lemma uncoveredSet_subset_of_dominatesSet {V A : Type} [Fintype V] [Fintype A]
     exact hxS hyS
   exact (huncov y hyx) hcov
 
-/-- UncoveredSet satisfies the Smith criterion. -/
-theorem UncoveredSet_smithCriterion : SmithCriterion UncoveredSet := by
+/-- uncoveredSet satisfies the Smith criterion. -/
+theorem uncoveredSet_smithCriterion : SmithCriterion uncoveredSet := by
   intro V A _ _ P
   classical
   by_cases hA : Nonempty A
   · let _ : Nonempty A := hA
-    have hsubset : uncoveredSet (P := P) ⊆ topCycleSet (P := P) :=
+    have hsubset : uncoveredSetOf (P := P) ⊆ topCycleSet (P := P) :=
       uncoveredSet_subset_of_dominatesSet (P := P)
         (S := topCycleSet (P := P)) (topCycleSet_dominates (P := P))
-    simpa [UncoveredSet, topCycle, hA] using hsubset
-  · have hsubset : uncoveredSet (P := P) ⊆ (∅ : Finset A) := by
+    simpa [uncoveredSet, topCycle, hA] using hsubset
+  · have hsubset : uncoveredSetOf (P := P) ⊆ (∅ : Finset A) := by
       intro x hx
       exact (False.elim (hA ⟨x⟩))
-    simpa [UncoveredSet, topCycle, hA] using hsubset
+    simpa [uncoveredSet, topCycle, hA] using hsubset
 
 end SocialChoice

@@ -24,7 +24,7 @@ theorem no_positiveInvolvement_condorcet_resolvability_holliday
   classical
   -- P1: winners are defensible; d is a Condorcet loser, so a must win.
   obtain ⟨x, hx⟩ := hf P1Profile
-  have hxdef : x ∈ defensibleSet P1Profile :=
+  have hxdef : x ∈ defensibleSetOf P1Profile :=
     (refines_defensible_P1 (f := f) hpos hcond) hx
   have hxad : x ∈ ({a, d} : Finset A5) := by
     simpa [defensibleSet_P1] using hxdef
@@ -106,14 +106,14 @@ theorem no_positiveInvolvement_condorcet_resolvability_holliday
     exact hQ3pref
 
   have hsubset_Q3 : f Q3 ⊆ ({b, d} : Finset A5) := by
-    have href : f Q3 ⊆ defensibleSet Q3 :=
+    have href : f Q3 ⊆ defensibleSetOf Q3 :=
       refines_defensible_P3_add_newVoter (hpos := hpos) (hcond := hcond)
         (hu := by
           intro hu
           have hIio : u2 ∈ Finset.Iio u280 := votersP3_subset_Iio_u280 hu
           have hlt : u2 < u280 := by simpa using hIio
           exact (lt_irrefl u280) hlt) (Q := Q3) hagree3
-    have hdef : defensibleSet Q3 ⊆ ({b, d} : Finset A5) :=
+    have hdef : defensibleSetOf Q3 ⊆ ({b, d} : Finset A5) :=
       defensibleSet_P3_add_newVoter_subset (hu := by
         intro hu
         have hIio : u2 ∈ Finset.Iio u280 := votersP3_subset_Iio_u280 hu
@@ -349,7 +349,7 @@ theorem no_positiveInvolvement_condorcet_resolvability_holliday
       _ = Q2'.pref v := by symm; exact hright
 
   have hsubset_Q5 : f Q5 ⊆ ({d} : Finset A5) := by
-    have href : f Q5 ⊆ defensibleSet Q5 :=
+    have href : f Q5 ⊆ defensibleSetOf Q5 :=
       refines_defensible_P5_add_twoVoters (hpos := hpos) (hcond := hcond)
         (hu2 := by
           intro hu2P5
@@ -366,7 +366,7 @@ theorem no_positiveInvolvement_condorcet_resolvability_holliday
             have hcontra : ¬ u4 < u280 := by decide
             exact (hcontra hlt).elim)
         (Q2 := Q2') (Q := Q5) (hagree2 := hagree2P5) (hagree4 := hagree4P5)
-    have hdef : defensibleSet Q5 ⊆ ({d} : Finset A5) :=
+    have hdef : defensibleSetOf Q5 ⊆ ({d} : Finset A5) :=
       defensibleSet_P5_add_twoVoters_subset (hu2 := by
         intro hu2P5
         have hIio : u2 ∈ Finset.Iio u280 := votersP5_subset_Iio_u280 hu2P5

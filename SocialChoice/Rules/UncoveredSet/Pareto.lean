@@ -68,15 +68,15 @@ private lemma covers_of_unanimous_pref {V A : Type} [Fintype V] [Fintype A] [Non
       simpa [hskew'] using this
     simpa [margin_pos] using hpos
 
-/-- UncoveredSet satisfies Pareto efficiency. -/
-theorem uncoveredSet_pareto_efficiency : ParetoEfficiency UncoveredSet := by
+/-- uncoveredSet satisfies Pareto efficiency. -/
+theorem uncoveredSet_pareto_efficiency : ParetoEfficiency uncoveredSet := by
   intro V A _ _ _ P c d hcd
   classical
   intro hd
   have hcov : covers P c d :=
     covers_of_unanimous_pref (P := P) (x := c) (y := d) hcd
   have huncov : uncovered P d := by
-    simpa [UncoveredSet, uncoveredSet] using hd
+    simpa [uncoveredSet, uncoveredSetOf] using hd
   have hne : c ≠ d := ne_of_margin_pos (P := P) (a := c) (b := d) hcov.1
   exact (huncov c hne hcov)
 

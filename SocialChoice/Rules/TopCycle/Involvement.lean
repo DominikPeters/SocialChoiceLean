@@ -159,53 +159,60 @@ lemma votersPreferring_profile2_0_1 :
     votersPreferring profile2 (0 : Fin 3) (1 : Fin 3) =
       ({⟨1, by simp [voters2, voters1]⟩} :
         Finset (Electorate (Fin 2) voters2)) := by
-  classical
   rw [votersPreferring_profile2_eq_filter]
   ext v
+  rw [Finset.mem_filter_univ, Finset.mem_singleton]
   cases v with
   | mk val hmem =>
-      fin_cases val <;>
-        (simp [voters2, voters1, ballots2, ballot120, ballot201, prefersInList] at hmem ⊢;
-          all_goals decide +revert)
+      simp only [ballots2, ballot120, ballot201, prefersInList, voters2, voters1]
+      fin_cases val
+      all_goals simp
+      all_goals rfl
 
 lemma votersPreferring_profile2_1_0 :
     votersPreferring profile2 (1 : Fin 3) (0 : Fin 3) =
       ({⟨0, by simp [voters2, voters1]⟩} :
         Finset (Electorate (Fin 2) voters2)) := by
-  classical
   rw [votersPreferring_profile2_eq_filter]
   ext v
+  rw [Finset.mem_filter_univ]
+  simp only [Finset.mem_insert, Finset.mem_singleton]
   cases v with
   | mk val hmem =>
-      fin_cases val <;>
-        (simp [voters2, voters1, ballots2, ballot120, ballot201, prefersInList] at hmem ⊢;
-          all_goals decide +revert)
+      simp only [voters2, voters1, ballots2, ballot120, ballot201, prefersInList]
+      fin_cases val
+      all_goals simp
+      all_goals rfl
 
 lemma votersPreferring_profile2_2_1 :
     votersPreferring profile2 (2 : Fin 3) (1 : Fin 3) =
       ({⟨1, by simp [voters2, voters1]⟩} :
         Finset (Electorate (Fin 2) voters2)) := by
-  classical
   rw [votersPreferring_profile2_eq_filter]
   ext v
+  rw [Finset.mem_filter_univ]
+  simp only [Finset.mem_insert, Finset.mem_singleton]
   cases v with
   | mk val hmem =>
-      fin_cases val <;>
-        (simp [voters2, voters1, ballots2, ballot120, ballot201, prefersInList] at hmem ⊢;
-          all_goals decide +revert)
+      simp only [voters2, voters1, ballots2, ballot120, ballot201, prefersInList]
+      fin_cases val
+      all_goals simp
+      all_goals rfl
 
 lemma votersPreferring_profile2_1_2 :
     votersPreferring profile2 (1 : Fin 3) (2 : Fin 3) =
       ({⟨0, by simp [voters2, voters1]⟩} :
         Finset (Electorate (Fin 2) voters2)) := by
-  classical
   rw [votersPreferring_profile2_eq_filter]
   ext v
+  rw [Finset.mem_filter_univ]
+  simp only [Finset.mem_insert, Finset.mem_singleton]
   cases v with
   | mk val hmem =>
-      fin_cases val <;>
-        (simp [voters2, voters1, ballots2, ballot120, ballot201, prefersInList] at hmem ⊢;
-          all_goals decide +revert)
+      simp only [voters2, voters1, ballots2, ballot120, ballot201, prefersInList]
+      fin_cases val
+      all_goals simp
+      all_goals rfl
 
 private lemma margin_profile2_0_1 : margin profile2 (0 : Fin 3) (1 : Fin 3) = 0 := by
   classical

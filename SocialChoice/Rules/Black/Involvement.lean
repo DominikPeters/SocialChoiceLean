@@ -118,14 +118,20 @@ lemma votersPreferring_profile8_0_2 :
         ⟨2, by simp [voters8]⟩,
         ⟨3, by simp [voters8]⟩} :
         Finset (Electorate (Fin 9) voters8)) := by
-  classical
   rw [votersPreferring_profile8_eq_filter]
   ext v
+  rw [Finset.mem_filter_univ]
+  simp only [Finset.mem_insert, Finset.mem_singleton]
   cases v with
   | mk val hmem =>
-      fin_cases val <;>
-        (simp [ballots9, ballotABC, ballotBCA, ballotCAB, ballotBAC, voters8,
-          prefersInList] at hmem ⊢ <;> decide +revert)
+      simp only [ballots9, ballotABC, ballotBCA, ballotCAB, ballotBAC, voters8, prefersInList, ListBallot.mk']
+      fin_cases val
+      all_goals (try dsimp only)
+      all_goals (try simp_all [ballots9, ballotABC, ballotBCA, ballotCAB, ballotBAC, voters8, voters9, prefersInList, ListBallot.mk'])
+      all_goals (try simp)
+      all_goals (try simp_all [ballots9, ballotABC, ballotBCA, ballotCAB, ballotBAC, voters8, voters9, prefersInList, ListBallot.mk'])
+      all_goals (try exact voters8_not_mem hmem)
+      all_goals (try decide)
 
 lemma votersPreferring_profile8_1_0 :
     votersPreferring profile8 (1 : Fin 3) (0 : Fin 3) =
@@ -133,27 +139,39 @@ lemma votersPreferring_profile8_1_0 :
         ⟨5, by simp [voters8]⟩,
         ⟨6, by simp [voters8]⟩} :
         Finset (Electorate (Fin 9) voters8)) := by
-  classical
   rw [votersPreferring_profile8_eq_filter]
   ext v
+  rw [Finset.mem_filter_univ]
+  simp only [Finset.mem_insert, Finset.mem_singleton]
   cases v with
   | mk val hmem =>
-      fin_cases val <;>
-        (simp [ballots9, ballotABC, ballotBCA, ballotCAB, ballotBAC, voters8,
-          prefersInList] at hmem ⊢ <;> decide +revert)
+      simp only [ballots9, ballotABC, ballotBCA, ballotCAB, ballotBAC, voters8, prefersInList, ListBallot.mk']
+      fin_cases val
+      all_goals (try dsimp only)
+      all_goals (try simp_all [ballots9, ballotABC, ballotBCA, ballotCAB, ballotBAC, voters8, voters9, prefersInList, ListBallot.mk'])
+      all_goals (try simp)
+      all_goals (try simp_all [ballots9, ballotABC, ballotBCA, ballotCAB, ballotBAC, voters8, voters9, prefersInList, ListBallot.mk'])
+      all_goals (try exact voters8_not_mem hmem)
+      all_goals (try decide)
 
 lemma votersPreferring_profile8_2_1 :
     votersPreferring profile8 (2 : Fin 3) (1 : Fin 3) =
       ({⟨7, by simp [voters8]⟩} :
         Finset (Electorate (Fin 9) voters8)) := by
-  classical
   rw [votersPreferring_profile8_eq_filter]
   ext v
+  rw [Finset.mem_filter_univ]
+  simp only [Finset.mem_insert, Finset.mem_singleton]
   cases v with
   | mk val hmem =>
-      fin_cases val <;>
-        (simp [ballots9, ballotABC, ballotBCA, ballotCAB, ballotBAC, voters8,
-          prefersInList] at hmem ⊢ <;> decide +revert)
+      simp only [ballots9, ballotABC, ballotBCA, ballotCAB, ballotBAC, voters8, prefersInList, ListBallot.mk']
+      fin_cases val
+      all_goals (try dsimp only)
+      all_goals (try simp_all [ballots9, ballotABC, ballotBCA, ballotCAB, ballotBAC, voters8, voters9, prefersInList, ListBallot.mk'])
+      all_goals (try simp)
+      all_goals (try simp_all [ballots9, ballotABC, ballotBCA, ballotCAB, ballotBAC, voters8, voters9, prefersInList, ListBallot.mk'])
+      all_goals (try exact voters8_not_mem hmem)
+      all_goals (try decide)
 
 lemma votersPreferring_profile9_0_1 :
     votersPreferring profile9 (0 : Fin 3) (1 : Fin 3) =
@@ -163,14 +181,19 @@ lemma votersPreferring_profile9_0_1 :
         ⟨3, by simp [voters8]⟩,
         ⟨7, by simp [voters8]⟩} :
         Finset (Electorate (Fin 9) (insert (8 : Fin 9) voters8))) := by
-  classical
   rw [votersPreferring_profile9_eq_filter]
   ext v
+  rw [Finset.mem_filter_univ]
+  simp only [Finset.mem_insert, Finset.mem_singleton]
   cases v with
   | mk val hmem =>
-      fin_cases val <;>
-        (simp [ballots9, ballotABC, ballotBCA, ballotCAB, ballotBAC, voters8,
-          prefersInList] at hmem ⊢; decide +revert)
+      simp only [ballots9, ballotABC, ballotBCA, ballotCAB, ballotBAC, voters8, prefersInList, ListBallot.mk']
+      fin_cases val
+      all_goals (try dsimp only)
+      all_goals (try simp_all [ballots9, ballotABC, ballotBCA, ballotCAB, ballotBAC, voters8, voters9, prefersInList, ListBallot.mk'])
+      all_goals (try simp)
+      all_goals (try simp_all [ballots9, ballotABC, ballotBCA, ballotCAB, ballotBAC, voters8, voters9, prefersInList, ListBallot.mk'])
+      all_goals (try decide)
 
 lemma votersPreferring_profile9_0_2 :
     votersPreferring profile9 (0 : Fin 3) (2 : Fin 3) =
@@ -180,20 +203,26 @@ lemma votersPreferring_profile9_0_2 :
         ⟨3, by simp [voters8]⟩,
         ⟨8, by simp [voters8]⟩} :
         Finset (Electorate (Fin 9) (insert (8 : Fin 9) voters8))) := by
-  classical
   rw [votersPreferring_profile9_eq_filter]
   ext v
+  rw [Finset.mem_filter_univ]
+  simp only [Finset.mem_insert, Finset.mem_singleton]
   cases v with
   | mk val hmem =>
-      fin_cases val <;>
-        (simp [ballots9, ballotABC, ballotBCA, ballotCAB, ballotBAC, voters8,
-          prefersInList] at hmem ⊢; decide +revert)
+      simp only [ballots9, ballotABC, ballotBCA, ballotCAB, ballotBAC, voters8, prefersInList, ListBallot.mk']
+      fin_cases val
+      all_goals (try dsimp only)
+      all_goals (try simp_all [ballots9, ballotABC, ballotBCA, ballotCAB, ballotBAC, voters8, voters9, prefersInList, ListBallot.mk'])
+      all_goals (try simp)
+      all_goals (try simp_all [ballots9, ballotABC, ballotBCA, ballotCAB, ballotBAC, voters8, voters9, prefersInList, ListBallot.mk'])
+      all_goals (try decide)
 
 lemma not_strictMajority_profile8_0_2 :
     ¬ StrictMajority (votersPreferring profile8 (0 : Fin 3) (2 : Fin 3)) := by
   classical
   have hcard : (votersPreferring profile8 (0 : Fin 3) (2 : Fin 3)).card = 4 := by
     simp [votersPreferring_profile8_0_2]
+    try decide
   simp [StrictMajority, hcard, voters8_card]
 
 lemma not_strictMajority_profile8_1_0 :
@@ -201,6 +230,7 @@ lemma not_strictMajority_profile8_1_0 :
   classical
   have hcard : (votersPreferring profile8 (1 : Fin 3) (0 : Fin 3)).card = 3 := by
     simp [votersPreferring_profile8_1_0]
+    try decide
   simp [StrictMajority, hcard, voters8_card]
 
 lemma not_strictMajority_profile8_2_1 :
@@ -208,6 +238,7 @@ lemma not_strictMajority_profile8_2_1 :
   classical
   have hcard : (votersPreferring profile8 (2 : Fin 3) (1 : Fin 3)).card = 1 := by
     simp [votersPreferring_profile8_2_1]
+    try decide
   simp [StrictMajority, hcard, voters8_card]
 
 lemma no_condorcet_profile8 : ¬ ∃ x, CondorcetWinner profile8 x := by
@@ -227,6 +258,7 @@ lemma strictMajority_profile9_0_1 :
   have hcard :
       (votersPreferring profile9 (0 : Fin 3) (1 : Fin 3)).card = 5 := by
     simp [votersPreferring_profile9_0_1]
+    try decide
   simp [StrictMajority, hcard, voters9_card]
 
 lemma strictMajority_profile9_0_2 :
@@ -235,6 +267,7 @@ lemma strictMajority_profile9_0_2 :
   have hcard :
       (votersPreferring profile9 (0 : Fin 3) (2 : Fin 3)).card = 5 := by
     simp [votersPreferring_profile9_0_2]
+    try decide
   simp [StrictMajority, hcard, voters9_card]
 
 lemma condorcet_profile9 : CondorcetWinner profile9 (0 : Fin 3) := by

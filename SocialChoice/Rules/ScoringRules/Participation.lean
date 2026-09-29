@@ -67,7 +67,9 @@ lemma scoreCandidate_add_newVoter {U A : Type} [DecidableEq U] [Fintype A] [Deci
         {v : Electorate U (insert u V) // v ≠ newVoter (u := u) (V := V) hu} =>
           (scoreFun (rank (Q.pref v.1) c) : Int)) ?_
     intro v
-    simp [oldVoterEquiv, hagree]
+    have hEq : ((oldVoterEquiv (u := u) (V := V) hu) v : Electorate U (insert u V)) =
+        liftVoter (u := u) v := rfl
+    rw [hEq, hagree v]
   have hsumQ' :
       (∑ v : Electorate U (insert u V), scoreFun (rank (Q.pref v) c)) =
         scoreFun (rank (Q.pref (newVoter (u := u) (V := V) hu)) c) +

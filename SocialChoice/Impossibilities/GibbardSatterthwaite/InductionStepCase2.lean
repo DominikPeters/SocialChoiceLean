@@ -1284,8 +1284,10 @@ lemma diffVoters_updateProfile_eq_erase
   ext v
   by_cases hve : v = v₃
   · subst hve
-    simp [diffVoters, hv₁, hv₂, updateProfile]
-  · simp [diffVoters, updateProfile, hve]
+    rw [diffVoters_mem_iff, Finset.mem_erase, diffVoters_mem_iff]
+    simp [updateProfile]
+  · rw [diffVoters_mem_iff, Finset.mem_erase, diffVoters_mem_iff]
+    simp [updateProfile, hve, and_comm, and_assoc, and_left_comm]
 
 /-!
 ### Step (v), one-voter change: if `v₁` is fully decisive, changing one other voter’s ballot

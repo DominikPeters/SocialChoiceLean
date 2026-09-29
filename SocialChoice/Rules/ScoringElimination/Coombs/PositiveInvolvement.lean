@@ -97,6 +97,13 @@ noncomputable def e7 : Fin 7 ≃ Electorate (Fin 7) voters7 :=
     left_inv := by intro x; rfl
     right_inv := by intro v; cases v; rfl }
 
+lemma voters7_card : Fintype.card (Electorate (Fin 7) voters7) = 7 := by
+  rw [Fintype.card_congr e7.symm]
+  simp
+
+lemma voters6_card : Fintype.card (Electorate (Fin 7) voters6) = 6 := by
+  decide
+
 noncomputable def e6_to : Fin 6 → Electorate (Fin 7) voters6
   | ⟨0, _⟩ => ⟨0, by simp [voters6]⟩
   | ⟨1, _⟩ => ⟨1, by simp [voters6]⟩
@@ -247,7 +254,8 @@ lemma scoreCandidate_profile7_0 : scoreCandidate profile7 scoreVec (0 : Fin 3) =
       (Finset.univ.filter (fun v => ¬ BottomRank profile7 v 0)).card = 4 := by
     have h := notBottom_card (P := profile7) (c := (0 : Fin 3)) (k := 3)
       votersBottom_profile7_0_card
-    simpa [voters7, voters6] using h
+    simp only [voters7_card] at h
+    omega
   calc
     scoreCandidate profile7 scoreVec (0 : Fin 3) =
         ((Finset.univ.filter (fun v => ¬ BottomRank profile7 v 0)).card : Int) := by
@@ -261,7 +269,8 @@ lemma scoreCandidate_profile7_1 : scoreCandidate profile7 scoreVec (1 : Fin 3) =
       (Finset.univ.filter (fun v => ¬ BottomRank profile7 v 1)).card = 5 := by
     have h := notBottom_card (P := profile7) (c := (1 : Fin 3)) (k := 2)
       votersBottom_profile7_1_card
-    simpa [voters7, voters6] using h
+    simp only [voters7_card] at h
+    omega
   calc
     scoreCandidate profile7 scoreVec (1 : Fin 3) =
         ((Finset.univ.filter (fun v => ¬ BottomRank profile7 v 1)).card : Int) := by
@@ -275,7 +284,8 @@ lemma scoreCandidate_profile7_2 : scoreCandidate profile7 scoreVec (2 : Fin 3) =
       (Finset.univ.filter (fun v => ¬ BottomRank profile7 v 2)).card = 5 := by
     have h := notBottom_card (P := profile7) (c := (2 : Fin 3)) (k := 2)
       votersBottom_profile7_2_card
-    simpa [voters7, voters6] using h
+    simp only [voters7_card] at h
+    omega
   calc
     scoreCandidate profile7 scoreVec (2 : Fin 3) =
         ((Finset.univ.filter (fun v => ¬ BottomRank profile7 v 2)).card : Int) := by
@@ -361,7 +371,8 @@ lemma scoreCandidate_profile6_0 : scoreCandidate profile6 scoreVec (0 : Fin 3) =
       (Finset.univ.filter (fun v => ¬ BottomRank profile6 v 0)).card = 4 := by
     have h := notBottom_card (P := profile6) (c := (0 : Fin 3)) (k := 2)
       votersBottom_profile6_0_card
-    simpa [voters6] using h
+    simp only [voters6_card] at h
+    omega
   calc
     scoreCandidate profile6 scoreVec (0 : Fin 3) =
         ((Finset.univ.filter (fun v => ¬ BottomRank profile6 v 0)).card : Int) := by
@@ -375,7 +386,8 @@ lemma scoreCandidate_profile6_1 : scoreCandidate profile6 scoreVec (1 : Fin 3) =
       (Finset.univ.filter (fun v => ¬ BottomRank profile6 v 1)).card = 4 := by
     have h := notBottom_card (P := profile6) (c := (1 : Fin 3)) (k := 2)
       votersBottom_profile6_1_card
-    simpa [voters6] using h
+    simp only [voters6_card] at h
+    omega
   calc
     scoreCandidate profile6 scoreVec (1 : Fin 3) =
         ((Finset.univ.filter (fun v => ¬ BottomRank profile6 v 1)).card : Int) := by
@@ -389,7 +401,8 @@ lemma scoreCandidate_profile6_2 : scoreCandidate profile6 scoreVec (2 : Fin 3) =
       (Finset.univ.filter (fun v => ¬ BottomRank profile6 v 2)).card = 4 := by
     have h := notBottom_card (P := profile6) (c := (2 : Fin 3)) (k := 2)
       votersBottom_profile6_2_card
-    simpa [voters6] using h
+    simp only [voters6_card] at h
+    omega
   calc
     scoreCandidate profile6 scoreVec (2 : Fin 3) =
         ((Finset.univ.filter (fun v => ¬ BottomRank profile6 v 2)).card : Int) := by

@@ -813,11 +813,61 @@ theorem p5Named_eq_reindex_p5
       Finset.mem_singleton] at hr'
     exact hr'
   rcases hr with rfl | rfl | rfl | rfl | rfl
-  all_goals
-    simp [p5NamedProfile, p5NamedBallot, reindexVoters, p5Profile, p5Ballot,
-      profileOfListBallots, fiveVoterEquiv, fiveVoterIndex, hab, hac, had, hae, hbc,
-      hbd, hbe, hcd, hce, hde, hab.symm, hac.symm, had.symm, hae.symm, hbc.symm,
-      hbd.symm, hbe.symm, hcd.symm, hce.symm, hde.symm] ; rfl
+  · have hv : (fiveVoterEquiv hab hac had hae hbc hbd hbe hcd hce hde) ⟨r, hrmem⟩ = 0 := by
+      show fiveVoterIndex r b c d e ⟨r, hrmem⟩ = 0
+      simp [fiveVoterIndex, hab, hac, had, hae, hbc, hbd, hbe, hcd, hce, hde,
+      hab.symm, hac.symm, had.symm, hae.symm, hbc.symm, hbd.symm, hbe.symm,
+      hcd.symm, hce.symm, hde.symm]
+    simp only [reindexVoters, p5NamedProfile, p5Profile, profileOfListBallots]
+    rw [hv]
+    simp [p5NamedBallot, p5Ballot, hab, hac, had, hae, hbc, hbd, hbe, hcd, hce, hde,
+      hab.symm, hac.symm, had.symm, hae.symm, hbc.symm, hbd.symm, hbe.symm,
+      hcd.symm, hce.symm, hde.symm]
+    rfl
+  · have hv : (fiveVoterEquiv hab hac had hae hbc hbd hbe hcd hce hde) ⟨r, hrmem⟩ = 1 := by
+      show fiveVoterIndex a r c d e ⟨r, hrmem⟩ = 1
+      simp [fiveVoterIndex, hab, hac, had, hae, hbc, hbd, hbe, hcd, hce, hde,
+      hab.symm, hac.symm, had.symm, hae.symm, hbc.symm, hbd.symm, hbe.symm,
+      hcd.symm, hce.symm, hde.symm]
+    simp only [reindexVoters, p5NamedProfile, p5Profile, profileOfListBallots]
+    rw [hv]
+    simp [p5NamedBallot, p5Ballot, hab, hac, had, hae, hbc, hbd, hbe, hcd, hce, hde,
+      hab.symm, hac.symm, had.symm, hae.symm, hbc.symm, hbd.symm, hbe.symm,
+      hcd.symm, hce.symm, hde.symm]
+    rfl
+  · have hv : (fiveVoterEquiv hab hac had hae hbc hbd hbe hcd hce hde) ⟨r, hrmem⟩ = 2 := by
+      show fiveVoterIndex a b r d e ⟨r, hrmem⟩ = 2
+      simp [fiveVoterIndex, hab, hac, had, hae, hbc, hbd, hbe, hcd, hce, hde,
+      hab.symm, hac.symm, had.symm, hae.symm, hbc.symm, hbd.symm, hbe.symm,
+      hcd.symm, hce.symm, hde.symm]
+    simp only [reindexVoters, p5NamedProfile, p5Profile, profileOfListBallots]
+    rw [hv]
+    simp [p5NamedBallot, p5Ballot, hab, hac, had, hae, hbc, hbd, hbe, hcd, hce, hde,
+      hab.symm, hac.symm, had.symm, hae.symm, hbc.symm, hbd.symm, hbe.symm,
+      hcd.symm, hce.symm, hde.symm]
+    rfl
+  · have hv : (fiveVoterEquiv hab hac had hae hbc hbd hbe hcd hce hde) ⟨r, hrmem⟩ = 3 := by
+      show fiveVoterIndex a b c r e ⟨r, hrmem⟩ = 3
+      simp [fiveVoterIndex, hab, hac, had, hae, hbc, hbd, hbe, hcd, hce, hde,
+      hab.symm, hac.symm, had.symm, hae.symm, hbc.symm, hbd.symm, hbe.symm,
+      hcd.symm, hce.symm, hde.symm]
+    simp only [reindexVoters, p5NamedProfile, p5Profile, profileOfListBallots]
+    rw [hv]
+    simp [p5NamedBallot, p5Ballot, hab, hac, had, hae, hbc, hbd, hbe, hcd, hce, hde,
+      hab.symm, hac.symm, had.symm, hae.symm, hbc.symm, hbd.symm, hbe.symm,
+      hcd.symm, hce.symm, hde.symm]
+    rfl
+  · have hv : (fiveVoterEquiv hab hac had hae hbc hbd hbe hcd hce hde) ⟨r, hrmem⟩ = 4 := by
+      show fiveVoterIndex a b c d r ⟨r, hrmem⟩ = 4
+      simp [fiveVoterIndex, hab, hac, had, hae, hbc, hbd, hbe, hcd, hce, hde,
+      hab.symm, hac.symm, had.symm, hae.symm, hbc.symm, hbd.symm, hbe.symm,
+      hcd.symm, hce.symm, hde.symm]
+    simp only [reindexVoters, p5NamedProfile, p5Profile, profileOfListBallots]
+    rw [hv]
+    simp [p5NamedBallot, p5Ballot, hab, hac, had, hae, hbc, hbd, hbe, hcd, hce, hde,
+      hab.symm, hac.symm, had.symm, hae.symm, hbc.symm, hbd.symm, hbe.symm,
+      hcd.symm, hce.symm, hde.symm]
+    rfl
 
 theorem p5Named_condorcetWinner
     (x : Fin 3) {a b c d e : Fin 8}
@@ -1161,14 +1211,125 @@ theorem cast_union_cycle_p2_eq_reindex_cyclePlusP2
       Finset.mem_insert, Finset.mem_insert, Finset.mem_singleton] at hr'
     exact hr'
   rcases hr with rfl | rfl | rfl | rfl | rfl | rfl | rfl
-  all_goals
-    simp [castProfile, unionNamedProfiles, reindexVoters, cycleNamedProfile, cycleNamedBallot,
-      p2NamedProfile, p2NamedBallot, cyclePlusP2Profile, cyclePlusP2Ballot, profileOfListBallots,
-      sevenVoterEquiv, sevenVoterIndex, hab, hac, hap, hau, hav, haw, hbc, hbp, hbu,
-      hbv, hbw, hcp, hcu, hcv, hcw, hpu, hpv, hpw, huv, huw, hvw,
-      hab.symm, hac.symm, hap.symm, hau.symm, hav.symm, haw.symm, hbc.symm, hbp.symm,
-      hbu.symm, hbv.symm, hbw.symm, hcp.symm, hcu.symm, hcv.symm, hcw.symm,
-      hpu.symm, hpv.symm, hpw.symm, huv.symm, huw.symm, hvw.symm] ; rfl
+  · have hv : (sevenVoterEquiv hab hac hap hau hav haw hbc hbp hbu hbv hbw hcp hcu hcv hcw hpu hpv hpw huv huw hvw) ⟨r, hrmem⟩ = 0 := by
+      show sevenVoterIndex r b c p u v w ⟨r, hrmem⟩ = 0
+      simp [sevenVoterIndex, hab, hac, hap, hau, hav, haw, hbc, hbp,
+      hbu, hbv, hbw, hcp, hcu, hcv, hcw, hpu,
+      hpv, hpw, huv, huw, hvw, hab.symm, hac.symm, hap.symm,
+      hau.symm, hav.symm, haw.symm, hbc.symm, hbp.symm, hbu.symm, hbv.symm, hbw.symm,
+      hcp.symm, hcu.symm, hcv.symm, hcw.symm, hpu.symm, hpv.symm, hpw.symm, huv.symm,
+      huw.symm, hvw.symm]
+    simp only [castProfile, unionNamedProfiles, reindexVoters, cycleNamedProfile, p2NamedProfile, cyclePlusP2Profile, profileOfListBallots]
+    rw [hv]
+    simp [cycleNamedBallot, p2NamedBallot, cyclePlusP2Ballot, hab, hac, hap, hau, hav, haw, hbc, hbp,
+      hbu, hbv, hbw, hcp, hcu, hcv, hcw, hpu,
+      hpv, hpw, huv, huw, hvw, hab.symm, hac.symm, hap.symm,
+      hau.symm, hav.symm, haw.symm, hbc.symm, hbp.symm, hbu.symm, hbv.symm, hbw.symm,
+      hcp.symm, hcu.symm, hcv.symm, hcw.symm, hpu.symm, hpv.symm, hpw.symm, huv.symm,
+      huw.symm, hvw.symm]
+    rfl
+  · have hv : (sevenVoterEquiv hab hac hap hau hav haw hbc hbp hbu hbv hbw hcp hcu hcv hcw hpu hpv hpw huv huw hvw) ⟨r, hrmem⟩ = 1 := by
+      show sevenVoterIndex a r c p u v w ⟨r, hrmem⟩ = 1
+      simp [sevenVoterIndex, hab, hac, hap, hau, hav, haw, hbc, hbp,
+      hbu, hbv, hbw, hcp, hcu, hcv, hcw, hpu,
+      hpv, hpw, huv, huw, hvw, hab.symm, hac.symm, hap.symm,
+      hau.symm, hav.symm, haw.symm, hbc.symm, hbp.symm, hbu.symm, hbv.symm, hbw.symm,
+      hcp.symm, hcu.symm, hcv.symm, hcw.symm, hpu.symm, hpv.symm, hpw.symm, huv.symm,
+      huw.symm, hvw.symm]
+    simp only [castProfile, unionNamedProfiles, reindexVoters, cycleNamedProfile, p2NamedProfile, cyclePlusP2Profile, profileOfListBallots]
+    rw [hv]
+    simp [cycleNamedBallot, p2NamedBallot, cyclePlusP2Ballot, hab, hac, hap, hau, hav, haw, hbc, hbp,
+      hbu, hbv, hbw, hcp, hcu, hcv, hcw, hpu,
+      hpv, hpw, huv, huw, hvw, hab.symm, hac.symm, hap.symm,
+      hau.symm, hav.symm, haw.symm, hbc.symm, hbp.symm, hbu.symm, hbv.symm, hbw.symm,
+      hcp.symm, hcu.symm, hcv.symm, hcw.symm, hpu.symm, hpv.symm, hpw.symm, huv.symm,
+      huw.symm, hvw.symm]
+    rfl
+  · have hv : (sevenVoterEquiv hab hac hap hau hav haw hbc hbp hbu hbv hbw hcp hcu hcv hcw hpu hpv hpw huv huw hvw) ⟨r, hrmem⟩ = 2 := by
+      show sevenVoterIndex a b r p u v w ⟨r, hrmem⟩ = 2
+      simp [sevenVoterIndex, hab, hac, hap, hau, hav, haw, hbc, hbp,
+      hbu, hbv, hbw, hcp, hcu, hcv, hcw, hpu,
+      hpv, hpw, huv, huw, hvw, hab.symm, hac.symm, hap.symm,
+      hau.symm, hav.symm, haw.symm, hbc.symm, hbp.symm, hbu.symm, hbv.symm, hbw.symm,
+      hcp.symm, hcu.symm, hcv.symm, hcw.symm, hpu.symm, hpv.symm, hpw.symm, huv.symm,
+      huw.symm, hvw.symm]
+    simp only [castProfile, unionNamedProfiles, reindexVoters, cycleNamedProfile, p2NamedProfile, cyclePlusP2Profile, profileOfListBallots]
+    rw [hv]
+    simp [cycleNamedBallot, p2NamedBallot, cyclePlusP2Ballot, hab, hac, hap, hau, hav, haw, hbc, hbp,
+      hbu, hbv, hbw, hcp, hcu, hcv, hcw, hpu,
+      hpv, hpw, huv, huw, hvw, hab.symm, hac.symm, hap.symm,
+      hau.symm, hav.symm, haw.symm, hbc.symm, hbp.symm, hbu.symm, hbv.symm, hbw.symm,
+      hcp.symm, hcu.symm, hcv.symm, hcw.symm, hpu.symm, hpv.symm, hpw.symm, huv.symm,
+      huw.symm, hvw.symm]
+    rfl
+  · have hv : (sevenVoterEquiv hab hac hap hau hav haw hbc hbp hbu hbv hbw hcp hcu hcv hcw hpu hpv hpw huv huw hvw) ⟨r, hrmem⟩ = 3 := by
+      show sevenVoterIndex a b c r u v w ⟨r, hrmem⟩ = 3
+      simp [sevenVoterIndex, hab, hac, hap, hau, hav, haw, hbc, hbp,
+      hbu, hbv, hbw, hcp, hcu, hcv, hcw, hpu,
+      hpv, hpw, huv, huw, hvw, hab.symm, hac.symm, hap.symm,
+      hau.symm, hav.symm, haw.symm, hbc.symm, hbp.symm, hbu.symm, hbv.symm, hbw.symm,
+      hcp.symm, hcu.symm, hcv.symm, hcw.symm, hpu.symm, hpv.symm, hpw.symm, huv.symm,
+      huw.symm, hvw.symm]
+    simp only [castProfile, unionNamedProfiles, reindexVoters, cycleNamedProfile, p2NamedProfile, cyclePlusP2Profile, profileOfListBallots]
+    rw [hv]
+    simp [cycleNamedBallot, p2NamedBallot, cyclePlusP2Ballot, hab, hac, hap, hau, hav, haw, hbc, hbp,
+      hbu, hbv, hbw, hcp, hcu, hcv, hcw, hpu,
+      hpv, hpw, huv, huw, hvw, hab.symm, hac.symm, hap.symm,
+      hau.symm, hav.symm, haw.symm, hbc.symm, hbp.symm, hbu.symm, hbv.symm, hbw.symm,
+      hcp.symm, hcu.symm, hcv.symm, hcw.symm, hpu.symm, hpv.symm, hpw.symm, huv.symm,
+      huw.symm, hvw.symm]
+    rfl
+  · have hv : (sevenVoterEquiv hab hac hap hau hav haw hbc hbp hbu hbv hbw hcp hcu hcv hcw hpu hpv hpw huv huw hvw) ⟨r, hrmem⟩ = 4 := by
+      show sevenVoterIndex a b c p r v w ⟨r, hrmem⟩ = 4
+      simp [sevenVoterIndex, hab, hac, hap, hau, hav, haw, hbc, hbp,
+      hbu, hbv, hbw, hcp, hcu, hcv, hcw, hpu,
+      hpv, hpw, huv, huw, hvw, hab.symm, hac.symm, hap.symm,
+      hau.symm, hav.symm, haw.symm, hbc.symm, hbp.symm, hbu.symm, hbv.symm, hbw.symm,
+      hcp.symm, hcu.symm, hcv.symm, hcw.symm, hpu.symm, hpv.symm, hpw.symm, huv.symm,
+      huw.symm, hvw.symm]
+    simp only [castProfile, unionNamedProfiles, reindexVoters, cycleNamedProfile, p2NamedProfile, cyclePlusP2Profile, profileOfListBallots]
+    rw [hv]
+    simp [cycleNamedBallot, p2NamedBallot, cyclePlusP2Ballot, hab, hac, hap, hau, hav, haw, hbc, hbp,
+      hbu, hbv, hbw, hcp, hcu, hcv, hcw, hpu,
+      hpv, hpw, huv, huw, hvw, hab.symm, hac.symm, hap.symm,
+      hau.symm, hav.symm, haw.symm, hbc.symm, hbp.symm, hbu.symm, hbv.symm, hbw.symm,
+      hcp.symm, hcu.symm, hcv.symm, hcw.symm, hpu.symm, hpv.symm, hpw.symm, huv.symm,
+      huw.symm, hvw.symm]
+    rfl
+  · have hv : (sevenVoterEquiv hab hac hap hau hav haw hbc hbp hbu hbv hbw hcp hcu hcv hcw hpu hpv hpw huv huw hvw) ⟨r, hrmem⟩ = 5 := by
+      show sevenVoterIndex a b c p u r w ⟨r, hrmem⟩ = 5
+      simp [sevenVoterIndex, hab, hac, hap, hau, hav, haw, hbc, hbp,
+      hbu, hbv, hbw, hcp, hcu, hcv, hcw, hpu,
+      hpv, hpw, huv, huw, hvw, hab.symm, hac.symm, hap.symm,
+      hau.symm, hav.symm, haw.symm, hbc.symm, hbp.symm, hbu.symm, hbv.symm, hbw.symm,
+      hcp.symm, hcu.symm, hcv.symm, hcw.symm, hpu.symm, hpv.symm, hpw.symm, huv.symm,
+      huw.symm, hvw.symm]
+    simp only [castProfile, unionNamedProfiles, reindexVoters, cycleNamedProfile, p2NamedProfile, cyclePlusP2Profile, profileOfListBallots]
+    rw [hv]
+    simp [cycleNamedBallot, p2NamedBallot, cyclePlusP2Ballot, hab, hac, hap, hau, hav, haw, hbc, hbp,
+      hbu, hbv, hbw, hcp, hcu, hcv, hcw, hpu,
+      hpv, hpw, huv, huw, hvw, hab.symm, hac.symm, hap.symm,
+      hau.symm, hav.symm, haw.symm, hbc.symm, hbp.symm, hbu.symm, hbv.symm, hbw.symm,
+      hcp.symm, hcu.symm, hcv.symm, hcw.symm, hpu.symm, hpv.symm, hpw.symm, huv.symm,
+      huw.symm, hvw.symm]
+    rfl
+  · have hv : (sevenVoterEquiv hab hac hap hau hav haw hbc hbp hbu hbv hbw hcp hcu hcv hcw hpu hpv hpw huv huw hvw) ⟨r, hrmem⟩ = 6 := by
+      show sevenVoterIndex a b c p u v r ⟨r, hrmem⟩ = 6
+      simp [sevenVoterIndex, hab, hac, hap, hau, hav, haw, hbc, hbp,
+      hbu, hbv, hbw, hcp, hcu, hcv, hcw, hpu,
+      hpv, hpw, huv, huw, hvw, hab.symm, hac.symm, hap.symm,
+      hau.symm, hav.symm, haw.symm, hbc.symm, hbp.symm, hbu.symm, hbv.symm, hbw.symm,
+      hcp.symm, hcu.symm, hcv.symm, hcw.symm, hpu.symm, hpv.symm, hpw.symm, huv.symm,
+      huw.symm, hvw.symm]
+    simp only [castProfile, unionNamedProfiles, reindexVoters, cycleNamedProfile, p2NamedProfile, cyclePlusP2Profile, profileOfListBallots]
+    rw [hv]
+    simp [cycleNamedBallot, p2NamedBallot, cyclePlusP2Ballot, hab, hac, hap, hau, hav, haw, hbc, hbp,
+      hbu, hbv, hbw, hcp, hcu, hcv, hcw, hpu,
+      hpv, hpw, huv, huw, hvw, hab.symm, hac.symm, hap.symm,
+      hau.symm, hav.symm, haw.symm, hbc.symm, hbp.symm, hbu.symm, hbv.symm, hbw.symm,
+      hcp.symm, hcu.symm, hcv.symm, hcw.symm, hpu.symm, hpv.symm, hpw.symm, huv.symm,
+      huw.symm, hvw.symm]
+    rfl
 
 theorem cast_union_cycle_p3_eq_reindex_cyclePlusP3
     (x : Fin 3) {a b c p u q w : Fin 8}
@@ -1194,14 +1355,125 @@ theorem cast_union_cycle_p3_eq_reindex_cyclePlusP3
       Finset.mem_insert, Finset.mem_insert, Finset.mem_singleton] at hr'
     exact hr'
   rcases hr with rfl | rfl | rfl | rfl | rfl | rfl | rfl
-  all_goals
-    simp [castProfile, unionNamedProfiles, reindexVoters, cycleNamedProfile, cycleNamedBallot,
-      p3NamedProfile, p3NamedBallot, cyclePlusP3Profile, cyclePlusP3Ballot, profileOfListBallots,
-      sevenVoterEquiv, sevenVoterIndex, hab, hac, hap, hau, haq, haw, hbc, hbp, hbu,
-      hbq, hbw, hcp, hcu, hcq, hcw, hpu, hpq, hpw, huq, huw, hqw,
-      hab.symm, hac.symm, hap.symm, hau.symm, haq.symm, haw.symm, hbc.symm, hbp.symm,
-      hbu.symm, hbq.symm, hbw.symm, hcp.symm, hcu.symm, hcq.symm, hcw.symm,
-      hpu.symm, hpq.symm, hpw.symm, huq.symm, huw.symm, hqw.symm] ; rfl
+  · have hv : (sevenVoterEquiv hab hac hap hau haq haw hbc hbp hbu hbq hbw hcp hcu hcq hcw hpu hpq hpw huq huw hqw) ⟨r, hrmem⟩ = 0 := by
+      show sevenVoterIndex r b c p u q w ⟨r, hrmem⟩ = 0
+      simp [sevenVoterIndex, hab, hac, hap, hau, haq, haw, hbc, hbp,
+      hbu, hbq, hbw, hcp, hcu, hcq, hcw, hpu,
+      hpq, hpw, huq, huw, hqw, hab.symm, hac.symm, hap.symm,
+      hau.symm, haq.symm, haw.symm, hbc.symm, hbp.symm, hbu.symm, hbq.symm, hbw.symm,
+      hcp.symm, hcu.symm, hcq.symm, hcw.symm, hpu.symm, hpq.symm, hpw.symm, huq.symm,
+      huw.symm, hqw.symm]
+    simp only [castProfile, unionNamedProfiles, reindexVoters, cycleNamedProfile, p3NamedProfile, cyclePlusP3Profile, profileOfListBallots]
+    rw [hv]
+    simp [cycleNamedBallot, p3NamedBallot, cyclePlusP3Ballot, hab, hac, hap, hau, haq, haw, hbc, hbp,
+      hbu, hbq, hbw, hcp, hcu, hcq, hcw, hpu,
+      hpq, hpw, huq, huw, hqw, hab.symm, hac.symm, hap.symm,
+      hau.symm, haq.symm, haw.symm, hbc.symm, hbp.symm, hbu.symm, hbq.symm, hbw.symm,
+      hcp.symm, hcu.symm, hcq.symm, hcw.symm, hpu.symm, hpq.symm, hpw.symm, huq.symm,
+      huw.symm, hqw.symm]
+    rfl
+  · have hv : (sevenVoterEquiv hab hac hap hau haq haw hbc hbp hbu hbq hbw hcp hcu hcq hcw hpu hpq hpw huq huw hqw) ⟨r, hrmem⟩ = 1 := by
+      show sevenVoterIndex a r c p u q w ⟨r, hrmem⟩ = 1
+      simp [sevenVoterIndex, hab, hac, hap, hau, haq, haw, hbc, hbp,
+      hbu, hbq, hbw, hcp, hcu, hcq, hcw, hpu,
+      hpq, hpw, huq, huw, hqw, hab.symm, hac.symm, hap.symm,
+      hau.symm, haq.symm, haw.symm, hbc.symm, hbp.symm, hbu.symm, hbq.symm, hbw.symm,
+      hcp.symm, hcu.symm, hcq.symm, hcw.symm, hpu.symm, hpq.symm, hpw.symm, huq.symm,
+      huw.symm, hqw.symm]
+    simp only [castProfile, unionNamedProfiles, reindexVoters, cycleNamedProfile, p3NamedProfile, cyclePlusP3Profile, profileOfListBallots]
+    rw [hv]
+    simp [cycleNamedBallot, p3NamedBallot, cyclePlusP3Ballot, hab, hac, hap, hau, haq, haw, hbc, hbp,
+      hbu, hbq, hbw, hcp, hcu, hcq, hcw, hpu,
+      hpq, hpw, huq, huw, hqw, hab.symm, hac.symm, hap.symm,
+      hau.symm, haq.symm, haw.symm, hbc.symm, hbp.symm, hbu.symm, hbq.symm, hbw.symm,
+      hcp.symm, hcu.symm, hcq.symm, hcw.symm, hpu.symm, hpq.symm, hpw.symm, huq.symm,
+      huw.symm, hqw.symm]
+    rfl
+  · have hv : (sevenVoterEquiv hab hac hap hau haq haw hbc hbp hbu hbq hbw hcp hcu hcq hcw hpu hpq hpw huq huw hqw) ⟨r, hrmem⟩ = 2 := by
+      show sevenVoterIndex a b r p u q w ⟨r, hrmem⟩ = 2
+      simp [sevenVoterIndex, hab, hac, hap, hau, haq, haw, hbc, hbp,
+      hbu, hbq, hbw, hcp, hcu, hcq, hcw, hpu,
+      hpq, hpw, huq, huw, hqw, hab.symm, hac.symm, hap.symm,
+      hau.symm, haq.symm, haw.symm, hbc.symm, hbp.symm, hbu.symm, hbq.symm, hbw.symm,
+      hcp.symm, hcu.symm, hcq.symm, hcw.symm, hpu.symm, hpq.symm, hpw.symm, huq.symm,
+      huw.symm, hqw.symm]
+    simp only [castProfile, unionNamedProfiles, reindexVoters, cycleNamedProfile, p3NamedProfile, cyclePlusP3Profile, profileOfListBallots]
+    rw [hv]
+    simp [cycleNamedBallot, p3NamedBallot, cyclePlusP3Ballot, hab, hac, hap, hau, haq, haw, hbc, hbp,
+      hbu, hbq, hbw, hcp, hcu, hcq, hcw, hpu,
+      hpq, hpw, huq, huw, hqw, hab.symm, hac.symm, hap.symm,
+      hau.symm, haq.symm, haw.symm, hbc.symm, hbp.symm, hbu.symm, hbq.symm, hbw.symm,
+      hcp.symm, hcu.symm, hcq.symm, hcw.symm, hpu.symm, hpq.symm, hpw.symm, huq.symm,
+      huw.symm, hqw.symm]
+    rfl
+  · have hv : (sevenVoterEquiv hab hac hap hau haq haw hbc hbp hbu hbq hbw hcp hcu hcq hcw hpu hpq hpw huq huw hqw) ⟨r, hrmem⟩ = 3 := by
+      show sevenVoterIndex a b c r u q w ⟨r, hrmem⟩ = 3
+      simp [sevenVoterIndex, hab, hac, hap, hau, haq, haw, hbc, hbp,
+      hbu, hbq, hbw, hcp, hcu, hcq, hcw, hpu,
+      hpq, hpw, huq, huw, hqw, hab.symm, hac.symm, hap.symm,
+      hau.symm, haq.symm, haw.symm, hbc.symm, hbp.symm, hbu.symm, hbq.symm, hbw.symm,
+      hcp.symm, hcu.symm, hcq.symm, hcw.symm, hpu.symm, hpq.symm, hpw.symm, huq.symm,
+      huw.symm, hqw.symm]
+    simp only [castProfile, unionNamedProfiles, reindexVoters, cycleNamedProfile, p3NamedProfile, cyclePlusP3Profile, profileOfListBallots]
+    rw [hv]
+    simp [cycleNamedBallot, p3NamedBallot, cyclePlusP3Ballot, hab, hac, hap, hau, haq, haw, hbc, hbp,
+      hbu, hbq, hbw, hcp, hcu, hcq, hcw, hpu,
+      hpq, hpw, huq, huw, hqw, hab.symm, hac.symm, hap.symm,
+      hau.symm, haq.symm, haw.symm, hbc.symm, hbp.symm, hbu.symm, hbq.symm, hbw.symm,
+      hcp.symm, hcu.symm, hcq.symm, hcw.symm, hpu.symm, hpq.symm, hpw.symm, huq.symm,
+      huw.symm, hqw.symm]
+    rfl
+  · have hv : (sevenVoterEquiv hab hac hap hau haq haw hbc hbp hbu hbq hbw hcp hcu hcq hcw hpu hpq hpw huq huw hqw) ⟨r, hrmem⟩ = 4 := by
+      show sevenVoterIndex a b c p r q w ⟨r, hrmem⟩ = 4
+      simp [sevenVoterIndex, hab, hac, hap, hau, haq, haw, hbc, hbp,
+      hbu, hbq, hbw, hcp, hcu, hcq, hcw, hpu,
+      hpq, hpw, huq, huw, hqw, hab.symm, hac.symm, hap.symm,
+      hau.symm, haq.symm, haw.symm, hbc.symm, hbp.symm, hbu.symm, hbq.symm, hbw.symm,
+      hcp.symm, hcu.symm, hcq.symm, hcw.symm, hpu.symm, hpq.symm, hpw.symm, huq.symm,
+      huw.symm, hqw.symm]
+    simp only [castProfile, unionNamedProfiles, reindexVoters, cycleNamedProfile, p3NamedProfile, cyclePlusP3Profile, profileOfListBallots]
+    rw [hv]
+    simp [cycleNamedBallot, p3NamedBallot, cyclePlusP3Ballot, hab, hac, hap, hau, haq, haw, hbc, hbp,
+      hbu, hbq, hbw, hcp, hcu, hcq, hcw, hpu,
+      hpq, hpw, huq, huw, hqw, hab.symm, hac.symm, hap.symm,
+      hau.symm, haq.symm, haw.symm, hbc.symm, hbp.symm, hbu.symm, hbq.symm, hbw.symm,
+      hcp.symm, hcu.symm, hcq.symm, hcw.symm, hpu.symm, hpq.symm, hpw.symm, huq.symm,
+      huw.symm, hqw.symm]
+    rfl
+  · have hv : (sevenVoterEquiv hab hac hap hau haq haw hbc hbp hbu hbq hbw hcp hcu hcq hcw hpu hpq hpw huq huw hqw) ⟨r, hrmem⟩ = 5 := by
+      show sevenVoterIndex a b c p u r w ⟨r, hrmem⟩ = 5
+      simp [sevenVoterIndex, hab, hac, hap, hau, haq, haw, hbc, hbp,
+      hbu, hbq, hbw, hcp, hcu, hcq, hcw, hpu,
+      hpq, hpw, huq, huw, hqw, hab.symm, hac.symm, hap.symm,
+      hau.symm, haq.symm, haw.symm, hbc.symm, hbp.symm, hbu.symm, hbq.symm, hbw.symm,
+      hcp.symm, hcu.symm, hcq.symm, hcw.symm, hpu.symm, hpq.symm, hpw.symm, huq.symm,
+      huw.symm, hqw.symm]
+    simp only [castProfile, unionNamedProfiles, reindexVoters, cycleNamedProfile, p3NamedProfile, cyclePlusP3Profile, profileOfListBallots]
+    rw [hv]
+    simp [cycleNamedBallot, p3NamedBallot, cyclePlusP3Ballot, hab, hac, hap, hau, haq, haw, hbc, hbp,
+      hbu, hbq, hbw, hcp, hcu, hcq, hcw, hpu,
+      hpq, hpw, huq, huw, hqw, hab.symm, hac.symm, hap.symm,
+      hau.symm, haq.symm, haw.symm, hbc.symm, hbp.symm, hbu.symm, hbq.symm, hbw.symm,
+      hcp.symm, hcu.symm, hcq.symm, hcw.symm, hpu.symm, hpq.symm, hpw.symm, huq.symm,
+      huw.symm, hqw.symm]
+    rfl
+  · have hv : (sevenVoterEquiv hab hac hap hau haq haw hbc hbp hbu hbq hbw hcp hcu hcq hcw hpu hpq hpw huq huw hqw) ⟨r, hrmem⟩ = 6 := by
+      show sevenVoterIndex a b c p u q r ⟨r, hrmem⟩ = 6
+      simp [sevenVoterIndex, hab, hac, hap, hau, haq, haw, hbc, hbp,
+      hbu, hbq, hbw, hcp, hcu, hcq, hcw, hpu,
+      hpq, hpw, huq, huw, hqw, hab.symm, hac.symm, hap.symm,
+      hau.symm, haq.symm, haw.symm, hbc.symm, hbp.symm, hbu.symm, hbq.symm, hbw.symm,
+      hcp.symm, hcu.symm, hcq.symm, hcw.symm, hpu.symm, hpq.symm, hpw.symm, huq.symm,
+      huw.symm, hqw.symm]
+    simp only [castProfile, unionNamedProfiles, reindexVoters, cycleNamedProfile, p3NamedProfile, cyclePlusP3Profile, profileOfListBallots]
+    rw [hv]
+    simp [cycleNamedBallot, p3NamedBallot, cyclePlusP3Ballot, hab, hac, hap, hau, haq, haw, hbc, hbp,
+      hbu, hbq, hbw, hcp, hcu, hcq, hcw, hpu,
+      hpq, hpw, huq, huw, hqw, hab.symm, hac.symm, hap.symm,
+      hau.symm, haq.symm, haw.symm, hbc.symm, hbp.symm, hbu.symm, hbq.symm, hbw.symm,
+      hcp.symm, hcu.symm, hcq.symm, hcw.symm, hpu.symm, hpq.symm, hpw.symm, huq.symm,
+      huw.symm, hqw.symm]
+    rfl
 
 theorem cast_union_cycle_p2_condorcetWinner_prev
     (x : Fin 3) {a b c p u v w : Fin 8}
@@ -1404,12 +1676,61 @@ theorem cast_union_p2_singletonYXZ_eq_reindex_p2PlusYXZ
       Finset.mem_singleton] at hr'
     exact hr'
   rcases hr with rfl | rfl | rfl | rfl | rfl
-  all_goals
-    simp [castProfile, unionNamedProfiles, reindexVoters, p2NamedProfile, p2NamedBallot,
-      singletonYXZProfile, singletonYXZBallot, p2PlusYXZProfile, p2PlusYXZBallot,
-      profileOfListBallots, fiveVoterEquiv, fiveVoterIndex, hpu, hpv, hpw, hpy,
-      huv, huw, huy, hvw, hvy, hwy, hpu.symm, hpv.symm, hpw.symm, hpy.symm,
-      huv.symm, huw.symm, huy.symm, hvw.symm, hvy.symm, hwy.symm] ; rfl
+  · have hv : (fiveVoterEquiv hpu hpv hpw hpy huv huw huy hvw hvy hwy) ⟨r, hrmem⟩ = 0 := by
+      show fiveVoterIndex r u v w yv ⟨r, hrmem⟩ = 0
+      simp [fiveVoterIndex, hpu, hpv, hpw, hpy, huv, huw, huy, hvw,
+      hvy, hwy, hpu.symm, hpv.symm, hpw.symm, hpy.symm, huv.symm, huw.symm,
+      huy.symm, hvw.symm, hvy.symm, hwy.symm]
+    simp only [castProfile, unionNamedProfiles, reindexVoters, p2NamedProfile, singletonYXZProfile, p2PlusYXZProfile, profileOfListBallots]
+    rw [hv]
+    simp [p2NamedBallot, singletonYXZBallot, p2PlusYXZBallot, hpu, hpv, hpw, hpy, huv, huw, huy, hvw,
+      hvy, hwy, hpu.symm, hpv.symm, hpw.symm, hpy.symm, huv.symm, huw.symm,
+      huy.symm, hvw.symm, hvy.symm, hwy.symm]
+    rfl
+  · have hv : (fiveVoterEquiv hpu hpv hpw hpy huv huw huy hvw hvy hwy) ⟨r, hrmem⟩ = 1 := by
+      show fiveVoterIndex p r v w yv ⟨r, hrmem⟩ = 1
+      simp [fiveVoterIndex, hpu, hpv, hpw, hpy, huv, huw, huy, hvw,
+      hvy, hwy, hpu.symm, hpv.symm, hpw.symm, hpy.symm, huv.symm, huw.symm,
+      huy.symm, hvw.symm, hvy.symm, hwy.symm]
+    simp only [castProfile, unionNamedProfiles, reindexVoters, p2NamedProfile, singletonYXZProfile, p2PlusYXZProfile, profileOfListBallots]
+    rw [hv]
+    simp [p2NamedBallot, singletonYXZBallot, p2PlusYXZBallot, hpu, hpv, hpw, hpy, huv, huw, huy, hvw,
+      hvy, hwy, hpu.symm, hpv.symm, hpw.symm, hpy.symm, huv.symm, huw.symm,
+      huy.symm, hvw.symm, hvy.symm, hwy.symm]
+    rfl
+  · have hv : (fiveVoterEquiv hpu hpv hpw hpy huv huw huy hvw hvy hwy) ⟨r, hrmem⟩ = 2 := by
+      show fiveVoterIndex p u r w yv ⟨r, hrmem⟩ = 2
+      simp [fiveVoterIndex, hpu, hpv, hpw, hpy, huv, huw, huy, hvw,
+      hvy, hwy, hpu.symm, hpv.symm, hpw.symm, hpy.symm, huv.symm, huw.symm,
+      huy.symm, hvw.symm, hvy.symm, hwy.symm]
+    simp only [castProfile, unionNamedProfiles, reindexVoters, p2NamedProfile, singletonYXZProfile, p2PlusYXZProfile, profileOfListBallots]
+    rw [hv]
+    simp [p2NamedBallot, singletonYXZBallot, p2PlusYXZBallot, hpu, hpv, hpw, hpy, huv, huw, huy, hvw,
+      hvy, hwy, hpu.symm, hpv.symm, hpw.symm, hpy.symm, huv.symm, huw.symm,
+      huy.symm, hvw.symm, hvy.symm, hwy.symm]
+    rfl
+  · have hv : (fiveVoterEquiv hpu hpv hpw hpy huv huw huy hvw hvy hwy) ⟨r, hrmem⟩ = 3 := by
+      show fiveVoterIndex p u v r yv ⟨r, hrmem⟩ = 3
+      simp [fiveVoterIndex, hpu, hpv, hpw, hpy, huv, huw, huy, hvw,
+      hvy, hwy, hpu.symm, hpv.symm, hpw.symm, hpy.symm, huv.symm, huw.symm,
+      huy.symm, hvw.symm, hvy.symm, hwy.symm]
+    simp only [castProfile, unionNamedProfiles, reindexVoters, p2NamedProfile, singletonYXZProfile, p2PlusYXZProfile, profileOfListBallots]
+    rw [hv]
+    simp [p2NamedBallot, singletonYXZBallot, p2PlusYXZBallot, hpu, hpv, hpw, hpy, huv, huw, huy, hvw,
+      hvy, hwy, hpu.symm, hpv.symm, hpw.symm, hpy.symm, huv.symm, huw.symm,
+      huy.symm, hvw.symm, hvy.symm, hwy.symm]
+    rfl
+  · have hv : (fiveVoterEquiv hpu hpv hpw hpy huv huw huy hvw hvy hwy) ⟨r, hrmem⟩ = 4 := by
+      show fiveVoterIndex p u v w r ⟨r, hrmem⟩ = 4
+      simp [fiveVoterIndex, hpu, hpv, hpw, hpy, huv, huw, huy, hvw,
+      hvy, hwy, hpu.symm, hpv.symm, hpw.symm, hpy.symm, huv.symm, huw.symm,
+      huy.symm, hvw.symm, hvy.symm, hwy.symm]
+    simp only [castProfile, unionNamedProfiles, reindexVoters, p2NamedProfile, singletonYXZProfile, p2PlusYXZProfile, profileOfListBallots]
+    rw [hv]
+    simp [p2NamedBallot, singletonYXZBallot, p2PlusYXZBallot, hpu, hpv, hpw, hpy, huv, huw, huy, hvw,
+      hvy, hwy, hpu.symm, hpv.symm, hpw.symm, hpy.symm, huv.symm, huw.symm,
+      huy.symm, hvw.symm, hvy.symm, hwy.symm]
+    rfl
 
 theorem cast_union_p3_singletonYXZ_eq_reindex_p3PlusYXZ
     (x : Fin 3) {p u q w yv : Fin 8}
@@ -1432,12 +1753,61 @@ theorem cast_union_p3_singletonYXZ_eq_reindex_p3PlusYXZ
       Finset.mem_singleton] at hr'
     exact hr'
   rcases hr with rfl | rfl | rfl | rfl | rfl
-  all_goals
-    simp [castProfile, unionNamedProfiles, reindexVoters, p3NamedProfile, p3NamedBallot,
-      singletonYXZProfile, singletonYXZBallot, p3PlusYXZProfile, p3PlusYXZBallot,
-      profileOfListBallots, fiveVoterEquiv, fiveVoterIndex, hpu, hpq, hpw, hpy,
-      huq, huw, huy, hqw, hqy, hwy, hpu.symm, hpq.symm, hpw.symm, hpy.symm,
-      huq.symm, huw.symm, huy.symm, hqw.symm, hqy.symm, hwy.symm] ; rfl
+  · have hv : (fiveVoterEquiv hpu hpq hpw hpy huq huw huy hqw hqy hwy) ⟨r, hrmem⟩ = 0 := by
+      show fiveVoterIndex r u q w yv ⟨r, hrmem⟩ = 0
+      simp [fiveVoterIndex, hpu, hpq, hpw, hpy, huq, huw, huy, hqw,
+      hqy, hwy, hpu.symm, hpq.symm, hpw.symm, hpy.symm, huq.symm, huw.symm,
+      huy.symm, hqw.symm, hqy.symm, hwy.symm]
+    simp only [castProfile, unionNamedProfiles, reindexVoters, p3NamedProfile, singletonYXZProfile, p3PlusYXZProfile, profileOfListBallots]
+    rw [hv]
+    simp [p3NamedBallot, singletonYXZBallot, p3PlusYXZBallot, hpu, hpq, hpw, hpy, huq, huw, huy, hqw,
+      hqy, hwy, hpu.symm, hpq.symm, hpw.symm, hpy.symm, huq.symm, huw.symm,
+      huy.symm, hqw.symm, hqy.symm, hwy.symm]
+    rfl
+  · have hv : (fiveVoterEquiv hpu hpq hpw hpy huq huw huy hqw hqy hwy) ⟨r, hrmem⟩ = 1 := by
+      show fiveVoterIndex p r q w yv ⟨r, hrmem⟩ = 1
+      simp [fiveVoterIndex, hpu, hpq, hpw, hpy, huq, huw, huy, hqw,
+      hqy, hwy, hpu.symm, hpq.symm, hpw.symm, hpy.symm, huq.symm, huw.symm,
+      huy.symm, hqw.symm, hqy.symm, hwy.symm]
+    simp only [castProfile, unionNamedProfiles, reindexVoters, p3NamedProfile, singletonYXZProfile, p3PlusYXZProfile, profileOfListBallots]
+    rw [hv]
+    simp [p3NamedBallot, singletonYXZBallot, p3PlusYXZBallot, hpu, hpq, hpw, hpy, huq, huw, huy, hqw,
+      hqy, hwy, hpu.symm, hpq.symm, hpw.symm, hpy.symm, huq.symm, huw.symm,
+      huy.symm, hqw.symm, hqy.symm, hwy.symm]
+    rfl
+  · have hv : (fiveVoterEquiv hpu hpq hpw hpy huq huw huy hqw hqy hwy) ⟨r, hrmem⟩ = 2 := by
+      show fiveVoterIndex p u r w yv ⟨r, hrmem⟩ = 2
+      simp [fiveVoterIndex, hpu, hpq, hpw, hpy, huq, huw, huy, hqw,
+      hqy, hwy, hpu.symm, hpq.symm, hpw.symm, hpy.symm, huq.symm, huw.symm,
+      huy.symm, hqw.symm, hqy.symm, hwy.symm]
+    simp only [castProfile, unionNamedProfiles, reindexVoters, p3NamedProfile, singletonYXZProfile, p3PlusYXZProfile, profileOfListBallots]
+    rw [hv]
+    simp [p3NamedBallot, singletonYXZBallot, p3PlusYXZBallot, hpu, hpq, hpw, hpy, huq, huw, huy, hqw,
+      hqy, hwy, hpu.symm, hpq.symm, hpw.symm, hpy.symm, huq.symm, huw.symm,
+      huy.symm, hqw.symm, hqy.symm, hwy.symm]
+    rfl
+  · have hv : (fiveVoterEquiv hpu hpq hpw hpy huq huw huy hqw hqy hwy) ⟨r, hrmem⟩ = 3 := by
+      show fiveVoterIndex p u q r yv ⟨r, hrmem⟩ = 3
+      simp [fiveVoterIndex, hpu, hpq, hpw, hpy, huq, huw, huy, hqw,
+      hqy, hwy, hpu.symm, hpq.symm, hpw.symm, hpy.symm, huq.symm, huw.symm,
+      huy.symm, hqw.symm, hqy.symm, hwy.symm]
+    simp only [castProfile, unionNamedProfiles, reindexVoters, p3NamedProfile, singletonYXZProfile, p3PlusYXZProfile, profileOfListBallots]
+    rw [hv]
+    simp [p3NamedBallot, singletonYXZBallot, p3PlusYXZBallot, hpu, hpq, hpw, hpy, huq, huw, huy, hqw,
+      hqy, hwy, hpu.symm, hpq.symm, hpw.symm, hpy.symm, huq.symm, huw.symm,
+      huy.symm, hqw.symm, hqy.symm, hwy.symm]
+    rfl
+  · have hv : (fiveVoterEquiv hpu hpq hpw hpy huq huw huy hqw hqy hwy) ⟨r, hrmem⟩ = 4 := by
+      show fiveVoterIndex p u q w r ⟨r, hrmem⟩ = 4
+      simp [fiveVoterIndex, hpu, hpq, hpw, hpy, huq, huw, huy, hqw,
+      hqy, hwy, hpu.symm, hpq.symm, hpw.symm, hpy.symm, huq.symm, huw.symm,
+      huy.symm, hqw.symm, hqy.symm, hwy.symm]
+    simp only [castProfile, unionNamedProfiles, reindexVoters, p3NamedProfile, singletonYXZProfile, p3PlusYXZProfile, profileOfListBallots]
+    rw [hv]
+    simp [p3NamedBallot, singletonYXZBallot, p3PlusYXZBallot, hpu, hpq, hpw, hpy, huq, huw, huy, hqw,
+      hqy, hwy, hpu.symm, hpq.symm, hpw.symm, hpy.symm, huq.symm, huw.symm,
+      huy.symm, hqw.symm, hqy.symm, hwy.symm]
+    rfl
 
 theorem cast_union_p2_singletonYXZ_condorcetWinner
     (x : Fin 3) {p u v w yv : Fin 8}
@@ -1925,11 +2295,21 @@ theorem cycleNamedProfile_eq_canonical (x : Fin 3) (t : OrderedTriple8) :
   apply Profile.ext
   intro v
   fin_cases x
-  · have hballot :
-        cycleNamedBallot 0 (topVoter 0 t) (bottomVoter 0 t) v =
-          canonicalCycleBallot t v := by
-      simp [cycleNamedBallot, canonicalCycleBallot, topVoter, bottomVoter]
-    simpa [cycleNamedProfile, canonicalCycleProfile] using congrArg ListBallot.toLinearOrder hballot
+  · have hv : v.1 = t.first ∨ v.1 = t.second ∨ v.1 = t.third := by
+      have hv' := v.2
+      change v.1 ∈ ({t.first, t.second, t.third} : Finset (Fin 8)) at hv'
+      rw [Finset.mem_insert, Finset.mem_insert, Finset.mem_singleton] at hv'
+      exact hv'
+    rcases hv with hv | hv | hv
+    · simp [cycleNamedProfile, canonicalCycleProfile, cycleNamedBallot, canonicalCycleBallot,
+        topVoter, bottomVoter, hv, OrderedTriple8.first_ne_second,
+        OrderedTriple8.first_ne_third]
+    · simp [cycleNamedProfile, canonicalCycleProfile, cycleNamedBallot, canonicalCycleBallot,
+        topVoter, bottomVoter, hv, (OrderedTriple8.first_ne_second t).symm,
+        OrderedTriple8.second_ne_third]
+    · simp [cycleNamedProfile, canonicalCycleProfile, cycleNamedBallot, canonicalCycleBallot,
+        topVoter, bottomVoter, hv, OrderedTriple8.third_ne_first,
+        (OrderedTriple8.second_ne_third t).symm]
   · have hballot :
         cycleNamedBallot 1 (topVoter 1 t) (bottomVoter 1 t) v =
       canonicalCycleBallot t v := by

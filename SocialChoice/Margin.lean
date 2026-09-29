@@ -5,6 +5,7 @@ import SocialChoice.Profile
 import SocialChoice.Axioms.Participation
 import SocialChoice.Axioms.Reversal
 
+
 namespace SocialChoice
 
 open Finset
@@ -273,11 +274,23 @@ lemma margin_addVoter_eq_of_prefers {V A : Type} [Fintype V] [Fintype A]
       ext v
       cases v with
       | inl v =>
-          simp [S, S0, Prefers, Finset.mem_image]
-          rfl
+          classical
+          simp only [S, S0, Finset.mem_insert, Finset.mem_image]
+          rw [Finset.mem_filter_univ]
+          constructor
+          · intro hh
+            exact Or.inr ⟨v, (Finset.mem_filter_univ v).2 hh, rfl⟩
+          · rintro (heq | ⟨a_1, hmem, heq2⟩)
+            · exact (Sum.inl_ne_inr heq).elim
+            · injection heq2 with heq3
+              subst heq3
+              exact (Finset.mem_filter_univ a_1).1 hmem
       | inr u =>
           cases u
-          simp [S, S0, Prefers, Finset.mem_image]
+          classical
+          simp only [S, S0, Finset.mem_insert, Finset.mem_image]
+          rw [Finset.mem_filter_univ]
+          simp [Prefers]
           exact h
     have hnotmem : Sum.inr () ∉ S0.image (Sum.inl : V → V ⊕ Unit) := by
       simp [Finset.mem_image]
@@ -309,11 +322,22 @@ lemma margin_addVoter_eq_of_prefers {V A : Type} [Fintype V] [Fintype A]
       ext v
       cases v with
       | inl v =>
-          simp [S, S0, Prefers, Finset.mem_image]
-          rfl
+          classical
+          simp only [S, S0, Finset.mem_image]
+          rw [Finset.mem_filter_univ]
+          constructor
+          · intro hh
+            exact ⟨v, (Finset.mem_filter_univ v).2 hh, rfl⟩
+          · rintro ⟨a_1, hmem, heq2⟩
+            injection heq2 with heq3
+            subst heq3
+            exact (Finset.mem_filter_univ a_1).1 hmem
       | inr u =>
           cases u
-          simp [S, S0, Prefers, Finset.mem_image]
+          classical
+          simp only [S, S0, Finset.mem_image]
+          rw [Finset.mem_filter_univ]
+          simp [Prefers]
           exact hba
     have hinj : Function.Injective (Sum.inl : V → V ⊕ Unit) := by
       intro a b hEq
@@ -752,11 +776,29 @@ lemma card_votersPreferring_unionProfiles {V W A : Type} [Fintype V] [Fintype W]
     ext v
     cases v with
     | inl v =>
-        simp [S, SV, SW, votersPreferring, Prefers, Finset.mem_image]
-        rfl
+        classical
+        simp only [S, SV, SW, votersPreferring, Finset.mem_union, Finset.mem_image]
+        rw [Finset.mem_filter_univ]
+        constructor
+        · intro hh
+          exact Or.inl ⟨v, (Finset.mem_filter_univ v).2 hh, rfl⟩
+        · rintro (⟨a_1, hmem, heq2⟩ | ⟨a_1, hmem, heq3⟩)
+          · injection heq2 with heq4
+            subst heq4
+            exact (Finset.mem_filter_univ a_1).1 hmem
+          · exact (Sum.inr_ne_inl heq3).elim
     | inr w =>
-        simp [S, SV, SW, votersPreferring, Prefers, Finset.mem_image]
-        rfl
+        classical
+        simp only [S, SV, SW, votersPreferring, Finset.mem_union, Finset.mem_image]
+        rw [Finset.mem_filter_univ]
+        constructor
+        · intro hh
+          exact Or.inr ⟨w, (Finset.mem_filter_univ w).2 hh, rfl⟩
+        · rintro (⟨a_1, hmem, heq2⟩ | ⟨a_1, hmem, heq3⟩)
+          · exact (Sum.inl_ne_inr heq2).elim
+          · injection heq3 with heq4
+            subst heq4
+            exact (Finset.mem_filter_univ a_1).1 hmem
   have hdisj : Disjoint (SV.image Sum.inl) (SW.image Sum.inr) := by
     refine Finset.disjoint_left.2 ?_
     intro v hvL hvR

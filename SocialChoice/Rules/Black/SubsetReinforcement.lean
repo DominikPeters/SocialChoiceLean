@@ -152,14 +152,35 @@ lemma votersPreferring_profile3_0_1 :
   | mk val hmem =>
       fin_cases val
       ·
-        simp [votersPreferring, profile3, ballots3, ballots5, voters3,
-          prefers_iff_prefersInList', v0_3]; decide +revert
+        simp only [votersPreferring]
+        rw [Finset.mem_filter_univ]
+        simp only [profile3, profile2, profileAll]
+        rw [prefers_iff_prefersInList']
+        simp [Finset.mem_singleton, Subtype.ext_iff, prefersInList, ballots3, ballots5, v0_3]
+        first
+        | decide
+        | (rw [Finset.mem_singleton, Subtype.ext_iff]; simp; decide)
+        | simp_all
       ·
-        simp [votersPreferring, profile3, ballots3, ballots5, voters3,
-          prefers_iff_prefersInList', v0_3]; decide +revert
+        simp only [votersPreferring]
+        rw [Finset.mem_filter_univ]
+        simp only [profile3, profile2, profileAll]
+        rw [prefers_iff_prefersInList']
+        simp [Finset.mem_singleton, Subtype.ext_iff, prefersInList, ballots3, ballots5, v0_3]
+        first
+        | decide
+        | (rw [Finset.mem_singleton, Subtype.ext_iff]; simp; decide)
+        | simp_all
       ·
-        simp [votersPreferring, profile3, ballots3, ballots5, voters3,
-          prefers_iff_prefersInList', v0_3]; decide +revert
+        simp only [votersPreferring]
+        rw [Finset.mem_filter_univ]
+        simp only [profile3, profile2, profileAll]
+        rw [prefers_iff_prefersInList']
+        simp [Finset.mem_singleton, Subtype.ext_iff, prefersInList, ballots3, ballots5, v0_3]
+        first
+        | decide
+        | (rw [Finset.mem_singleton, Subtype.ext_iff]; simp; decide)
+        | simp_all
       ·
         simp [voters3] at hmem
       ·
@@ -173,14 +194,35 @@ lemma votersPreferring_profile3_1_2 :
   | mk val hmem =>
       fin_cases val
       ·
-        simp [votersPreferring, profile3, ballots3, ballots5, voters3,
-          prefers_iff_prefersInList', v1_3]; decide +revert
+        simp only [votersPreferring]
+        rw [Finset.mem_filter_univ]
+        simp only [profile3, profile2, profileAll]
+        rw [prefers_iff_prefersInList']
+        simp [Finset.mem_singleton, Subtype.ext_iff, prefersInList, ballots3, ballots5, v1_3]
+        first
+        | decide
+        | (rw [Finset.mem_singleton, Subtype.ext_iff]; simp; decide)
+        | simp_all
       ·
-        simp [votersPreferring, profile3, ballots3, ballots5, voters3,
-          prefers_iff_prefersInList', v1_3]; decide +revert
+        simp only [votersPreferring]
+        rw [Finset.mem_filter_univ]
+        simp only [profile3, profile2, profileAll]
+        rw [prefers_iff_prefersInList']
+        simp [Finset.mem_singleton, Subtype.ext_iff, prefersInList, ballots3, ballots5, v1_3]
+        first
+        | decide
+        | (rw [Finset.mem_singleton, Subtype.ext_iff]; simp; decide)
+        | simp_all
       ·
-        simp [votersPreferring, profile3, ballots3, ballots5, voters3,
-          prefers_iff_prefersInList', v1_3]; decide +revert
+        simp only [votersPreferring]
+        rw [Finset.mem_filter_univ]
+        simp only [profile3, profile2, profileAll]
+        rw [prefers_iff_prefersInList']
+        simp [Finset.mem_singleton, Subtype.ext_iff, prefersInList, ballots3, ballots5, v1_3]
+        first
+        | decide
+        | (rw [Finset.mem_singleton, Subtype.ext_iff]; simp; decide)
+        | simp_all
       ·
         simp [voters3] at hmem
       ·
@@ -194,14 +236,35 @@ lemma votersPreferring_profile3_2_0 :
   | mk val hmem =>
       fin_cases val
       ·
-        simp [votersPreferring, profile3, ballots3, ballots5, voters3,
-          prefers_iff_prefersInList', v2_3]; decide +revert
+        simp only [votersPreferring]
+        rw [Finset.mem_filter_univ]
+        simp only [profile3, profile2, profileAll]
+        rw [prefers_iff_prefersInList']
+        simp [Finset.mem_singleton, Subtype.ext_iff, prefersInList, ballots3, ballots5, v2_3]
+        first
+        | decide
+        | (rw [Finset.mem_singleton, Subtype.ext_iff]; simp; decide)
+        | simp_all
       ·
-        simp [votersPreferring, profile3, ballots3, ballots5, voters3,
-          prefers_iff_prefersInList', v2_3]; decide +revert
+        simp only [votersPreferring]
+        rw [Finset.mem_filter_univ]
+        simp only [profile3, profile2, profileAll]
+        rw [prefers_iff_prefersInList']
+        simp [Finset.mem_singleton, Subtype.ext_iff, prefersInList, ballots3, ballots5, v2_3]
+        first
+        | decide
+        | (rw [Finset.mem_singleton, Subtype.ext_iff]; simp; decide)
+        | simp_all
       ·
-        simp [votersPreferring, profile3, ballots3, ballots5, voters3,
-          prefers_iff_prefersInList', v2_3]; decide +revert
+        simp only [votersPreferring]
+        rw [Finset.mem_filter_univ]
+        simp only [profile3, profile2, profileAll]
+        rw [prefers_iff_prefersInList']
+        simp [Finset.mem_singleton, Subtype.ext_iff, prefersInList, ballots3, ballots5, v2_3]
+        first
+        | decide
+        | (rw [Finset.mem_singleton, Subtype.ext_iff]; simp; decide)
+        | simp_all
       ·
         simp [voters3] at hmem
       ·
@@ -222,11 +285,25 @@ lemma votersPreferring_profile2_0_1 :
       ·
         simp [voters2] at hmem
       ·
-        simp [votersPreferring, profile2, ballots2, ballots5, voters2,
-          prefers_iff_prefersInList']; decide +revert
+        simp only [votersPreferring]
+        rw [Finset.mem_filter_univ]
+        simp only [profile3, profile2, profileAll]
+        rw [prefers_iff_prefersInList']
+        simp [Finset.mem_singleton, Subtype.ext_iff, prefersInList, ballots2, ballots5]
+        first
+        | decide
+        | (rw [Finset.mem_singleton, Subtype.ext_iff]; simp; decide)
+        | simp_all
       ·
-        simp [votersPreferring, profile2, ballots2, ballots5, voters2,
-          prefers_iff_prefersInList']; decide +revert
+        simp only [votersPreferring]
+        rw [Finset.mem_filter_univ]
+        simp only [profile3, profile2, profileAll]
+        rw [prefers_iff_prefersInList']
+        simp [Finset.mem_singleton, Subtype.ext_iff, prefersInList, ballots2, ballots5]
+        first
+        | decide
+        | (rw [Finset.mem_singleton, Subtype.ext_iff]; simp; decide)
+        | simp_all
 
 lemma votersPreferring_profile2_1_2 :
     votersPreferring profile2 (1 : Fin 3) (2 : Fin 3) = {v3_2} := by
@@ -242,11 +319,25 @@ lemma votersPreferring_profile2_1_2 :
       ·
         simp [voters2] at hmem
       ·
-        simp [votersPreferring, profile2, ballots2, ballots5, voters2,
-          prefers_iff_prefersInList', v3_2]; decide +revert
+        simp only [votersPreferring]
+        rw [Finset.mem_filter_univ]
+        simp only [profile3, profile2, profileAll]
+        rw [prefers_iff_prefersInList']
+        simp [Finset.mem_singleton, Subtype.ext_iff, prefersInList, ballots2, ballots5, v3_2]
+        first
+        | decide
+        | (rw [Finset.mem_singleton, Subtype.ext_iff]; simp; decide)
+        | simp_all
       ·
-        simp [votersPreferring, profile2, ballots2, ballots5, voters2,
-          prefers_iff_prefersInList', v3_2]; decide +revert
+        simp only [votersPreferring]
+        rw [Finset.mem_filter_univ]
+        simp only [profile3, profile2, profileAll]
+        rw [prefers_iff_prefersInList']
+        simp [Finset.mem_singleton, Subtype.ext_iff, prefersInList, ballots2, ballots5, v3_2]
+        first
+        | decide
+        | (rw [Finset.mem_singleton, Subtype.ext_iff]; simp; decide)
+        | simp_all
 
 lemma votersPreferring_profile2_2_1 :
     votersPreferring profile2 (2 : Fin 3) (1 : Fin 3) = {v4_2} := by
@@ -262,11 +353,25 @@ lemma votersPreferring_profile2_2_1 :
       ·
         simp [voters2] at hmem
       ·
-        simp [votersPreferring, profile2, ballots2, ballots5, voters2,
-          prefers_iff_prefersInList', v4_2]; decide +revert
+        simp only [votersPreferring]
+        rw [Finset.mem_filter_univ]
+        simp only [profile3, profile2, profileAll]
+        rw [prefers_iff_prefersInList']
+        simp [Finset.mem_singleton, Subtype.ext_iff, prefersInList, ballots2, ballots5, v4_2]
+        first
+        | decide
+        | (rw [Finset.mem_singleton, Subtype.ext_iff]; simp; decide)
+        | simp_all
       ·
-        simp [votersPreferring, profile2, ballots2, ballots5, voters2,
-          prefers_iff_prefersInList', v4_2]; decide +revert
+        simp only [votersPreferring]
+        rw [Finset.mem_filter_univ]
+        simp only [profile3, profile2, profileAll]
+        rw [prefers_iff_prefersInList']
+        simp [Finset.mem_singleton, Subtype.ext_iff, prefersInList, ballots2, ballots5, v4_2]
+        first
+        | decide
+        | (rw [Finset.mem_singleton, Subtype.ext_iff]; simp; decide)
+        | simp_all
 
 lemma votersPreferring_profileAll_2_0 :
     votersPreferring profileAll (2 : Fin 3) (0 : Fin 3) = {v2_all, v3_all, v4_all} := by
@@ -275,8 +380,7 @@ lemma votersPreferring_profileAll_2_0 :
   cases v with
   | mk val hmem =>
       fin_cases val <;>
-        (simp [votersPreferring, profileAll, ballotsAll, ballots5,
-          voters3, voters2, prefers_iff_prefersInList', v2_all, v3_all, v4_all]; decide +revert)
+        (simp only [votersPreferring]; rw [Finset.mem_filter_univ]; simp only [profile3, profile2, profileAll]; rw [prefers_iff_prefersInList']; simp [Finset.mem_singleton, Subtype.ext_iff, prefersInList, ballotsAll, ballots5, v2_all, v3_all, v4_all]; first | decide | (rw [Finset.mem_singleton, Subtype.ext_iff]; simp; decide) | simp_all)
 
 lemma votersPreferring_profileAll_2_1 :
     votersPreferring profileAll (2 : Fin 3) (1 : Fin 3) = {v0_all, v2_all, v4_all} := by
@@ -285,8 +389,7 @@ lemma votersPreferring_profileAll_2_1 :
   cases v with
   | mk val hmem =>
       fin_cases val <;>
-        (simp [votersPreferring, profileAll, ballotsAll, ballots5,
-          voters3, voters2, prefers_iff_prefersInList', v0_all, v2_all, v4_all]; decide +revert)
+        (simp only [votersPreferring]; rw [Finset.mem_filter_univ]; simp only [profile3, profile2, profileAll]; rw [prefers_iff_prefersInList']; simp [Finset.mem_singleton, Subtype.ext_iff, prefersInList, ballotsAll, ballots5, v0_all, v2_all, v4_all]; first | decide | (rw [Finset.mem_singleton, Subtype.ext_iff]; simp; decide) | simp_all)
 
 lemma not_strictMajority_profile3_0_1 :
     ¬ StrictMajority (votersPreferring profile3 (0 : Fin 3) (1 : Fin 3)) := by

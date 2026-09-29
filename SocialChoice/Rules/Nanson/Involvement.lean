@@ -428,8 +428,9 @@ lemma c2Borda_profilePos_cand0 : c2BordaScore profilePos cand0 = -1 := by
   have hsum :
       c2BordaScore profilePos cand0 =
         ∑ x ∈ ({cand1} : Finset PosCand), margin profilePos cand0 x := by
-    simp [c2BordaScore, univ_profilePos_eq, self_margin_zero,
-      Finset.sum_singleton, cand0, cand1]
+    simp only [c2BordaScore, univ_profilePos_eq]
+    rw [Finset.sum_insert, self_margin_zero, zero_add]
+    simp [cand0, cand1]
   calc
     c2BordaScore profilePos cand0 =
         ∑ x ∈ ({cand1} : Finset PosCand), margin profilePos cand0 x := hsum

@@ -665,14 +665,12 @@ def V14 : Finset (Fin 17) := insert 14 V13
 def V15 : Finset (Fin 17) := insert 15 V14
 def V16 : Finset (Fin 17) := insert 16 V15
 
-set_option maxHeartbeats 500000 in
 lemma V14_eq :
     V14 =
       {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14} := by
   ext v
   fin_cases v <;> simp [V14, V13, V12, V11, V10, V0]
 
-set_option maxHeartbeats 500000 in
 lemma V16_eq :
     V16 =
       {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16} := by

@@ -16,7 +16,6 @@ namespace SocialChoice
 namespace Holliday
 
 set_option maxRecDepth 3000 in
-set_option maxHeartbeats 150000 in
 theorem no_positiveInvolvement_condorcet_resolvability_holliday
     (f : VotingRule) (hf : IsVotingRule f)
     (hpos : PositiveInvolvement f) (hcond : CondorcetConsistency f)

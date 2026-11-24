@@ -2,7 +2,6 @@ import SocialChoice.Impossibilities.CondorcetReinforcementN8.Kneser
 import Mathlib.Combinatorics.SetFamily.KruskalKatona
 
 set_option maxRecDepth 1000000
-set_option maxHeartbeats 0
 
 namespace SocialChoice
 namespace CondorcetReinforcementN8

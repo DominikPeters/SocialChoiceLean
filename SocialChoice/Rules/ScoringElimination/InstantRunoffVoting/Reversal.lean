@@ -5,8 +5,6 @@ import SocialChoice.Rules.PluralityWithRunoff.Reversal
 
 namespace SocialChoice
 
-open Classical
-
 open PluralityWithRunoffReversalCounterexample
 
 theorem instantRunoffVoting_not_singletonReversalSymmetry :

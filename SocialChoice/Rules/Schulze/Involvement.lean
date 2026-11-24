@@ -11,11 +11,6 @@ import SocialChoice.Rules.Schulze.InformationalBasis
 namespace SocialChoice
 
 open Finset
-open Classical
-
-attribute [instance] Classical.decEq
-
-set_option maxHeartbeats 5000000
 
 /-!
 # Schulze fails negative involvement
@@ -91,7 +86,7 @@ lemma voters9_eq_univ : (voters9 : Finset (Fin 9)) = Finset.univ := by
   fin_cases x <;> simp [voters9, voters8]
 
 noncomputable def fullProfile : Profile (Electorate (Fin 9) (Finset.univ)) A4 :=
-  { pref := fun v => (ballots9 v.1).toLinearOrder }
+  profileOfListBallots (fun v => ballots9 v.1)
 
 noncomputable def profile8 : Profile (Electorate (Fin 9) voters8) A4 :=
   restrictElectorate fullProfile voters8 (by
@@ -177,24 +172,8 @@ lemma profiles_agree :
       (hSu := by intro x hx; exact (Finset.mem_univ x)) v)
 
 private lemma ballot1320_bottom_0 : BallotBottom (ballot1320.toLinearOrder) a0 := by
-  intro d hd
-  fin_cases d
-  · cases hd rfl
-  ·
-    have hlt :
-        ballot1320.ranking.idxOf (1 : A4) < ballot1320.ranking.idxOf (0 : A4) := by
-      decide
-    simpa [ballot1320, ListBallot.lt_iff_idxOf] using hlt
-  ·
-    have hlt :
-        ballot1320.ranking.idxOf (2 : A4) < ballot1320.ranking.idxOf (0 : A4) := by
-      decide
-    simpa [ballot1320, ListBallot.lt_iff_idxOf] using hlt
-  ·
-    have hlt :
-        ballot1320.ranking.idxOf (3 : A4) < ballot1320.ranking.idxOf (0 : A4) := by
-      decide
-    simpa [ballot1320, ListBallot.lt_iff_idxOf] using hlt
+  simp only [BallotBottom, ListBallot.lt_iff_idxOf]
+  decide
 
 lemma newVoter_bottom_0 :
     BallotBottom
@@ -205,53 +184,29 @@ lemma newVoter_bottom_0 :
 
 /-! ## Margins for the full profile (9 voters) -/
 
-private lemma marginList_profile9_0_1 :
-    marginList (fun v => (ballots9 v).ranking) a0 a1 = 3 := by
-  decide
-
-private lemma marginList_profile9_0_2 :
-    marginList (fun v => (ballots9 v).ranking) a0 a2 = -1 := by
-  decide
-
-private lemma marginList_profile9_0_3 :
-    marginList (fun v => (ballots9 v).ranking) a0 a3 = -3 := by
-  decide
-
-private lemma marginList_profile9_1_2 :
-    marginList (fun v => (ballots9 v).ranking) a1 a2 = -1 := by
-  decide
-
-private lemma marginList_profile9_1_3 :
-    marginList (fun v => (ballots9 v).ranking) a1 a3 = 3 := by
-  decide
-
-private lemma marginList_profile9_2_3 :
-    marginList (fun v => (ballots9 v).ranking) a2 a3 = -1 := by
-  decide
-
 lemma margin_profile9_0_1 : margin profile9_list a0 a1 = 3 := by
-  have h := margin_eq_marginList (ballots := ballots9) (a := a0) (b := a1)
-  simpa [profile9_list, marginList_profile9_0_1] using h
+  rw [profile9_list, margin_profileOfListBallots]
+  decide
 
 lemma margin_profile9_0_2 : margin profile9_list a0 a2 = -1 := by
-  have h := margin_eq_marginList (ballots := ballots9) (a := a0) (b := a2)
-  simpa [profile9_list, marginList_profile9_0_2] using h
+  rw [profile9_list, margin_profileOfListBallots]
+  decide
 
 lemma margin_profile9_0_3 : margin profile9_list a0 a3 = -3 := by
-  have h := margin_eq_marginList (ballots := ballots9) (a := a0) (b := a3)
-  simpa [profile9_list, marginList_profile9_0_3] using h
+  rw [profile9_list, margin_profileOfListBallots]
+  decide
 
 lemma margin_profile9_1_2 : margin profile9_list a1 a2 = -1 := by
-  have h := margin_eq_marginList (ballots := ballots9) (a := a1) (b := a2)
-  simpa [profile9_list, marginList_profile9_1_2] using h
+  rw [profile9_list, margin_profileOfListBallots]
+  decide
 
 lemma margin_profile9_1_3 : margin profile9_list a1 a3 = 3 := by
-  have h := margin_eq_marginList (ballots := ballots9) (a := a1) (b := a3)
-  simpa [profile9_list, marginList_profile9_1_3] using h
+  rw [profile9_list, margin_profileOfListBallots]
+  decide
 
 lemma margin_profile9_2_3 : margin profile9_list a2 a3 = -1 := by
-  have h := margin_eq_marginList (ballots := ballots9) (a := a2) (b := a3)
-  simpa [profile9_list, marginList_profile9_2_3] using h
+  rw [profile9_list, margin_profileOfListBallots]
+  decide
 
 lemma margin_profile9_1_0 : margin profile9_list a1 a0 = (-3 : Int) := by
   have h := margin_antisymmetric (P := profile9_list) a1 a0
@@ -325,7 +280,6 @@ lemma pathStrength_le_first_margin {V A : Type} [Fintype V] [Fintype A]
   simp [pathStrength, pathStrengthAux_le_init]
 
 lemma strongestPath_profile9_1_0_le_three : strongestPath profile9_list a1 a0 ≤ 3 := by
-  classical
   have hne : a1 ≠ a0 := by decide
   have hne_paths :
       (pathsUpTo (A := A4) (Fintype.card A4) a1 a0).Nonempty :=
@@ -356,7 +310,6 @@ lemma strongestPath_profile9_1_0_le_three : strongestPath profile9_list a1 a0 �
   simpa [hstrength] using hle
 
 lemma strongestPath_profile9_2_0_le_one : strongestPath profile9_list a2 a0 ≤ 1 := by
-  classical
   have hne : a2 ≠ a0 := by decide
   have hne_paths :
       (pathsUpTo (A := A4) (Fintype.card A4) a2 a0).Nonempty :=
@@ -387,7 +340,6 @@ lemma strongestPath_profile9_2_0_le_one : strongestPath profile9_list a2 a0 ≤ 
   simpa [hstrength] using hle
 
 lemma strongestPath_profile9_3_0_le_three : strongestPath profile9_list a3 a0 ≤ 3 := by
-  classical
   have hne : a3 ≠ a0 := by decide
   have hne_paths :
       (pathsUpTo (A := A4) (Fintype.card A4) a3 a0).Nonempty :=
@@ -457,7 +409,6 @@ lemma strongestPath_profile9_0_2_ge_one : (1 : Int) ≤ strongestPath profile9_l
   simpa [pathStrength_profile9_0_1_3_2] using h
 
 lemma a0_in_schulze_profile9_list : a0 ∈ schulze profile9_list := by
-  classical
   simp [schulze]
   intro b
   fin_cases b
@@ -485,53 +436,29 @@ lemma a0_in_schulze_profile9_list : a0 ∈ schulze profile9_list := by
 
 /-! ## Margins for the reduced profile (8 voters) -/
 
-private lemma marginList_profile8_0_1 :
-    marginList (fun v => (ballots8 v).ranking) a0 a1 = 4 := by
-  decide
-
-private lemma marginList_profile8_0_2 :
-    marginList (fun v => (ballots8 v).ranking) a0 a2 = 0 := by
-  decide
-
-private lemma marginList_profile8_0_3 :
-    marginList (fun v => (ballots8 v).ranking) a0 a3 = -2 := by
-  decide
-
-private lemma marginList_profile8_1_2 :
-    marginList (fun v => (ballots8 v).ranking) a1 a2 = -2 := by
-  decide
-
-private lemma marginList_profile8_1_3 :
-    marginList (fun v => (ballots8 v).ranking) a1 a3 = 2 := by
-  decide
-
-private lemma marginList_profile8_2_3 :
-    marginList (fun v => (ballots8 v).ranking) a2 a3 = 0 := by
-  decide
-
 lemma margin_profile8_0_1 : margin profile8_list a0 a1 = 4 := by
-  have h := margin_eq_marginList (ballots := ballots8) (a := a0) (b := a1)
-  simpa [profile8_list, marginList_profile8_0_1] using h
+  rw [profile8_list, margin_profileOfListBallots]
+  decide
 
 lemma margin_profile8_0_2 : margin profile8_list a0 a2 = 0 := by
-  have h := margin_eq_marginList (ballots := ballots8) (a := a0) (b := a2)
-  simpa [profile8_list, marginList_profile8_0_2] using h
+  rw [profile8_list, margin_profileOfListBallots]
+  decide
 
 lemma margin_profile8_0_3 : margin profile8_list a0 a3 = -2 := by
-  have h := margin_eq_marginList (ballots := ballots8) (a := a0) (b := a3)
-  simpa [profile8_list, marginList_profile8_0_3] using h
+  rw [profile8_list, margin_profileOfListBallots]
+  decide
 
 lemma margin_profile8_1_2 : margin profile8_list a1 a2 = -2 := by
-  have h := margin_eq_marginList (ballots := ballots8) (a := a1) (b := a2)
-  simpa [profile8_list, marginList_profile8_1_2] using h
+  rw [profile8_list, margin_profileOfListBallots]
+  decide
 
 lemma margin_profile8_1_3 : margin profile8_list a1 a3 = 2 := by
-  have h := margin_eq_marginList (ballots := ballots8) (a := a1) (b := a3)
-  simpa [profile8_list, marginList_profile8_1_3] using h
+  rw [profile8_list, margin_profileOfListBallots]
+  decide
 
 lemma margin_profile8_2_3 : margin profile8_list a2 a3 = 0 := by
-  have h := margin_eq_marginList (ballots := ballots8) (a := a2) (b := a3)
-  simpa [profile8_list, marginList_profile8_2_3] using h
+  rw [profile8_list, margin_profileOfListBallots]
+  decide
 
 lemma margin_profile8_1_0 : margin profile8_list a1 a0 = (-4 : Int) := by
   have h := margin_antisymmetric (P := profile8_list) a1 a0
@@ -634,7 +561,6 @@ lemma strongestPath_profile8_2_0_ge_two : (2 : Int) ≤ strongestPath profile8_l
   simpa [pathStrength_profile8_2_1_3_0] using h
 
 lemma strongestPath_profile8_0_2_le_zero : strongestPath profile8_list a0 a2 ≤ 0 := by
-  classical
   have hne : a0 ≠ a2 := by decide
   have hne_paths :
       (pathsUpTo (A := A4) (Fintype.card A4) a0 a2).Nonempty :=
@@ -656,7 +582,6 @@ lemma schulzeDefeats_profile8_2_0 : schulzeDefeats profile8_list a2 a0 := by
   exact hlt
 
 lemma a0_not_in_schulze_profile8_list : a0 ∉ schulze profile8_list := by
-  classical
   intro hmem
   have hcond : ∀ b, ¬ schulzeDefeats profile8_list b a0 := by
     simpa [schulze] using hmem

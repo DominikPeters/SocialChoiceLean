@@ -161,7 +161,6 @@ lemma strongestPath_triangle
   exact strongestPath_triangle_of_nodup (P := P) (a := a) (b := b) (c := c)
     (hab := hab) (hbc := hbc) (hac := hac)
 
-set_option maxHeartbeats 400000 in
 lemma schulzeDefeats_trans_aux
     {sab sba sbc scb sac sca : Int}
     (h1 : min sab sbc ≤ sac)

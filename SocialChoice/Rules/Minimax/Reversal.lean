@@ -7,7 +7,6 @@ import SocialChoice.Rules.Minimax.Defs
 namespace SocialChoice
 
 open Finset
-open Classical
 
 namespace MinimaxReversalCounterexample
 
@@ -23,59 +22,29 @@ def ballots : Fin 3 → ListBallot 4
 noncomputable def profile : Profile (Fin 3) (Fin 4) :=
   profileOfListBallots ballots
 
-private lemma marginList_profile_0_1 :
-    marginList (fun v => (ballots v).ranking) 0 1 = -1 := by
-  rfl
-
-private lemma marginList_profile_0_2 :
-    marginList (fun v => (ballots v).ranking) 0 2 = 1 := by
-  rfl
-
-private lemma marginList_profile_0_3 :
-    marginList (fun v => (ballots v).ranking) 0 3 = -1 := by
-  rfl
-
-private lemma marginList_profile_1_2 :
-    marginList (fun v => (ballots v).ranking) 1 2 = -1 := by
-  rfl
-
-private lemma marginList_profile_1_3 :
-    marginList (fun v => (ballots v).ranking) 1 3 = -1 := by
-  rfl
-
-private lemma marginList_profile_2_3 :
-    marginList (fun v => (ballots v).ranking) 2 3 = -1 := by
-  rfl
-
 private lemma margin_profile_0_1 : margin profile (0 : Fin 4) (1 : Fin 4) = -1 := by
-  have h :=
-    margin_eq_marginList (ballots := ballots) (a := (0 : Fin 4)) (b := (1 : Fin 4))
-  simpa [profile, marginList_profile_0_1] using h
+  rw [profile, margin_profileOfListBallots]
+  decide
 
 private lemma margin_profile_0_2 : margin profile (0 : Fin 4) (2 : Fin 4) = 1 := by
-  have h :=
-    margin_eq_marginList (ballots := ballots) (a := (0 : Fin 4)) (b := (2 : Fin 4))
-  simpa [profile, marginList_profile_0_2] using h
+  rw [profile, margin_profileOfListBallots]
+  decide
 
 private lemma margin_profile_0_3 : margin profile (0 : Fin 4) (3 : Fin 4) = -1 := by
-  have h :=
-    margin_eq_marginList (ballots := ballots) (a := (0 : Fin 4)) (b := (3 : Fin 4))
-  simpa [profile, marginList_profile_0_3] using h
+  rw [profile, margin_profileOfListBallots]
+  decide
 
 private lemma margin_profile_1_2 : margin profile (1 : Fin 4) (2 : Fin 4) = -1 := by
-  have h :=
-    margin_eq_marginList (ballots := ballots) (a := (1 : Fin 4)) (b := (2 : Fin 4))
-  simpa [profile, marginList_profile_1_2] using h
+  rw [profile, margin_profileOfListBallots]
+  decide
 
 private lemma margin_profile_1_3 : margin profile (1 : Fin 4) (3 : Fin 4) = -1 := by
-  have h :=
-    margin_eq_marginList (ballots := ballots) (a := (1 : Fin 4)) (b := (3 : Fin 4))
-  simpa [profile, marginList_profile_1_3] using h
+  rw [profile, margin_profileOfListBallots]
+  decide
 
 private lemma margin_profile_2_3 : margin profile (2 : Fin 4) (3 : Fin 4) = -1 := by
-  have h :=
-    margin_eq_marginList (ballots := ballots) (a := (2 : Fin 4)) (b := (3 : Fin 4))
-  simpa [profile, marginList_profile_2_3] using h
+  rw [profile, margin_profileOfListBallots]
+  decide
 
 private lemma margin_profile_1_0 : margin profile (1 : Fin 4) (0 : Fin 4) = 1 := by
   have h := margin_antisymmetric (P := profile) (a := (1 : Fin 4)) (b := (0 : Fin 4))
@@ -170,7 +139,6 @@ private lemma minimaxScore_profile : minimaxScore profile = 0 := by
   exact le_antisymm hmin_le hmin_ge
 
 lemma minimax_profile_eq_singleton : minimax profile = ({3} : Finset (Fin 4)) := by
-  classical
   have hnonempty : Nonempty (Fin 4) := inferInstance
   ext x
   fin_cases x

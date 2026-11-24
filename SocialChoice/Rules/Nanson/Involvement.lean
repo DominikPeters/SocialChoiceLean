@@ -11,12 +11,6 @@ import SocialChoice.Rules.Nanson.InformationalBasis
 namespace SocialChoice
 
 open Finset
-open Classical
-
-attribute [instance] Classical.decEq Classical.decPred
-
-set_option maxHeartbeats 5000000
-
 /-!
 # Nanson fails negative involvement
 
@@ -72,7 +66,7 @@ lemma voters4_eq_univ : (voters4 : Finset (Fin 4)) = Finset.univ := by
   fin_cases x <;> simp [voters4, voters3]
 
 noncomputable def fullProfile : Profile (Electorate (Fin 4) (Finset.univ)) A4 :=
-  { pref := fun v => (ballots4 v.1).toLinearOrder }
+  profileOfListBallots (fun v => ballots4 v.1)
 
 noncomputable def profile3 : Profile (Electorate (Fin 4) voters3) A4 :=
   restrictElectorate fullProfile voters3 (by
@@ -148,24 +142,8 @@ lemma profiles_agree :
       (hSu := by intro x hx; exact (Finset.mem_univ x)) v)
 
 private lemma ballot3210_bottom_0 : BallotBottom (ballot3210.toLinearOrder) (0 : Fin 4) := by
-  intro d hd
-  fin_cases d
-  · cases hd rfl
-  ·
-    have hlt :
-        ballot3210.ranking.idxOf (1 : Fin 4) < ballot3210.ranking.idxOf (0 : Fin 4) := by
-      decide
-    simpa [ballot3210, ListBallot.lt_iff_idxOf] using hlt
-  ·
-    have hlt :
-        ballot3210.ranking.idxOf (2 : Fin 4) < ballot3210.ranking.idxOf (0 : Fin 4) := by
-      decide
-    simpa [ballot3210, ListBallot.lt_iff_idxOf] using hlt
-  ·
-    have hlt :
-        ballot3210.ranking.idxOf (3 : Fin 4) < ballot3210.ranking.idxOf (0 : Fin 4) := by
-      decide
-    simpa [ballot3210, ListBallot.lt_iff_idxOf] using hlt
+  simp only [BallotBottom, ListBallot.lt_iff_idxOf]
+  decide
 
 lemma newVoter_bottom_0 :
     BallotBottom
@@ -176,59 +154,29 @@ lemma newVoter_bottom_0 :
 
 /-! ## Margins and C2Borda scores for the full profile (4 voters) -/
 
-private lemma marginList_profile4_0_1 :
-    marginList (fun v => (ballots4 v).ranking) (0 : Fin 4) (1 : Fin 4) = -2 := by
-  decide
-
-private lemma marginList_profile4_0_2 :
-    marginList (fun v => (ballots4 v).ranking) (0 : Fin 4) (2 : Fin 4) = 0 := by
-  decide
-
-private lemma marginList_profile4_0_3 :
-    marginList (fun v => (ballots4 v).ranking) (0 : Fin 4) (3 : Fin 4) = 2 := by
-  decide
-
-private lemma marginList_profile4_1_2 :
-    marginList (fun v => (ballots4 v).ranking) (1 : Fin 4) (2 : Fin 4) = -2 := by
-  decide
-
-private lemma marginList_profile4_1_3 :
-    marginList (fun v => (ballots4 v).ranking) (1 : Fin 4) (3 : Fin 4) = 0 := by
-  decide
-
-private lemma marginList_profile4_2_3 :
-    marginList (fun v => (ballots4 v).ranking) (2 : Fin 4) (3 : Fin 4) = -2 := by
-  decide
-
 private lemma margin_profile4_0_1 : margin profile4_list (0 : Fin 4) (1 : Fin 4) = -2 := by
-  have h :=
-    margin_eq_marginList (ballots := ballots4) (a := (0 : Fin 4)) (b := (1 : Fin 4))
-  simpa [profile4_list, marginList_profile4_0_1] using h
+  rw [profile4_list, margin_profileOfListBallots]
+  decide
 
 private lemma margin_profile4_0_2 : margin profile4_list (0 : Fin 4) (2 : Fin 4) = 0 := by
-  have h :=
-    margin_eq_marginList (ballots := ballots4) (a := (0 : Fin 4)) (b := (2 : Fin 4))
-  simpa [profile4_list, marginList_profile4_0_2] using h
+  rw [profile4_list, margin_profileOfListBallots]
+  decide
 
 private lemma margin_profile4_0_3 : margin profile4_list (0 : Fin 4) (3 : Fin 4) = 2 := by
-  have h :=
-    margin_eq_marginList (ballots := ballots4) (a := (0 : Fin 4)) (b := (3 : Fin 4))
-  simpa [profile4_list, marginList_profile4_0_3] using h
+  rw [profile4_list, margin_profileOfListBallots]
+  decide
 
 private lemma margin_profile4_1_2 : margin profile4_list (1 : Fin 4) (2 : Fin 4) = -2 := by
-  have h :=
-    margin_eq_marginList (ballots := ballots4) (a := (1 : Fin 4)) (b := (2 : Fin 4))
-  simpa [profile4_list, marginList_profile4_1_2] using h
+  rw [profile4_list, margin_profileOfListBallots]
+  decide
 
 private lemma margin_profile4_1_3 : margin profile4_list (1 : Fin 4) (3 : Fin 4) = 0 := by
-  have h :=
-    margin_eq_marginList (ballots := ballots4) (a := (1 : Fin 4)) (b := (3 : Fin 4))
-  simpa [profile4_list, marginList_profile4_1_3] using h
+  rw [profile4_list, margin_profileOfListBallots]
+  decide
 
 private lemma margin_profile4_2_3 : margin profile4_list (2 : Fin 4) (3 : Fin 4) = -2 := by
-  have h :=
-    margin_eq_marginList (ballots := ballots4) (a := (2 : Fin 4)) (b := (3 : Fin 4))
-  simpa [profile4_list, marginList_profile4_2_3] using h
+  rw [profile4_list, margin_profileOfListBallots]
+  decide
 
 private lemma margin_profile4_1_0 : margin profile4_list (1 : Fin 4) (0 : Fin 4) = 2 := by
   have h := margin_antisymmetric (P := profile4_list) (1 : Fin 4) (0 : Fin 4)
@@ -271,7 +219,6 @@ private lemma c2Borda_profile4_3 : c2BordaScore profile4_list (3 : Fin 4) = 0 :=
     margin_profile4_3_1, margin_profile4_3_2]
 
 lemma nanson_profile4_list : nanson profile4_list = (Finset.univ : Finset A4) := by
-  classical
   have hall : ∀ x, c2BordaScore profile4_list x = 0 := by
     intro x
     fin_cases x <;> simp [c2Borda_profile4_0, c2Borda_profile4_1,
@@ -279,7 +226,6 @@ lemma nanson_profile4_list : nanson profile4_list = (Finset.univ : Finset A4) :=
   simp [nanson, nansonAux, hall]
 
 lemma nanson_profile4 : nanson profile4 = (Finset.univ : Finset A4) := by
-  classical
   have hmargin : ∀ a b, margin profile4 a b = margin profile4_list a b := by
     intro a b
     exact margin_profile4_eq_list a b
@@ -291,59 +237,29 @@ lemma nanson_profile4 : nanson profile4 = (Finset.univ : Finset A4) := by
 
 /-! ## Margins and C2Borda scores for the reduced profile (3 voters) -/
 
-private lemma marginList_profile3_0_1 :
-    marginList (fun v => (ballots3 v).ranking) (0 : Fin 4) (1 : Fin 4) = -1 := by
-  decide
-
-private lemma marginList_profile3_0_2 :
-    marginList (fun v => (ballots3 v).ranking) (0 : Fin 4) (2 : Fin 4) = 1 := by
-  decide
-
-private lemma marginList_profile3_0_3 :
-    marginList (fun v => (ballots3 v).ranking) (0 : Fin 4) (3 : Fin 4) = 3 := by
-  decide
-
-private lemma marginList_profile3_1_2 :
-    marginList (fun v => (ballots3 v).ranking) (1 : Fin 4) (2 : Fin 4) = -1 := by
-  decide
-
-private lemma marginList_profile3_1_3 :
-    marginList (fun v => (ballots3 v).ranking) (1 : Fin 4) (3 : Fin 4) = 1 := by
-  decide
-
-private lemma marginList_profile3_2_3 :
-    marginList (fun v => (ballots3 v).ranking) (2 : Fin 4) (3 : Fin 4) = -1 := by
-  decide
-
 private lemma margin_profile3_0_1 : margin profile3_list (0 : Fin 4) (1 : Fin 4) = -1 := by
-  have h :=
-    margin_eq_marginList (ballots := ballots3) (a := (0 : Fin 4)) (b := (1 : Fin 4))
-  simpa [profile3_list, marginList_profile3_0_1] using h
+  rw [profile3_list, margin_profileOfListBallots]
+  decide
 
 private lemma margin_profile3_0_2 : margin profile3_list (0 : Fin 4) (2 : Fin 4) = 1 := by
-  have h :=
-    margin_eq_marginList (ballots := ballots3) (a := (0 : Fin 4)) (b := (2 : Fin 4))
-  simpa [profile3_list, marginList_profile3_0_2] using h
+  rw [profile3_list, margin_profileOfListBallots]
+  decide
 
 private lemma margin_profile3_0_3 : margin profile3_list (0 : Fin 4) (3 : Fin 4) = 3 := by
-  have h :=
-    margin_eq_marginList (ballots := ballots3) (a := (0 : Fin 4)) (b := (3 : Fin 4))
-  simpa [profile3_list, marginList_profile3_0_3] using h
+  rw [profile3_list, margin_profileOfListBallots]
+  decide
 
 private lemma margin_profile3_1_2 : margin profile3_list (1 : Fin 4) (2 : Fin 4) = -1 := by
-  have h :=
-    margin_eq_marginList (ballots := ballots3) (a := (1 : Fin 4)) (b := (2 : Fin 4))
-  simpa [profile3_list, marginList_profile3_1_2] using h
+  rw [profile3_list, margin_profileOfListBallots]
+  decide
 
 private lemma margin_profile3_1_3 : margin profile3_list (1 : Fin 4) (3 : Fin 4) = 1 := by
-  have h :=
-    margin_eq_marginList (ballots := ballots3) (a := (1 : Fin 4)) (b := (3 : Fin 4))
-  simpa [profile3_list, marginList_profile3_1_3] using h
+  rw [profile3_list, margin_profileOfListBallots]
+  decide
 
 private lemma margin_profile3_2_3 : margin profile3_list (2 : Fin 4) (3 : Fin 4) = -1 := by
-  have h :=
-    margin_eq_marginList (ballots := ballots3) (a := (2 : Fin 4)) (b := (3 : Fin 4))
-  simpa [profile3_list, marginList_profile3_2_3] using h
+  rw [profile3_list, margin_profileOfListBallots]
+  decide
 
 private lemma margin_profile3_1_0 : margin profile3_list (1 : Fin 4) (0 : Fin 4) = 1 := by
   have h := margin_antisymmetric (P := profile3_list) (1 : Fin 4) (0 : Fin 4)
@@ -394,7 +310,6 @@ def cand0 : PosCand := ⟨0, by linarith [c2Borda_profile3_0]⟩
 def cand1 : PosCand := ⟨1, by linarith [c2Borda_profile3_1]⟩
 
 lemma univ_profilePos_eq : (Finset.univ : Finset PosCand) = {cand0, cand1} := by
-  classical
   ext x
   constructor
   · intro _
@@ -443,7 +358,6 @@ abbrev PosCand' := {x : PosCand // c2BordaScore profilePos x > 0}
 def cand1' : PosCand' := ⟨cand1, by linarith [c2Borda_profilePos_cand1]⟩
 
 lemma poscand'_eq_cand1 (x : PosCand') : x.1 = cand1 := by
-  classical
   rcases x with ⟨x, hxpos⟩
   have hx' : x ∈ (Finset.univ : Finset PosCand) := by simp
   have hx'' : x ∈ ({cand0, cand1} : Finset PosCand) := by
@@ -458,7 +372,6 @@ lemma poscand'_eq_cand1 (x : PosCand') : x.1 = cand1 := by
       exact hx1
 
 lemma univ_profilePos'_eq : (Finset.univ : Finset PosCand') = {cand1'} := by
-  classical
   ext x
   constructor
   · intro _
@@ -471,7 +384,6 @@ lemma univ_profilePos'_eq : (Finset.univ : Finset PosCand') = {cand1'} := by
     simp
 
 lemma poscand'_subsingleton : Subsingleton PosCand' := by
-  classical
   refine ⟨?_⟩
   intro x y
   have hx : x.1 = cand1 := poscand'_eq_cand1 x
@@ -484,7 +396,6 @@ lemma c2Borda_profilePos'_all_zero (x : PosCand') : c2BordaScore profilePos' x =
   exact c2BordaScore_eq_zero_of_subsingleton (P := profilePos') (a := x)
 
 lemma nansonAux_profilePos : nansonAux 3 PosCand profilePos = ({cand1} : Finset PosCand) := by
-  classical
   have hnotall : ¬ ∀ x : PosCand, c2BordaScore profilePos x = 0 := by
     intro hall
     have := hall cand1
@@ -528,7 +439,6 @@ lemma nansonAux_profilePos : nansonAux 3 PosCand profilePos = ({cand1} : Finset 
       simp [liftWinners, univ_profilePos'_eq, cand1']
 
 lemma nanson_profile3_list : nanson profile3_list = ({1} : Finset A4) := by
-  classical
   have hnotall : ¬ ∀ x, c2BordaScore profile3_list x = 0 := by
     intro hall
     have := hall (0 : Fin 4)
@@ -550,7 +460,6 @@ lemma nanson_profile3_list : nanson profile3_list = ({1} : Finset A4) := by
         simp [liftWinners, cand1]
 
 lemma nanson_profile3 : nanson profile3 = ({1} : Finset A4) := by
-  classical
   have hmargin : ∀ a b, margin profile3 a b = margin profile3_list a b := by
     intro a b
     exact margin_profile3_eq_list a b

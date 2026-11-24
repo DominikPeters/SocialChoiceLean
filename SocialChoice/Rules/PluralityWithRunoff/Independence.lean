@@ -14,16 +14,6 @@ open Finset
 
 variable {V A : Type} [Fintype V] [Fintype A] [DecidableEq A]
 
-lemma mem_pluralityWithRunoff_iff (P : Profile V A) (x : A)
-    (hcard : ¬ Fintype.card A ≤ 1) :
-    x ∈ pluralityWithRunoff P ↔
-      ∃ y : A, ({x, y} : Finset A) ∈ pluralityWithRunoffPairs P ∧ 0 ≤ margin P x y := by
-  classical
-  have hinst : (inferInstance : DecidableEq A) = Classical.decEq A := by
-    apply Subsingleton.elim
-  cases hinst
-  simp [pluralityWithRunoff, hcard]
-
 lemma lift_plurality_restrict_eq_of_dominated
     [Nonempty V] (P : Profile V A) (c d : A) (hpref : ∀ v : V, Prefers P v c d) :
     liftWinners (plurality (restrictCandidates P (fun a => a ≠ d))) = plurality P := by

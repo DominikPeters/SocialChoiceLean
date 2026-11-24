@@ -20,7 +20,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
+      # Builds the default target (SocialChoice). Pivato is not built: it does
+      # not currently compile against Mathlib.
       - uses: leanprover/lean-action@v1
-        with:
-          # Pivato is not a default target, so a plain `lake build` skips it.
-          build-args: "SocialChoice Pivato"

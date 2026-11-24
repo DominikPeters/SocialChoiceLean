@@ -46,9 +46,9 @@ lemma clonedVotingRule_resolute
     (f : VotingRule) (hf : Resolute f) (v₁ v₂ : V) (hne : v₁ ≠ v₂) :
     Resolute (@clonedVotingRule V A0 _ _ _ f v₁ v₂ hne) := by
   intro V' A' instV' instA' instNonemptyA' P
-  letI : Fintype V' := instV'
-  letI : Fintype A' := instA'
-  letI : Nonempty A' := instNonemptyA'
+  let : Fintype V' := instV'
+  let : Fintype A' := instA'
+  let : Nonempty A' := instNonemptyA'
   classical
   by_cases hV : V' = {w : V // w ≠ v₂}
   · cases hV
@@ -65,8 +65,8 @@ lemma clonedVotingRule_unanimity
     (f : VotingRule) (hf_unan : Unanimity f) (v₁ v₂ : V) (hne : v₁ ≠ v₂) :
     Unanimity (@clonedVotingRule V A0 _ _ _ f v₁ v₂ hne) := by
   intro V' A' instV' instA' _ P c htop
-  letI : Fintype V' := instV'
-  letI : Fintype A' := instA'
+  let : Fintype V' := instV'
+  let : Fintype A' := instA'
   classical
   by_cases hV : V' = {w : V // w ≠ v₂}
   · cases hV
@@ -86,8 +86,8 @@ lemma clonedVotingRule_strategyproof
       (@clonedVotingRule V A0 _ _ _ f v₁ v₂ hne)
       (clonedVotingRule_resolute (V := V) (A0 := A0) f hf v₁ v₂ hne) := by
   intro V' A' instV' instA' P v ballot x y hx hy
-  letI : Fintype V' := instV'
-  letI : Fintype A' := instA'
+  let : Fintype V' := instV'
+  let : Fintype A' := instA'
   classical
   by_cases hV : V' = {w : V // w ≠ v₂}
   · cases hV
@@ -153,7 +153,7 @@ theorem gibbard_satterthwaite
 
   have hStrong : motive (Fintype.card V) := by
     classical
-    refine Nat.strong_induction_on (p := motive) (n := Fintype.card V) ?step
+    refine Nat.strong_induction_on (motive := motive) (n := Fintype.card V) ?step
     intro n ih V A _ _ _ _ hV hcardA f hf_res hf_unan hf_sp
     cases n with
     | zero =>
@@ -172,7 +172,7 @@ theorem gibbard_satterthwaite
               exact lt_of_lt_of_eq this hV.symm
 
             -- pick two distinct voters
-            letI : DecidableEq V := Classical.decEq V
+            let : DecidableEq V := Classical.decEq V
             rcases exists_pair_of_one_lt_card (α := V) hgt1 with ⟨v₁, v₂, hne⟩
 
             -- package the cloned rule as a VotingRule for the IH
@@ -187,7 +187,7 @@ theorem gibbard_satterthwaite
               exact lt_of_lt_of_eq h hV
 
             -- IH on the cloned rule
-            haveI : Nonempty {w : V // w ≠ v₂} := ⟨⟨v₁, hne⟩⟩
+            have : Nonempty {w : V // w ≠ v₂} := ⟨⟨v₁, hne⟩⟩
             have hg_dict : ∃ d : {w : V // w ≠ v₂},
                 ∀ P' : Profile {w : V // w ≠ v₂} A,
                   clonedRule f v₁ v₂ hne P' = {topChoice P' d} := by

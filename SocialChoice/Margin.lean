@@ -259,74 +259,35 @@ lemma margin_pos_asymm {V A : Type} [Fintype V] [Fintype A]
     simpa [margin_pos] using hyx
   exact (lt_asymm hyx' hneg)
 
+@[simp] lemma prefers_addVoter_inl {V A : Type} [Fintype V] [Fintype A]
+    (P : Profile V A) (ballot : LinearOrder A) (v : V) (a b : A) :
+    Prefers (addVoter P ballot) (Sum.inl v) a b ↔ Prefers P v a b := Iff.rfl
+
+@[simp] lemma prefers_addVoter_inr {V A : Type} [Fintype V] [Fintype A]
+    (P : Profile V A) (ballot : LinearOrder A) (u : Unit) (a b : A) :
+    Prefers (addVoter P ballot) (Sum.inr u) a b ↔ ballot.lt a b := Iff.rfl
+
+@[simp] lemma prefers_unionProfiles_inl {V W A : Type} [Fintype V] [Fintype W] [Fintype A]
+    (P : Profile V A) (Q : Profile W A) (v : V) (a b : A) :
+    Prefers (unionProfiles P Q) (Sum.inl v) a b ↔ Prefers P v a b := Iff.rfl
+
+@[simp] lemma prefers_unionProfiles_inr {V W A : Type} [Fintype V] [Fintype W] [Fintype A]
+    (P : Profile V A) (Q : Profile W A) (w : W) (a b : A) :
+    Prefers (unionProfiles P Q) (Sum.inr w) a b ↔ Prefers Q w a b := Iff.rfl
+
+/-- Counting the elements of a sum type that satisfy `p` splits along the two summands. -/
+lemma card_filter_univ_sum {V W : Type} [Fintype V] [Fintype W]
+    (p : V ⊕ W → Prop) [DecidablePred p] :
+    (univ.filter p).card =
+      (univ.filter fun v => p (Sum.inl v)).card + (univ.filter fun w => p (Sum.inr w)).card := by
+  simp only [card_filter, Fintype.sum_sum_type]
+
 lemma margin_addVoter_eq_of_prefers {V A : Type} [Fintype V] [Fintype A]
     (P : Profile V A) (ballot : LinearOrder A) (a b : A) (h : ballot.lt a b) :
     margin (addVoter P ballot) a b = margin P a b + 1 := by
   classical
-  have hcard_ab :
-      (Finset.univ.filter (fun v : V ⊕ Unit => Prefers (addVoter P ballot) v a b)).card =
-        (Finset.univ.filter (fun v : V => Prefers P v a b)).card + 1 := by
-    let S0 : Finset V := Finset.univ.filter (fun v => Prefers P v a b)
-    let S : Finset (V ⊕ Unit) :=
-      Finset.univ.filter (fun v => Prefers (addVoter P ballot) v a b)
-    have hS : S = insert (Sum.inr ()) (S0.image (Sum.inl : V → V ⊕ Unit)) := by
-      ext v
-      cases v with
-      | inl v =>
-          simp [S, S0, Prefers, Finset.mem_image]
-          rfl
-      | inr u =>
-          cases u
-          simp [S, S0, Prefers, Finset.mem_image]
-          exact h
-    have hnotmem : Sum.inr () ∉ S0.image (Sum.inl : V → V ⊕ Unit) := by
-      simp [Finset.mem_image]
-    have hinj : Function.Injective (Sum.inl : V → V ⊕ Unit) := by
-      intro a b hEq
-      cases hEq
-      rfl
-    have hcard : S.card = (S0.image (Sum.inl : V → V ⊕ Unit)).card + 1 := by
-      have hcard' :
-          (insert (Sum.inr ()) (S0.image (Sum.inl : V → V ⊕ Unit))).card =
-            (S0.image (Sum.inl : V → V ⊕ Unit)).card + 1 :=
-        Finset.card_insert_of_notMem hnotmem
-      simp [hS]
-    calc
-      S.card = (S0.image (Sum.inl : V → V ⊕ Unit)).card + 1 := hcard
-      _ = S0.card + 1 := by
-        simpa using (Finset.card_image_of_injective S0 hinj)
-  let _ := ballot
-  have hba : ¬ ballot.lt b a := by
-    intro hba
-    exact lt_asymm (by simpa using h) (by simpa using hba)
-  have hcard_ba :
-      (Finset.univ.filter (fun v : V ⊕ Unit => Prefers (addVoter P ballot) v b a)).card =
-        (Finset.univ.filter (fun v : V => Prefers P v b a)).card := by
-    let S0 : Finset V := Finset.univ.filter (fun v => Prefers P v b a)
-    let S : Finset (V ⊕ Unit) :=
-      Finset.univ.filter (fun v => Prefers (addVoter P ballot) v b a)
-    have hS : S = S0.image Sum.inl := by
-      ext v
-      cases v with
-      | inl v =>
-          simp [S, S0, Prefers, Finset.mem_image]
-          rfl
-      | inr u =>
-          cases u
-          simp [S, S0, Prefers, Finset.mem_image]
-          exact hba
-    have hinj : Function.Injective (Sum.inl : V → V ⊕ Unit) := by
-      intro a b hEq
-      cases hEq
-      rfl
-    calc
-      S.card = (S0.image Sum.inl).card := by
-        simp [hS]
-        rfl
-      _ = S0.card := by
-        simpa using (Finset.card_image_of_injective S0 hinj)
-  dsimp [margin]
-  simp [hcard_ab, hcard_ba]
+  have hba : ¬ ballot.lt b a := fun hba => (@lt_asymm A _ a b h) hba
+  simp [margin, card_filter_univ_sum, h, hba]
   ring
 
 lemma margin_add_newVoter_eq_of_prefers {U A : Type} [DecidableEq U] [Fintype A]
@@ -744,66 +705,13 @@ lemma card_votersPreferring_unionProfiles {V W A : Type} [Fintype V] [Fintype W]
     (votersPreferring (unionProfiles P Q) a b).card =
       (votersPreferring P a b).card + (votersPreferring Q a b).card := by
   classical
-  let SV : Finset V := votersPreferring P a b
-  let SW : Finset W := votersPreferring Q a b
-  let S : Finset (V ⊕ W) := votersPreferring (unionProfiles P Q) a b
-  have hS :
-      S = SV.image Sum.inl ∪ SW.image Sum.inr := by
-    ext v
-    cases v with
-    | inl v =>
-        simp [S, SV, SW, votersPreferring, Prefers, Finset.mem_image]
-        rfl
-    | inr w =>
-        simp [S, SV, SW, votersPreferring, Prefers, Finset.mem_image]
-        rfl
-  have hdisj : Disjoint (SV.image Sum.inl) (SW.image Sum.inr) := by
-    refine Finset.disjoint_left.2 ?_
-    intro v hvL hvR
-    rcases Finset.mem_image.mp hvL with ⟨v1, _hv1, rfl⟩
-    rcases Finset.mem_image.mp hvR with ⟨v2, _hv2, hEq⟩
-    cases hEq
-  have hinjL : Function.Injective (Sum.inl : V → V ⊕ W) := by
-    intro v1 v2 hEq
-    cases hEq
-    rfl
-  have hinjR : Function.Injective (Sum.inr : W → V ⊕ W) := by
-    intro w1 w2 hEq
-    cases hEq
-    rfl
-  calc
-    S.card = (SV.image Sum.inl ∪ SW.image Sum.inr).card := by simp [hS]
-    _ = (SV.image Sum.inl).card + (SW.image Sum.inr).card :=
-      Finset.card_union_of_disjoint hdisj
-    _ = SV.card + SW.card := by
-      have hL : (SV.image Sum.inl).card = SV.card :=
-        Finset.card_image_of_injective (s := SV) (f := Sum.inl) hinjL
-      have hR : (SW.image Sum.inr).card = SW.card :=
-        Finset.card_image_of_injective (s := SW) (f := Sum.inr) hinjR
-      simp [hL, hR, SV, SW]
+  simp [votersPreferring, card_filter_univ_sum]
 
 lemma margin_unionProfiles {V W A : Type} [Fintype V] [Fintype W] [Fintype A]
     (P : Profile V A) (Q : Profile W A) (a b : A) :
     margin (unionProfiles P Q) a b = margin P a b + margin Q a b := by
   classical
-  have h1 := card_votersPreferring_unionProfiles (P := P) (Q := Q) (a := a) (b := b)
-  have h2 := card_votersPreferring_unionProfiles (P := P) (Q := Q) (a := b) (b := a)
-  dsimp [margin]
-  have hUP :
-      (#{v | Prefers (unionProfiles P Q) v a b}) =
-        (votersPreferring (unionProfiles P Q) a b).card := by rfl
-  have hUP' :
-      (#{v | Prefers (unionProfiles P Q) v b a}) =
-        (votersPreferring (unionProfiles P Q) b a).card := by rfl
-  have hP :
-      (#{v | Prefers P v a b}) = (votersPreferring P a b).card := by rfl
-  have hP' :
-      (#{v | Prefers P v b a}) = (votersPreferring P b a).card := by rfl
-  have hQ :
-      (#{v | Prefers Q v a b}) = (votersPreferring Q a b).card := by rfl
-  have hQ' :
-      (#{v | Prefers Q v b a}) = (votersPreferring Q b a).card := by rfl
-  simp [hUP, hUP', hP, hP', hQ, hQ', h1, h2]
+  simp [margin, card_filter_univ_sum]
   ring
 
 end SocialChoice

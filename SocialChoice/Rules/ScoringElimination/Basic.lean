@@ -91,7 +91,7 @@ lemma scoringEliminationAux_nonempty
         have hklt : Fintype.card {x : A' // x ≠ ℓ} < k := by
           -- `card {x // x ≠ ℓ} < card A' = k`.
           simpa [hk] using hcard_sub_lt
-        haveI : Nonempty {x : A' // x ≠ ℓ} := by
+        have : Nonempty {x : A' // x ≠ ℓ} := by
           -- Since `card A' > 1` in this branch, removing one element leaves something.
           have : 0 < Fintype.card {x : A' // x ≠ ℓ} := by
             have hposA : 1 < Fintype.card A' := by omega

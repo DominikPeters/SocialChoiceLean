@@ -227,7 +227,7 @@ lemma rank_ballotWithTopTwo_top {A : Type} [Fintype A]
     (a b : A) (hcard : 2 ≤ Fintype.card A) (hab : a ≠ b) :
     rank (ballotWithTopTwo (A := A) a b hcard hab) a = 0 := by
   classical
-  letI : Nonempty A := ⟨a⟩
+  let : Nonempty A := ⟨a⟩
   let r0 : LinearOrder A := someLinearOrder A
   let e := Fintype.equivFin A
   let n := Fintype.card A
@@ -280,7 +280,7 @@ lemma rank_ballotWithTopTwo_second {A : Type} [Fintype A]
     (a b : A) (hcard : 2 ≤ Fintype.card A) (hab : a ≠ b) :
     rank (ballotWithTopTwo (A := A) a b hcard hab) b = 1 := by
   classical
-  letI : Nonempty A := ⟨a⟩
+  let : Nonempty A := ⟨a⟩
   let r0 : LinearOrder A := someLinearOrder A
   let e := Fintype.equivFin A
   let n := Fintype.card A
@@ -432,7 +432,7 @@ noncomputable def crossedTopTwoProfile
       (updateProfile Pbar v₁ (ballotWithTopTwo (A := A) a b hcard2 hab))
       v₂ (ballotWithTopTwo (A := A) b a hcard2 hab.symm)
 
-omit [Nonempty A] in
+omit [Nonempty A] [DecidableEq V] in
 @[simp] lemma crossedTopTwoProfile_pref_v2
     (hcard : 3 ≤ Fintype.card A)
     (Pbar : Profile V A) (v₁ v₂ : V) (a b : A) (hab : a ≠ b) :
@@ -440,7 +440,7 @@ omit [Nonempty A] in
       ballotWithTopTwo (A := A) b a (by omega) hab.symm := by
   simp [crossedTopTwoProfile, updateProfile]
 
-omit [Nonempty A] in
+omit [Nonempty A] [DecidableEq V] in
 @[simp] lemma crossedTopTwoProfile_pref_v1
     (hcard : 3 ≤ Fintype.card A)
     (Pbar : Profile V A) (v₁ v₂ : V) (hne : v₁ ≠ v₂) (a b : A) (hab : a ≠ b) :
@@ -448,7 +448,7 @@ omit [Nonempty A] in
       ballotWithTopTwo (A := A) a b (by omega) hab := by
   simp [crossedTopTwoProfile, updateProfile, hne]
 
-omit [Nonempty A] in
+omit [Nonempty A] [DecidableEq V] in
 lemma topRank_crossedTopTwoProfile_v2
     (hcard : 3 ≤ Fintype.card A)
     (Pbar : Profile V A) (v₁ v₂ : V) (a b : A) (hab : a ≠ b) :
@@ -460,7 +460,7 @@ lemma topRank_crossedTopTwoProfile_v2
   rw [crossedTopTwoProfile_pref_v2]
   exact topRank_ballotWithTopTwo (A := A) b a hcard2 hab.symm d hd
 
-omit [Nonempty A] in
+omit [Nonempty A] [DecidableEq V] in
 lemma prefers_b_over_others_crossedTopTwoProfile_v1
     (hcard : 3 ≤ Fintype.card A)
     (Pbar : Profile V A) (v₁ v₂ : V) (hne : v₁ ≠ v₂) (a b : A) (hab : a ≠ b) :
@@ -519,13 +519,13 @@ noncomputable def setV1V2
   classical
   exact updateProfile (updateProfile Pbar v₁ ballot₁) v₂ ballot₂
 
-omit [Nonempty A] in
+omit [Nonempty A] [DecidableEq V] in
 @[simp] lemma setV1V2_pref_v2
     (Pbar : Profile V A) (v₁ v₂ : V) (ballot₁ ballot₂ : LinearOrder A) :
     (setV1V2 Pbar v₁ v₂ ballot₁ ballot₂).pref v₂ = ballot₂ := by
   simp [setV1V2, updateProfile]
 
-omit [Nonempty A] in
+omit [Nonempty A] [DecidableEq V] in
 @[simp] lemma setV1V2_pref_v1
     (Pbar : Profile V A) (v₁ v₂ : V) (ballot₁ ballot₂ : LinearOrder A)
     (hne : v₁ ≠ v₂) :
@@ -1280,12 +1280,12 @@ lemma diffVoters_updateProfile_eq_erase
     diffVoters (V := V) (A := A)
         (updateProfile Pbar v₃ (Pbar'.pref v₃)) Pbar' v₁ v₂
       = (diffVoters (V := V) (A := A) Pbar Pbar' v₁ v₂).erase v₃ := by
-  classical
   ext v
+  rw [diffVoters_mem_iff, Finset.mem_erase, diffVoters_mem_iff]
   by_cases hve : v = v₃
   · subst hve
-    simp [diffVoters, hv₁, hv₂, updateProfile]
-  · simp [diffVoters, updateProfile, hve]
+    simp [updateProfile_pref_self]
+  · simp [updateProfile_pref_of_ne _ _ hve, hve]
 
 /-!
 ### Step (v), one-voter change: if `v₁` is fully decisive, changing one other voter’s ballot

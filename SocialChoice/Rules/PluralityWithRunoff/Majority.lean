@@ -138,7 +138,7 @@ theorem plurality_with_runoff_majority_criterion : MajorityCriterion pluralityWi
               simpa [hxy] using hnonneg
             exact (False.elim ((not_lt_of_ge hnonneg') hneg))
     have hxmem : x ∈ pluralityWithRunoff P := by
-      letI : Nonempty A := ⟨x⟩
+      let : Nonempty A := ⟨x⟩
       have hnonempty : (pluralityWithRunoff P).Nonempty :=
         plurality_with_runoff_nonempty (P := P)
       rcases hnonempty with ⟨w, hw⟩

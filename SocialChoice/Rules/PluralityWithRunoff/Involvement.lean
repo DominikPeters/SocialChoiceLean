@@ -76,7 +76,7 @@ private lemma mem_secondPluralitySet_of_max {V A : Type} [Fintype V] [Fintype A]
 theorem plurality_with_runoff_positive_involvement : PositiveInvolvement pluralityWithRunoff := by
   intro U A _ _ V u hu P Q x hagree hx htop
   classical
-  letI : DecidableEq A := Classical.decEq A
+  let : DecidableEq A := Classical.decEq A
   let ballot := Q.pref (newVoter (u := u) (V := V) hu)
   by_cases hcard : Fintype.card A ≤ 1
   · simp [pluralityWithRunoff, hcard]

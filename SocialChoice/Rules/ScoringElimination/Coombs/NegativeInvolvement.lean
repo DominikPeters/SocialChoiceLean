@@ -129,7 +129,7 @@ theorem coombs_negative_involvement : NegativeInvolvement coombs := by
         have hA : (Finset.univ : Finset A).Nonempty := by
           have hcard' : 1 < Fintype.card A := Nat.lt_of_not_ge hle
           have hpos : 0 < Fintype.card A := Nat.lt_trans Nat.zero_lt_one hcard'
-          haveI : Nonempty A := Fintype.card_pos_iff.mp hpos
+          have : Nonempty A := Fintype.card_pos_iff.mp hpos
           exact Finset.univ_nonempty
         have hc_le_Q :
             ∀ d : A, scoreCandidate Q scoreVec c ≤ scoreCandidate Q scoreVec d :=

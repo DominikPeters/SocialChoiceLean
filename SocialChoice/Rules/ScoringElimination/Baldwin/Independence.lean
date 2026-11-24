@@ -361,8 +361,8 @@ lemma mem_castCandidates_iff {V A : Type} [Fintype V] [Fintype A]
       ((cast (congrArg (fun r => {a : A // r a}) h) x : {a : A // q a}) ∈
         f (castCandidates (p := p) (q := q) h P)) := by
   classical
-  letI : DecidablePred p := dp
-  letI : DecidablePred q := dq
+  let : DecidablePred p := dp
+  let : DecidablePred q := dq
   cases h
   cases (Subsingleton.elim dq dp)
   rfl

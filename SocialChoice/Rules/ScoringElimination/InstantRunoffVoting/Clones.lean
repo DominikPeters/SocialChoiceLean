@@ -435,7 +435,7 @@ lemma lowestScoring_nonclone_preserved
     have : Nonempty A := ⟨y⟩
     exact Finset.univ_nonempty
   have hAhat : (Finset.univ : Finset {a : A // clonePred X x a}).Nonempty := by
-    letI : Nonempty {a : A // clonePred X x a} := ⟨⟨x, Or.inr rfl⟩⟩
+    let : Nonempty {a : A // clonePred X x a} := ⟨⟨x, Or.inr rfl⟩⟩
     exact Finset.univ_nonempty
   have hℓ_low' :
       ∀ d : A, scoreCandidate P pluralityScoreVec ℓ ≤ scoreCandidate P pluralityScoreVec d :=
@@ -501,7 +501,7 @@ lemma lowestScoring_nonclone_reflect
   have hA : (Finset.univ : Finset A).Nonempty := by
     rcases (by
       simpa using (hX.1 : X.Nonempty)) with ⟨a, _⟩
-    haveI : Nonempty A := ⟨a⟩
+    have : Nonempty A := ⟨a⟩
     exact Finset.univ_nonempty
   apply (lowestScoring_iff_forall_le (P := P) (score := pluralityScoreVec) hA ℓ).2
   intro d
@@ -715,7 +715,7 @@ theorem irv_independence_of_clones :
   intro V A instV instA instDecEq P₀ X x hX hx
   classical
   -- `scoringEliminationRule` uses `Classical.decEq` internally; align all `DecidableEq` instances.
-  letI : DecidableEq A := Classical.decEq A
+  let : DecidableEq A := Classical.decEq A
   -- We prove by strong induction on the number of candidates
   set n := Fintype.card A with hn
   -- Define the motive for strong induction
@@ -852,7 +852,7 @@ theorem irv_independence_of_clones :
           · intro _
             -- Some clone wins in P' - in fact, all candidates win when there's 1+
             classical
-            haveI : Nonempty A' := by
+            have : Nonempty A' := by
               -- `X' = univ` and `CloneSet` gives `X'.Nonempty`.
               rcases (by
                 simpa [hX_all] using (hX'.1 : X'.Nonempty)) with ⟨a, _⟩
@@ -1412,7 +1412,7 @@ theorem irv_independence_of_clones :
                       have hA : (Finset.univ : Finset A').Nonempty := by
                         rcases (by
                           simpa using (hX'.1 : X'.Nonempty)) with ⟨a, _⟩
-                        haveI : Nonempty A' := ⟨a⟩
+                        have : Nonempty A' := ⟨a⟩
                         exact Finset.univ_nonempty
                       rcases lowestScoring_nonempty (P := P') (score := pluralityScoreVec) hA with ⟨w, hw⟩
                       by_cases hwX : w ∈ X'
@@ -2003,7 +2003,7 @@ theorem irv_independence_of_clones :
                       have hA : (Finset.univ : Finset A').Nonempty := by
                         rcases (by
                           simpa using (hX'.1 : X'.Nonempty)) with ⟨a, _⟩
-                        haveI : Nonempty A' := ⟨a⟩
+                        have : Nonempty A' := ⟨a⟩
                         exact Finset.univ_nonempty
                       rcases lowestScoring_nonempty (P := P') (score := pluralityScoreVec) hA with ⟨w, hw⟩
                       by_cases hwX : w ∈ X'

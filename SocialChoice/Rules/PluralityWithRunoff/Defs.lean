@@ -72,7 +72,7 @@ theorem plurality_with_runoff_nonempty
     {V A : Type} [Fintype V] [Fintype A] [DecidableEq A] [Nonempty A]
     (P : Profile V A) : (pluralityWithRunoff P).Nonempty := by
   classical
-  letI := Classical.decEq A
+  let := Classical.decEq A
   by_cases hcard : Fintype.card A ≤ 1
   · simp [pluralityWithRunoff, hcard]
   · let S := plurality P

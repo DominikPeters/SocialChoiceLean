@@ -83,7 +83,7 @@ lemma CondorcetWinner_restrictProfile {V A : Type} [Fintype V] [Fintype A] [Deci
 theorem baldwin_condorcet_consistency : CondorcetConsistency baldwin := by
   intro V A _ _ P c hwin
   classical
-  letI : DecidableEq A := Classical.decEq A
+  let : DecidableEq A := Classical.decEq A
   simp [baldwin, scoringEliminationRule]
   set n : Nat := Fintype.card A
   let Motive : Nat → Prop := fun k =>
@@ -167,7 +167,7 @@ theorem baldwin_condorcet_consistency : CondorcetConsistency baldwin := by
           lt_trans (Nat.succ_pos 0) hcard_gt1
         have hA : (Finset.univ : Finset A).Nonempty := by
           classical
-          letI : Nonempty A := Fintype.card_pos_iff.mp hpos
+          let : Nonempty A := Fintype.card_pos_iff.mp hpos
           exact (Finset.univ_nonempty : (Finset.univ : Finset A).Nonempty)
         have hL : L.Nonempty := lowestScoring_nonempty (P := P) (score := scoreVec) hA
         rcases hL with ⟨d, hdL⟩

@@ -12,7 +12,7 @@ theorem veto_majority_loser_criterion : MajorityLoserCriterion veto := by
   intro V A _ _ P c hmaj hne
   classical
   rcases hne with ⟨d0, hd0c⟩
-  haveI : Nonempty A := ⟨c⟩
+  have : Nonempty A := ⟨c⟩
   let scoreVec : Nat → Int := fun r => vetoScore (Fintype.card A) r
   have hnotbottom_c_eq :
       (Finset.univ.filter (fun v => ¬ BottomRank P v c)).card =

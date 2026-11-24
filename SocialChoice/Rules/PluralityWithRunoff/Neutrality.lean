@@ -254,7 +254,7 @@ lemma mem_pluralityWithRunoff_permuteCandidates_iff {V A : Type} [Fintype V] [Fi
     c ∈ pluralityWithRunoff (permuteCandidates P σ) ↔
       σ.symm c ∈ pluralityWithRunoff P := by
   classical
-  letI := Classical.decEq A
+  let := Classical.decEq A
   by_cases hcard : Fintype.card A ≤ 1
   · simp [pluralityWithRunoff, hcard]
   · constructor

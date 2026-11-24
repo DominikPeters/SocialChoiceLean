@@ -203,7 +203,8 @@ theorem no_positiveInvolvement_condorcet_resolvability_holliday
     intro v
     have hv_union : v.1 ∈ V3 ∪ votersP1_10 := by
       have hv_union' : v.1 ∈ votersP3 ∪ votersP1_10 := by
-        simp
+        rw [votersP4_eq_union_votersP3_votersP1_10]
+        exact v.2
       rcases Finset.mem_union.mp hv_union' with hvP3 | hvP10
       · have hvV3 : v.1 ∈ V3 := Finset.mem_insert.mpr (Or.inr hvP3)
         exact Finset.mem_union.mpr (Or.inl hvV3)

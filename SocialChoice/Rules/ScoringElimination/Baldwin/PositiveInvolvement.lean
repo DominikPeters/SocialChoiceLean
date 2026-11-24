@@ -795,7 +795,7 @@ lemma lowestScoring_restrict_profile7_eq_singleton_cand2 :
     lowestScoring (restrictProfile profile7 (1 : Fin 3)) (fun r => bordaScore 2 r) =
       ({cand2_1} : Finset {x : Fin 3 // x ≠ (1 : Fin 3)}) := by
   classical
-  haveI : Nonempty {x : Fin 3 // x ≠ (1 : Fin 3)} := by
+  have : Nonempty {x : Fin 3 // x ≠ (1 : Fin 3)} := by
     exact ⟨cand0_1⟩
   have hLne :
       (lowestScoring (restrictProfile profile7 (1 : Fin 3)) (fun r => bordaScore 2 r)).Nonempty := by
@@ -892,7 +892,7 @@ lemma lowestScoring_restrict_profile6_eq_singleton_cand1 :
     lowestScoring (restrictProfile profile6 (0 : Fin 3)) (fun r => bordaScore 2 r) =
       ({cand1_0} : Finset {x : Fin 3 // x ≠ (0 : Fin 3)}) := by
   classical
-  haveI : Nonempty {x : Fin 3 // x ≠ (0 : Fin 3)} := by
+  have : Nonempty {x : Fin 3 // x ≠ (0 : Fin 3)} := by
     exact ⟨cand1_0⟩
   have hLne :
       (lowestScoring (restrictProfile profile6 (0 : Fin 3)) (fun r => bordaScore 2 r)).Nonempty := by

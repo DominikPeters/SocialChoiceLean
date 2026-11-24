@@ -63,6 +63,13 @@ lemma prefers_iff_prefersInList' (ballots : V → ListBallot 3) (v : V) (a b : F
   rw [(ballots v).lt_iff_idxOf]
   simp only [decide_eq_true_eq]
 
+lemma votersPreferring_profileOfBallots_eq_filter (ballots : V → ListBallot 3) (a b : Fin 3) :
+    votersPreferring (profileOfBallots ballots) a b =
+      Finset.univ.filter (fun v => prefersInList (ballots v).ranking a b) := by
+  ext v
+  simp only [votersPreferring, Finset.mem_filter, Finset.mem_univ, true_and]
+  exact prefers_iff_prefersInList' ballots v a b
+
 end BallotHelpers
 
 def voters3 : Finset (Fin 5) :=
@@ -146,179 +153,84 @@ def v4_all : Electorate (Fin 5) (voters3 ∪ voters2) := ⟨4, by simp [voters3,
 
 lemma votersPreferring_profile3_0_1 :
     votersPreferring profile3 (0 : Fin 3) (1 : Fin 3) = {v0_3} := by
-  classical
-  ext v
-  cases v with
-  | mk val hmem =>
-      fin_cases val
-      ·
-        simp [votersPreferring, profile3, ballots3, ballots5, voters3,
-          prefers_iff_prefersInList', v0_3]; decide +revert
-      ·
-        simp [votersPreferring, profile3, ballots3, ballots5, voters3,
-          prefers_iff_prefersInList', v0_3]; decide +revert
-      ·
-        simp [votersPreferring, profile3, ballots3, ballots5, voters3,
-          prefers_iff_prefersInList', v0_3]; decide +revert
-      ·
-        simp [voters3] at hmem
-      ·
-        simp [voters3] at hmem
+  rw [profile3, votersPreferring_profileOfBallots_eq_filter]
+  decide
 
 lemma votersPreferring_profile3_1_2 :
     votersPreferring profile3 (1 : Fin 3) (2 : Fin 3) = {v1_3} := by
-  classical
-  ext v
-  cases v with
-  | mk val hmem =>
-      fin_cases val
-      ·
-        simp [votersPreferring, profile3, ballots3, ballots5, voters3,
-          prefers_iff_prefersInList', v1_3]; decide +revert
-      ·
-        simp [votersPreferring, profile3, ballots3, ballots5, voters3,
-          prefers_iff_prefersInList', v1_3]; decide +revert
-      ·
-        simp [votersPreferring, profile3, ballots3, ballots5, voters3,
-          prefers_iff_prefersInList', v1_3]; decide +revert
-      ·
-        simp [voters3] at hmem
-      ·
-        simp [voters3] at hmem
+  rw [profile3, votersPreferring_profileOfBallots_eq_filter]
+  decide
 
 lemma votersPreferring_profile3_2_0 :
     votersPreferring profile3 (2 : Fin 3) (0 : Fin 3) = {v2_3} := by
-  classical
-  ext v
-  cases v with
-  | mk val hmem =>
-      fin_cases val
-      ·
-        simp [votersPreferring, profile3, ballots3, ballots5, voters3,
-          prefers_iff_prefersInList', v2_3]; decide +revert
-      ·
-        simp [votersPreferring, profile3, ballots3, ballots5, voters3,
-          prefers_iff_prefersInList', v2_3]; decide +revert
-      ·
-        simp [votersPreferring, profile3, ballots3, ballots5, voters3,
-          prefers_iff_prefersInList', v2_3]; decide +revert
-      ·
-        simp [voters3] at hmem
-      ·
-        simp [voters3] at hmem
+  rw [profile3, votersPreferring_profileOfBallots_eq_filter]
+  decide
 
 lemma votersPreferring_profile2_0_1 :
     votersPreferring profile2 (0 : Fin 3) (1 : Fin 3) =
       (∅ : Finset (Electorate (Fin 5) voters2)) := by
-  classical
-  ext v
-  cases v with
-  | mk val hmem =>
-      fin_cases val
-      ·
-        simp [voters2] at hmem
-      ·
-        simp [voters2] at hmem
-      ·
-        simp [voters2] at hmem
-      ·
-        simp [votersPreferring, profile2, ballots2, ballots5, voters2,
-          prefers_iff_prefersInList']; decide +revert
-      ·
-        simp [votersPreferring, profile2, ballots2, ballots5, voters2,
-          prefers_iff_prefersInList']; decide +revert
+  rw [profile2, votersPreferring_profileOfBallots_eq_filter]
+  decide
 
 lemma votersPreferring_profile2_1_2 :
     votersPreferring profile2 (1 : Fin 3) (2 : Fin 3) = {v3_2} := by
-  classical
-  ext v
-  cases v with
-  | mk val hmem =>
-      fin_cases val
-      ·
-        simp [voters2] at hmem
-      ·
-        simp [voters2] at hmem
-      ·
-        simp [voters2] at hmem
-      ·
-        simp [votersPreferring, profile2, ballots2, ballots5, voters2,
-          prefers_iff_prefersInList', v3_2]; decide +revert
-      ·
-        simp [votersPreferring, profile2, ballots2, ballots5, voters2,
-          prefers_iff_prefersInList', v3_2]; decide +revert
+  rw [profile2, votersPreferring_profileOfBallots_eq_filter]
+  decide
 
 lemma votersPreferring_profile2_2_1 :
     votersPreferring profile2 (2 : Fin 3) (1 : Fin 3) = {v4_2} := by
-  classical
-  ext v
-  cases v with
-  | mk val hmem =>
-      fin_cases val
-      ·
-        simp [voters2] at hmem
-      ·
-        simp [voters2] at hmem
-      ·
-        simp [voters2] at hmem
-      ·
-        simp [votersPreferring, profile2, ballots2, ballots5, voters2,
-          prefers_iff_prefersInList', v4_2]; decide +revert
-      ·
-        simp [votersPreferring, profile2, ballots2, ballots5, voters2,
-          prefers_iff_prefersInList', v4_2]; decide +revert
+  rw [profile2, votersPreferring_profileOfBallots_eq_filter]
+  decide
 
 lemma votersPreferring_profileAll_2_0 :
     votersPreferring profileAll (2 : Fin 3) (0 : Fin 3) = {v2_all, v3_all, v4_all} := by
-  classical
-  ext v
-  cases v with
-  | mk val hmem =>
-      fin_cases val <;>
-        (simp [votersPreferring, profileAll, ballotsAll, ballots5,
-          voters3, voters2, prefers_iff_prefersInList', v2_all, v3_all, v4_all]; decide +revert)
+  rw [profileAll, votersPreferring_profileOfBallots_eq_filter]
+  decide
 
 lemma votersPreferring_profileAll_2_1 :
     votersPreferring profileAll (2 : Fin 3) (1 : Fin 3) = {v0_all, v2_all, v4_all} := by
-  classical
-  ext v
-  cases v with
-  | mk val hmem =>
-      fin_cases val <;>
-        (simp [votersPreferring, profileAll, ballotsAll, ballots5,
-          voters3, voters2, prefers_iff_prefersInList', v0_all, v2_all, v4_all]; decide +revert)
+  rw [profileAll, votersPreferring_profileOfBallots_eq_filter]
+  decide
 
 lemma not_strictMajority_profile3_0_1 :
     ¬ StrictMajority (votersPreferring profile3 (0 : Fin 3) (1 : Fin 3)) := by
-  simp [StrictMajority, votersPreferring_profile3_0_1]; decide +revert
+  rw [StrictMajority, votersPreferring_profile3_0_1]
+  decide
 
 lemma not_strictMajority_profile3_1_2 :
     ¬ StrictMajority (votersPreferring profile3 (1 : Fin 3) (2 : Fin 3)) := by
-  simp [StrictMajority, votersPreferring_profile3_1_2]; decide +revert
+  rw [StrictMajority, votersPreferring_profile3_1_2]
+  decide
 
 lemma not_strictMajority_profile3_2_0 :
     ¬ StrictMajority (votersPreferring profile3 (2 : Fin 3) (0 : Fin 3)) := by
-  simp [StrictMajority, votersPreferring_profile3_2_0]; decide +revert
+  rw [StrictMajority, votersPreferring_profile3_2_0]
+  decide
 
 lemma not_strictMajority_profile2_0_1 :
     ¬ StrictMajority (votersPreferring profile2 (0 : Fin 3) (1 : Fin 3)) := by
-  simp [StrictMajority, votersPreferring_profile2_0_1]
+  rw [StrictMajority, votersPreferring_profile2_0_1]
+  decide
 
 lemma not_strictMajority_profile2_1_2 :
     ¬ StrictMajority (votersPreferring profile2 (1 : Fin 3) (2 : Fin 3)) := by
-  simp [StrictMajority, votersPreferring_profile2_1_2]; decide +revert
+  rw [StrictMajority, votersPreferring_profile2_1_2]
+  decide
 
 lemma not_strictMajority_profile2_2_1 :
     ¬ StrictMajority (votersPreferring profile2 (2 : Fin 3) (1 : Fin 3)) := by
-  simp [StrictMajority, votersPreferring_profile2_2_1]; decide +revert
+  rw [StrictMajority, votersPreferring_profile2_2_1]
+  decide
 
 lemma strictMajority_profileAll_2_0 :
     StrictMajority (votersPreferring profileAll (2 : Fin 3) (0 : Fin 3)) := by
-  simp [StrictMajority, votersPreferring_profileAll_2_0]; decide +revert
+  rw [StrictMajority, votersPreferring_profileAll_2_0]
+  decide
 
 lemma strictMajority_profileAll_2_1 :
     StrictMajority (votersPreferring profileAll (2 : Fin 3) (1 : Fin 3)) := by
-  simp [StrictMajority, votersPreferring_profileAll_2_1]; decide +revert
+  rw [StrictMajority, votersPreferring_profileAll_2_1]
+  decide
 
 lemma no_condorcet_profile3 : ¬ ∃ x, CondorcetWinner profile3 x := by
   intro h

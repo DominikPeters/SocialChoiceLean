@@ -18,7 +18,7 @@ theorem coombs_majority_loser_criterion : MajorityLoserCriterion coombs := by
   intro V A _ _ P c hmaj hne
   classical
   rcases hne with ⟨d0, hd0c⟩
-  haveI : Nonempty A := ⟨d0⟩
+  have : Nonempty A := ⟨d0⟩
   let m := Fintype.card A
   let scoreVec : Nat → Int := fun r => vetoScore m r
   let L : Finset A := lowestScoring P scoreVec

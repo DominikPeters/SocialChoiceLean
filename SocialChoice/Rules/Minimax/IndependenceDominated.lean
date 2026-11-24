@@ -117,8 +117,8 @@ private lemma minimaxScore_restrict_eq_of_dominated {V A : Type}
     rcases Classical.choice (inferInstance : Nonempty V) with v0
     let _ := P.pref v0
     exact ne_of_lt (hpref v0)
-  letI : Nonempty A := ⟨c⟩
-  letI : Nonempty {x : A // x ≠ d} := ⟨⟨c, hcd⟩⟩
+  let : Nonempty A := ⟨c⟩
+  let : Nonempty {x : A // x ≠ d} := ⟨⟨c, hcd⟩⟩
   have hA' : (Finset.univ : Finset {x : A // x ≠ d}).Nonempty := by
     exact ⟨⟨c, hcd⟩, by simp⟩
   have hle1 : minimaxScore P ≤ minimaxScore P' := by
@@ -163,8 +163,8 @@ theorem minimax_independenceOfDominated : IndependenceOfDominated minimax := by
     rcases Classical.choice (inferInstance : Nonempty V) with v0
     let _ := P.pref v0
     exact ne_of_lt (hpref v0)
-  letI : Nonempty A := ⟨c⟩
-  letI : Nonempty {x : A // x ≠ d} := ⟨⟨c, hcd⟩⟩
+  let : Nonempty A := ⟨c⟩
+  let : Nonempty {x : A // x ≠ d} := ⟨⟨c, hcd⟩⟩
   have hd_not : d ∉ minimax P :=
     minimax_pareto_efficiency (P := P) (c := c) (d := d) hpref
   have hscore_eq : minimaxScore P' = minimaxScore P :=

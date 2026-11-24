@@ -815,7 +815,7 @@ theorem p5Named_eq_reindex_p5
   rcases hr with rfl | rfl | rfl | rfl | rfl
   all_goals
     simp [p5NamedProfile, p5NamedBallot, reindexVoters, p5Profile, p5Ballot,
-      profileOfListBallots, fiveVoterEquiv, fiveVoterIndex, hab, hac, had, hae, hbc,
+      profileOfListBallots, fiveVoterIndex, hab, hac, had, hae, hbc,
       hbd, hbe, hcd, hce, hde, hab.symm, hac.symm, had.symm, hae.symm, hbc.symm,
       hbd.symm, hbe.symm, hcd.symm, hce.symm, hde.symm] ; rfl
 
@@ -1164,7 +1164,7 @@ theorem cast_union_cycle_p2_eq_reindex_cyclePlusP2
   all_goals
     simp [castProfile, unionNamedProfiles, reindexVoters, cycleNamedProfile, cycleNamedBallot,
       p2NamedProfile, p2NamedBallot, cyclePlusP2Profile, cyclePlusP2Ballot, profileOfListBallots,
-      sevenVoterEquiv, sevenVoterIndex, hab, hac, hap, hau, hav, haw, hbc, hbp, hbu,
+      sevenVoterIndex, hab, hac, hap, hau, hav, haw, hbc, hbp, hbu,
       hbv, hbw, hcp, hcu, hcv, hcw, hpu, hpv, hpw, huv, huw, hvw,
       hab.symm, hac.symm, hap.symm, hau.symm, hav.symm, haw.symm, hbc.symm, hbp.symm,
       hbu.symm, hbv.symm, hbw.symm, hcp.symm, hcu.symm, hcv.symm, hcw.symm,
@@ -1197,7 +1197,7 @@ theorem cast_union_cycle_p3_eq_reindex_cyclePlusP3
   all_goals
     simp [castProfile, unionNamedProfiles, reindexVoters, cycleNamedProfile, cycleNamedBallot,
       p3NamedProfile, p3NamedBallot, cyclePlusP3Profile, cyclePlusP3Ballot, profileOfListBallots,
-      sevenVoterEquiv, sevenVoterIndex, hab, hac, hap, hau, haq, haw, hbc, hbp, hbu,
+      sevenVoterIndex, hab, hac, hap, hau, haq, haw, hbc, hbp, hbu,
       hbq, hbw, hcp, hcu, hcq, hcw, hpu, hpq, hpw, huq, huw, hqw,
       hab.symm, hac.symm, hap.symm, hau.symm, haq.symm, haw.symm, hbc.symm, hbp.symm,
       hbu.symm, hbq.symm, hbw.symm, hcp.symm, hcu.symm, hcq.symm, hcw.symm,
@@ -1407,7 +1407,7 @@ theorem cast_union_p2_singletonYXZ_eq_reindex_p2PlusYXZ
   all_goals
     simp [castProfile, unionNamedProfiles, reindexVoters, p2NamedProfile, p2NamedBallot,
       singletonYXZProfile, singletonYXZBallot, p2PlusYXZProfile, p2PlusYXZBallot,
-      profileOfListBallots, fiveVoterEquiv, fiveVoterIndex, hpu, hpv, hpw, hpy,
+      profileOfListBallots, fiveVoterIndex, hpu, hpv, hpw, hpy,
       huv, huw, huy, hvw, hvy, hwy, hpu.symm, hpv.symm, hpw.symm, hpy.symm,
       huv.symm, huw.symm, huy.symm, hvw.symm, hvy.symm, hwy.symm] ; rfl
 
@@ -1435,7 +1435,7 @@ theorem cast_union_p3_singletonYXZ_eq_reindex_p3PlusYXZ
   all_goals
     simp [castProfile, unionNamedProfiles, reindexVoters, p3NamedProfile, p3NamedBallot,
       singletonYXZProfile, singletonYXZBallot, p3PlusYXZProfile, p3PlusYXZBallot,
-      profileOfListBallots, fiveVoterEquiv, fiveVoterIndex, hpu, hpq, hpw, hpy,
+      profileOfListBallots, fiveVoterIndex, hpu, hpq, hpw, hpy,
       huq, huw, huy, hqw, hqy, hwy, hpu.symm, hpq.symm, hpw.symm, hpy.symm,
       huq.symm, huw.symm, huy.symm, hqw.symm, hqy.symm, hwy.symm] ; rfl
 
@@ -1927,8 +1927,7 @@ theorem cycleNamedProfile_eq_canonical (x : Fin 3) (t : OrderedTriple8) :
   fin_cases x
   · have hballot :
         cycleNamedBallot 0 (topVoter 0 t) (bottomVoter 0 t) v =
-          canonicalCycleBallot t v := by
-      simp [cycleNamedBallot, canonicalCycleBallot, topVoter, bottomVoter]
+          canonicalCycleBallot t v := rfl
     simpa [cycleNamedProfile, canonicalCycleProfile] using congrArg ListBallot.toLinearOrder hballot
   · have hballot :
         cycleNamedBallot 1 (topVoter 1 t) (bottomVoter 1 t) v =

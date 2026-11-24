@@ -181,8 +181,8 @@ lemma winners_subset_of_ballotTopSet_update (f : VotingRule)
     unfold P' updateProfile
     by_cases h : u = v
     · subst u
-      simp only [if_true]
-    · simp only [if_neg h]
+      simp only [ite_true]
+    · simp only [ite_eq_right h]
   have hmanip :
       ∃ x ∈ f P', ∀ y' ∈ f (updateProfile P' v (P.pref v)), Prefers P' v y' x := by
     refine ⟨y, hy, ?_⟩
@@ -192,7 +192,7 @@ lemma winners_subset_of_ballotTopSet_update (f : VotingRule)
     have hy'_S : y' ∈ S := hsubset hy'_P
     have hlt : ballot.lt y' y := hBallot y' y hy'_S hyS
     unfold Prefers
-    rw [show P'.pref v = ballot by simp only [P', updateProfile, if_true]]
+    rw [show P'.pref v = ballot by simp only [P', updateProfile, ite_true]]
     exact hlt
   exact (hf_pess P' v (P.pref v)) hmanip
 
@@ -234,8 +234,8 @@ theorem duggan_schwartz
     (hcard : 3 ≤ Fintype.card A) :
     ∃ i : V, ∀ P : Profile V A, topChoice P i ∈ f P := by
   classical
-  letI := Classical.decEq V
-  letI := Classical.decEq A
+  let := Classical.decEq V
+  let := Classical.decEq A
   obtain ⟨i, hi⟩ :=
     exists_voter_topRank_of_singleton_winner (V := V) (A := A) (f := f) (hf_total := hf_total)
       (hf_opt := hf_opt) (hf_pess := hf_pess) (hviable := hviable) (hcard := hcard)
@@ -272,7 +272,7 @@ theorem duggan_schwartz
     have hx_mem : x ∈ f P0 := by
       simp [x, hx_eq, hfa]
     exact (hx_not hx_mem).elim
-  letI := P0.pref i
+  let := P0.pref i
   let a := Finset.min' S hS_nonempty
   have ha_mem : a ∈ S := Finset.min'_mem S hS_nonempty
   have h_pref_min : ∀ b ∈ S, b ≠ a → Prefers P0 i a b := by
@@ -350,13 +350,13 @@ theorem duggan_schwartz
     unfold updateProfile
     by_cases hu : u = i
     · subst u
-      simp only [if_true]
+      simp only [ite_true]
       rfl
     · have hu' : u ∈ others := by
         simp [others, hu]
-      simp only [if_neg hu]
+      simp only [ite_eq_right hu]
       change (if u ∈ others then P_top.pref u else P0.pref u) = P_top.pref u
-      rw [if_pos hu']
+      rw [ite_eq_left hu']
   have hmanip :
       ∃ x ∈ f P1, ∀ y ∈ f (updateProfile P1 i ballot), Prefers P1 i y x := by
     refine ⟨b, ?_, ?_⟩

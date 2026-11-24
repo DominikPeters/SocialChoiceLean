@@ -9,11 +9,6 @@ namespace SocialChoice
 
 open Finset
 
-open Classical
-attribute [instance] Classical.decEq
-
-set_option maxHeartbeats 5000000
-
 /-!
 # Black fails singleton positive involvement
 
@@ -118,14 +113,8 @@ lemma votersPreferring_profile8_0_2 :
         ⟨2, by simp [voters8]⟩,
         ⟨3, by simp [voters8]⟩} :
         Finset (Electorate (Fin 9) voters8)) := by
-  classical
   rw [votersPreferring_profile8_eq_filter]
-  ext v
-  cases v with
-  | mk val hmem =>
-      fin_cases val <;>
-        (simp [ballots9, ballotABC, ballotBCA, ballotCAB, ballotBAC, voters8,
-          prefersInList] at hmem ⊢ <;> decide +revert)
+  decide
 
 lemma votersPreferring_profile8_1_0 :
     votersPreferring profile8 (1 : Fin 3) (0 : Fin 3) =
@@ -133,27 +122,15 @@ lemma votersPreferring_profile8_1_0 :
         ⟨5, by simp [voters8]⟩,
         ⟨6, by simp [voters8]⟩} :
         Finset (Electorate (Fin 9) voters8)) := by
-  classical
   rw [votersPreferring_profile8_eq_filter]
-  ext v
-  cases v with
-  | mk val hmem =>
-      fin_cases val <;>
-        (simp [ballots9, ballotABC, ballotBCA, ballotCAB, ballotBAC, voters8,
-          prefersInList] at hmem ⊢ <;> decide +revert)
+  decide
 
 lemma votersPreferring_profile8_2_1 :
     votersPreferring profile8 (2 : Fin 3) (1 : Fin 3) =
       ({⟨7, by simp [voters8]⟩} :
         Finset (Electorate (Fin 9) voters8)) := by
-  classical
   rw [votersPreferring_profile8_eq_filter]
-  ext v
-  cases v with
-  | mk val hmem =>
-      fin_cases val <;>
-        (simp [ballots9, ballotABC, ballotBCA, ballotCAB, ballotBAC, voters8,
-          prefersInList] at hmem ⊢ <;> decide +revert)
+  decide
 
 lemma votersPreferring_profile9_0_1 :
     votersPreferring profile9 (0 : Fin 3) (1 : Fin 3) =
@@ -163,14 +140,8 @@ lemma votersPreferring_profile9_0_1 :
         ⟨3, by simp [voters8]⟩,
         ⟨7, by simp [voters8]⟩} :
         Finset (Electorate (Fin 9) (insert (8 : Fin 9) voters8))) := by
-  classical
   rw [votersPreferring_profile9_eq_filter]
-  ext v
-  cases v with
-  | mk val hmem =>
-      fin_cases val <;>
-        (simp [ballots9, ballotABC, ballotBCA, ballotCAB, ballotBAC, voters8,
-          prefersInList] at hmem ⊢; decide +revert)
+  decide
 
 lemma votersPreferring_profile9_0_2 :
     votersPreferring profile9 (0 : Fin 3) (2 : Fin 3) =
@@ -180,35 +151,23 @@ lemma votersPreferring_profile9_0_2 :
         ⟨3, by simp [voters8]⟩,
         ⟨8, by simp [voters8]⟩} :
         Finset (Electorate (Fin 9) (insert (8 : Fin 9) voters8))) := by
-  classical
   rw [votersPreferring_profile9_eq_filter]
-  ext v
-  cases v with
-  | mk val hmem =>
-      fin_cases val <;>
-        (simp [ballots9, ballotABC, ballotBCA, ballotCAB, ballotBAC, voters8,
-          prefersInList] at hmem ⊢; decide +revert)
+  decide
 
 lemma not_strictMajority_profile8_0_2 :
     ¬ StrictMajority (votersPreferring profile8 (0 : Fin 3) (2 : Fin 3)) := by
-  classical
-  have hcard : (votersPreferring profile8 (0 : Fin 3) (2 : Fin 3)).card = 4 := by
-    simp [votersPreferring_profile8_0_2]
-  simp [StrictMajority, hcard, voters8_card]
+  rw [StrictMajority, votersPreferring_profile8_0_2]
+  decide
 
 lemma not_strictMajority_profile8_1_0 :
     ¬ StrictMajority (votersPreferring profile8 (1 : Fin 3) (0 : Fin 3)) := by
-  classical
-  have hcard : (votersPreferring profile8 (1 : Fin 3) (0 : Fin 3)).card = 3 := by
-    simp [votersPreferring_profile8_1_0]
-  simp [StrictMajority, hcard, voters8_card]
+  rw [StrictMajority, votersPreferring_profile8_1_0]
+  decide
 
 lemma not_strictMajority_profile8_2_1 :
     ¬ StrictMajority (votersPreferring profile8 (2 : Fin 3) (1 : Fin 3)) := by
-  classical
-  have hcard : (votersPreferring profile8 (2 : Fin 3) (1 : Fin 3)).card = 1 := by
-    simp [votersPreferring_profile8_2_1]
-  simp [StrictMajority, hcard, voters8_card]
+  rw [StrictMajority, votersPreferring_profile8_2_1]
+  decide
 
 lemma no_condorcet_profile8 : ¬ ∃ x, CondorcetWinner profile8 x := by
   intro h
@@ -223,19 +182,13 @@ lemma no_condorcet_profile8 : ¬ ∃ x, CondorcetWinner profile8 x := by
 
 lemma strictMajority_profile9_0_1 :
     StrictMajority (votersPreferring profile9 (0 : Fin 3) (1 : Fin 3)) := by
-  classical
-  have hcard :
-      (votersPreferring profile9 (0 : Fin 3) (1 : Fin 3)).card = 5 := by
-    simp [votersPreferring_profile9_0_1]
-  simp [StrictMajority, hcard, voters9_card]
+  rw [StrictMajority, votersPreferring_profile9_0_1]
+  decide
 
 lemma strictMajority_profile9_0_2 :
     StrictMajority (votersPreferring profile9 (0 : Fin 3) (2 : Fin 3)) := by
-  classical
-  have hcard :
-      (votersPreferring profile9 (0 : Fin 3) (2 : Fin 3)).card = 5 := by
-    simp [votersPreferring_profile9_0_2]
-  simp [StrictMajority, hcard, voters9_card]
+  rw [StrictMajority, votersPreferring_profile9_0_2]
+  decide
 
 lemma condorcet_profile9 : CondorcetWinner profile9 (0 : Fin 3) := by
   intro d hne
@@ -263,7 +216,6 @@ open BlackSingletonPositiveInvolvementCounterexample
 
 theorem black_not_singletonPositiveInvolvement : ¬ SingletonPositiveInvolvement black := by
   intro hpos
-  classical
   have hmem :
       (1 : Fin 3) ∈ black profile9 := by
     exact hpos (V := voters8) (u := (8 : Fin 9)) (hu := voters8_not_mem)

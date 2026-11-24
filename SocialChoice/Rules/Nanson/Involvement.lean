@@ -422,43 +422,18 @@ lemma margin_profilePos_cand1_cand0 : margin profilePos cand1 cand0 = 1 := by
   have h := margin_antisymmetric (P := profilePos) cand1 cand0
   simpa [margin_profilePos_cand0_cand1] using h
 
+private lemma c2Borda_profilePos_eq (x : PosCand) :
+    c2BordaScore profilePos x = margin profilePos x cand0 + margin profilePos x cand1 := by
+  simp only [c2BordaScore, univ_profilePos_eq]
+  rw [Finset.sum_pair (by decide)]
+
 lemma c2Borda_profilePos_cand0 : c2BordaScore profilePos cand0 = -1 := by
-  classical
-  have hne : cand0 ≠ cand1 := by decide
-  have hsum :
-      c2BordaScore profilePos cand0 =
-        ∑ x ∈ ({cand1} : Finset PosCand), margin profilePos cand0 x := by
-    simp [c2BordaScore, univ_profilePos_eq, self_margin_zero,
-      Finset.sum_singleton, cand0, cand1]
-  calc
-    c2BordaScore profilePos cand0 =
-        ∑ x ∈ ({cand1} : Finset PosCand), margin profilePos cand0 x := hsum
-    _ = margin profilePos cand0 cand1 := by
-        simp [Finset.sum_singleton]
-    _ = -1 := by simp [margin_profilePos_cand0_cand1]
+  rw [c2Borda_profilePos_eq, self_margin_zero, margin_profilePos_cand0_cand1]
+  norm_num
 
 lemma c2Borda_profilePos_cand1 : c2BordaScore profilePos cand1 = 1 := by
-  classical
-  have hne : cand0 ≠ cand1 := by decide
-  have hsum :
-      c2BordaScore profilePos cand1 =
-        ∑ x ∈ ({cand0} : Finset PosCand), margin profilePos cand1 x := by
-    unfold c2BordaScore
-    have hunivSum := congrArg
-      (fun s : Finset PosCand => Finset.sum s (fun x => margin profilePos cand1 x))
-      univ_profilePos_eq
-    calc
-      ∑ x : PosCand, margin profilePos cand1 x =
-          ∑ x ∈ ({cand0, cand1} : Finset PosCand), margin profilePos cand1 x := hunivSum
-      _ = ∑ x ∈ ({cand0} : Finset PosCand), margin profilePos cand1 x := by
-        rw [Finset.sum_insert (by simpa using hne)]
-        simp [self_margin_zero]
-  calc
-    c2BordaScore profilePos cand1 =
-        ∑ x ∈ ({cand0} : Finset PosCand), margin profilePos cand1 x := hsum
-    _ = margin profilePos cand1 cand0 := by
-        simp [Finset.sum_singleton]
-    _ = 1 := by simp [margin_profilePos_cand1_cand0]
+  rw [c2Borda_profilePos_eq, self_margin_zero, margin_profilePos_cand1_cand0]
+  norm_num
 
 abbrev PosCand' := {x : PosCand // c2BordaScore profilePos x > 0}
 
@@ -505,8 +480,7 @@ lemma poscand'_subsingleton : Subsingleton PosCand' := by
   simp [hx, hy]
 
 lemma c2Borda_profilePos'_all_zero (x : PosCand') : c2BordaScore profilePos' x = 0 := by
-  classical
-  haveI : Subsingleton PosCand' := poscand'_subsingleton
+  have : Subsingleton PosCand' := poscand'_subsingleton
   exact c2BordaScore_eq_zero_of_subsingleton (P := profilePos') (a := x)
 
 lemma nansonAux_profilePos : nansonAux 3 PosCand profilePos = ({cand1} : Finset PosCand) := by

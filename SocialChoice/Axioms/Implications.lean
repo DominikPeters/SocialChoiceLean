@@ -34,7 +34,7 @@ theorem independenceOfDominated_implies_paretoEfficiency :
     Implies IndependenceOfDominated ParetoEfficiency := by
   intro f _ hInd V A _ _ _ P c d hpref
   classical
-  letI : DecidableEq A := Classical.decEq A
+  let : DecidableEq A := Classical.decEq A
   have hEq := hInd (P := P) (c := c) (d := d) hpref
   have hnot :
       d ∉ liftWinners (f (restrictCandidates P (fun a => a ≠ d))) :=
@@ -188,7 +188,7 @@ theorem reversalSymmetry_implies_singletonReversalSymmetry :
     Implies ReversalSymmetry SingletonReversalSymmetry := by
   intro f _ hrev V A _ _ P x hnontriv hx
   classical
-  letI : DecidableEq A := Classical.decEq A
+  let : DecidableEq A := Classical.decEq A
   have hnot_univ : f P ≠ (Finset.univ : Finset A) := by
     rcases hnontriv with ⟨y, hy⟩
     intro hEq
@@ -633,7 +633,7 @@ theorem strongFishburnParticipation_implies_optimistParticipation :
     (E₁ := fun {A} r => FishburnExtension (A := A) r)
     (E₂ := fun {A} r => OptimistExtension (A := A) r)
   intro A _ r s t hs ht hfish
-  letI : DecidableEq A := r.toDecidableEq
+  let : DecidableEq A := r.toDecidableEq
   have hfish' : (FishburnExtension (A := A) r).weak s t := by
     simpa using hfish
   exact fishburnExtension_weak_implies_optimistExtension_weak
@@ -645,7 +645,7 @@ theorem strongFishburnParticipation_implies_positiveInvolvement :
   classical
   let _ : Nonempty A := ⟨c⟩
   let r := Q.pref (newVoter (u := u) (V := V) hu)
-  letI : LinearOrder A := r
+  let : LinearOrder A := r
   have hfish : FishburnWeak r (f Q) (f P) := by
     simpa [StrongFishburnParticipation, StrongParticipation, FishburnExtension, r] using
       (hpart (V := V) (u := u) hu P Q hagree)
@@ -673,7 +673,7 @@ theorem strongFishburnParticipation_implies_negativeInvolvement :
   classical
   let _ : Nonempty A := ⟨c⟩
   let r := Q.pref (newVoter (u := u) (V := V) hu)
-  letI : LinearOrder A := r
+  let : LinearOrder A := r
   have hfish : FishburnWeak r (f Q) (f P) := by
     simpa [StrongFishburnParticipation, StrongParticipation, FishburnExtension, r] using
       (hpart (V := V) (u := u) hu P Q hagree)
@@ -703,7 +703,7 @@ theorem optimistParticipation_implies_positiveInvolvement :
   classical
   let _ : Nonempty A := ⟨c⟩
   let r := Q.pref (newVoter (u := u) (V := V) hu)
-  letI : LinearOrder A := r
+  let : LinearOrder A := r
   have hopt' : OptimistWeak r (f Q) (f P) := by
     simpa [OptimistParticipation, StrongParticipation, OptimistExtension, r] using
       (hopt (V := V) (u := u) hu P Q hagree)

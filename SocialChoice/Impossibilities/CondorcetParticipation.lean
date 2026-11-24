@@ -125,7 +125,7 @@ lemma P0_P5_coincide : P0ProfileSub = P0ProfileSubP5 := by
   all_goals
     exfalso
     revert hv
-    native_decide
+    decide
 
 -- Lemma for restrictElectorate equality
 lemma restrictElectorate_eq_profileOnSubset {S T : Finset (Fin 12)} (hST : S ⊆ T) :
@@ -135,44 +135,52 @@ lemma restrictElectorate_eq_profileOnSubset {S T : Finset (Fin 12)} (hST : S ⊆
 -- UpperSet properties for the ballots
 
 lemma ballotABCD_UpperSet_ab : UpperSet ballotABCD.toLinearOrder ({0, 1} : Finset (Fin 4)) := by
-  intro x y hlt hy
-  fin_cases x <;> fin_cases y <;> simp [ballotABCD, ListBallot.lt_iff_idxOf] at hlt <;> try contradiction
-  all_goals { simp at *; try contradiction }
+  intro x y hlt
+  rw [ListBallot.lt_iff_idxOf] at hlt
+  revert x y
+  decide
 
 lemma ballotBDCA_UpperSet_not_a : UpperSet ballotBDCA.toLinearOrder ({1, 2, 3} : Finset (Fin 4)) := by
-  intro x y hlt hy
-  fin_cases x <;> fin_cases y <;> simp [ballotBDCA, ListBallot.lt_iff_idxOf] at hlt <;> try contradiction
-  all_goals { simp at *; try contradiction }
+  intro x y hlt
+  rw [ListBallot.lt_iff_idxOf] at hlt
+  revert x y
+  decide
 
 lemma ballotDCAB_UpperSet_not_b : UpperSet ballotDCAB.toLinearOrder ({0, 2, 3} : Finset (Fin 4)) := by
-  intro x y hlt hy
-  fin_cases x <;> fin_cases y <;> simp [ballotDCAB, ListBallot.lt_iff_idxOf] at hlt <;> try contradiction
-  all_goals { simp at *; try contradiction }
+  intro x y hlt
+  rw [ListBallot.lt_iff_idxOf] at hlt
+  revert x y
+  decide
 
 lemma ballotCABD_UpperSet_ca : UpperSet ballotCABD.toLinearOrder ({0, 2} : Finset (Fin 4)) := by
-  intro x y hlt hy
-  fin_cases x <;> fin_cases y <;> simp [ballotCABD, ListBallot.lt_iff_idxOf] at hlt <;> try contradiction
-  all_goals { simp at *; try contradiction }
+  intro x y hlt
+  rw [ListBallot.lt_iff_idxOf] at hlt
+  revert x y
+  decide
 
 lemma ballotDCBA_UpperSet_dc : UpperSet ballotDCBA.toLinearOrder ({2, 3} : Finset (Fin 4)) := by
-  intro x y hlt hy
-  fin_cases x <;> fin_cases y <;> simp [ballotDCBA, ListBallot.lt_iff_idxOf] at hlt <;> try contradiction
-  all_goals { simp at *; try contradiction }
+  intro x y hlt
+  rw [ListBallot.lt_iff_idxOf] at hlt
+  revert x y
+  decide
 
 lemma ballotCABD_UpperSet_not_d : UpperSet ballotCABD.toLinearOrder ({0, 1, 2} : Finset (Fin 4)) := by
-  intro x y hlt hy
-  fin_cases x <;> fin_cases y <;> simp [ballotCABD, ListBallot.lt_iff_idxOf] at hlt <;> try contradiction
-  all_goals { simp at *; try contradiction }
+  intro x y hlt
+  rw [ListBallot.lt_iff_idxOf] at hlt
+  revert x y
+  decide
 
 lemma ballotABDC_UpperSet_not_c : UpperSet ballotABDC.toLinearOrder ({0, 1, 3} : Finset (Fin 4)) := by
-  intro x y hlt hy
-  fin_cases x <;> fin_cases y <;> simp [ballotABDC, ListBallot.lt_iff_idxOf] at hlt <;> try contradiction
-  all_goals { simp at *; try contradiction }
+  intro x y hlt
+  rw [ListBallot.lt_iff_idxOf] at hlt
+  revert x y
+  decide
 
 lemma ballotBDCA_UpperSet_bd : UpperSet ballotBDCA.toLinearOrder ({1, 3} : Finset (Fin 4)) := by
-  intro x y hlt hy
-  fin_cases x <;> fin_cases y <;> simp [ballotBDCA, ListBallot.lt_iff_idxOf] at hlt <;> try contradiction
-  all_goals { simp at *; try contradiction }
+  intro x y hlt
+  rw [ListBallot.lt_iff_idxOf] at hlt
+  revert x y
+  decide
 
 -- Proof steps using resoluteParticipation_superset
 
@@ -625,7 +633,7 @@ theorem no_condorcet_strongFishburn_participation_m4_n12 :
     intro V A _ _ P c hcw
     classical
     have hA : Nonempty A := ⟨c⟩
-    letI : Nonempty A := hA
+    let : Nonempty A := hA
     have hc : f P = {c} := hcond P c hcw
     simp [tieBrokenVotingRule, hA, tieBrokenRule, hc]
   have hpart' :
@@ -801,7 +809,7 @@ lemma alpha3_alpha5_coincide_V11 :
   all_goals
     exfalso
     revert hv
-    native_decide
+    decide
 
 lemma alpha3_beta3_coincide_V0 :
     profileOnSubsetAlpha3 V0 = profileOnSubsetBeta3 V0 := by
@@ -813,7 +821,7 @@ lemma alpha3_beta3_coincide_V0 :
   all_goals
     exfalso
     revert hv
-    native_decide
+    decide
 
 lemma beta3_beta5_coincide_V11 :
     profileOnSubsetBeta3 V11 = profileOnSubsetBeta5 V11 := by
@@ -825,7 +833,7 @@ lemma beta3_beta5_coincide_V11 :
   all_goals
     exfalso
     revert hv
-    native_decide
+    decide
 
 -- Basic TopInSet helpers.
 lemma topInSet_of_ballotTop {A : Type} [DecidableEq A]
@@ -848,7 +856,7 @@ lemma ballot_le_iff_idxOf {n : ℕ} (b : ListBallot n) (a c : Fin n) :
 
 lemma not_lt_of_ge_r {A : Type} (r : LinearOrder A) {a b : A} (hle : r.le a b) :
     ¬ r.lt b a := by
-  letI : PartialOrder A := r.toPartialOrder
+  let : PartialOrder A := r.toPartialOrder
   have hle' : a ≤ b := by simpa using hle
   have hnot : ¬ b < a := not_lt_of_ge hle'
   simpa using hnot

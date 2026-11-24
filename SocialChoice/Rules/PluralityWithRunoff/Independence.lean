@@ -86,7 +86,7 @@ lemma pwr_independence_of_dominated_ge_two
   have hinst : (inferInstance : DecidableEq A) = Classical.decEq A := by
     apply Subsingleton.elim
   cases hinst
-  letI : Nonempty A := ⟨c⟩
+  let : Nonempty A := ⟨c⟩
   let P' := restrictCandidates P (fun a => a ≠ d)
   let S : Finset A := plurality P
   let S' : Finset {a : A // a ≠ d} := plurality P'
@@ -315,7 +315,7 @@ lemma pwr_independence_of_dominated_le_one
   have hinst : (inferInstance : DecidableEq A) = Classical.decEq A := by
     apply Subsingleton.elim
   cases hinst
-  letI : Nonempty A := ⟨c⟩
+  let : Nonempty A := ⟨c⟩
   let P' := restrictCandidates P (fun a => a ≠ d)
   let S : Finset A := plurality P
   let S' : Finset {a : A // a ≠ d} := plurality P'
@@ -775,7 +775,7 @@ lemma pwr_independence_of_dominated_le_one
   -- This is a straightforward (but lengthy) case analysis on a = d and the two disjuncts in
   -- mem_pwr_card_one / mem_pwr_card_one', transferring membership in T via mem_T_iff and
   -- margins via margin_eq.
-  letI : Fintype {x : A // x ≠ d} := Subtype.fintype (fun a => a ≠ d)
+  let : Fintype {x : A // x ≠ d} := Subtype.fintype (fun a => a ≠ d)
   have left_disjunct_iff :
       ∀ {a : A} (ha : a ≠ d),
         (a = s ∧ ∃ t ∈ T', 0 ≤ margin P' (⟨s, hsne⟩ : {x : A // x ≠ d}) t) ↔
@@ -1049,7 +1049,7 @@ lemma pwr_independence_of_dominated_card_le_two
     simpa using
       (instantRunoffVoting_independenceOfDominated (P := P) (c := c) (d := d) hpref)
   let P' := restrictCandidates P (fun a => a ≠ d)
-  letI : Fintype {x : A // x ≠ d} := Subtype.fintype (fun a => a ≠ d)
+  let : Fintype {x : A // x ≠ d} := Subtype.fintype (fun a => a ≠ d)
   have hcard' : Fintype.card {x : A // x ≠ d} ≤ 2 := by
     have hle : Fintype.card {x : A // x ≠ d} ≤ Fintype.card A :=
       Fintype.card_subtype_le (p := fun a => a ≠ d)

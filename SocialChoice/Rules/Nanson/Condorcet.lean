@@ -50,7 +50,7 @@ lemma CondorcetWinner_restrictCandidates {V A : Type} [Fintype V] [Fintype A]
 theorem nanson_condorcet_consistency : CondorcetConsistency nanson := by
   intro V A _ _ P c hwin
   classical
-  letI : DecidableEq A := Classical.decEq A
+  let : DecidableEq A := Classical.decEq A
   simp [nanson]
   set k : Nat := Fintype.card A
   let Motive : Nat → Prop := fun n =>

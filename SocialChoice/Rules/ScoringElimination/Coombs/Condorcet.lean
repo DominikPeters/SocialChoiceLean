@@ -303,7 +303,7 @@ lemma score_restrict_cand2_lt_cand0 :
 lemma lowestScoring_restrict_eq_singleton_cand2 :
     lowestScoring profile' scoreVec2 = ({cand2} : Finset {x : Fin 3 // x ≠ (1 : Fin 3)}) := by
   classical
-  haveI : Nonempty {x : Fin 3 // x ≠ (1 : Fin 3)} := by
+  have : Nonempty {x : Fin 3 // x ≠ (1 : Fin 3)} := by
     classical
     exact ⟨cand0⟩
   have hLne :

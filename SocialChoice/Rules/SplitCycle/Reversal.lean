@@ -379,9 +379,9 @@ lemma reversalCounterexample_rel_iff (a b : Fin 3) :
     margin reversalCounterexampleProfile (1 : Fin 3) (2 : Fin 3) ≤
       margin reversalCounterexampleProfile a b ↔ a = 1 ∧ b = 2 := by
   fin_cases a <;> fin_cases b <;>
-    (simp [reversalCounterexampleProfile,
+    simp +decide [reversalCounterexampleProfile,
       margin_eq_marginList (ballots := reversalCounterexampleBallots),
-      reversalCounterexampleBallots] <;> decide)
+      reversalCounterexampleBallots]
 
 lemma reversalCounterexample_no_cycle_12 :
     ¬ ∃ c : List (Fin 3), 1 ∈ c ∧ 2 ∈ c ∧

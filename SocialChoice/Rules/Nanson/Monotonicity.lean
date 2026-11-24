@@ -206,84 +206,27 @@ lemma margin_profilePos_cand3_cand2 : margin profilePos cand3 cand2 = 1 := by
   have h := margin_antisymmetric (P := profilePos) cand3 cand2
   simpa [margin_profilePos_cand2_cand3] using h
 
+/-- The C2-Borda score on `profilePos` is the sum of the three margins. -/
+private lemma c2Borda_profilePos_eq (x : PosCand) :
+    c2BordaScore profilePos x =
+      margin profilePos x cand1 + margin profilePos x cand2 + margin profilePos x cand3 := by
+  simp only [c2BordaScore, univ_profilePos_eq]
+  rw [Finset.sum_insert (by decide), Finset.sum_pair (by decide), add_assoc]
+
 lemma c2Borda_profilePos_cand1 : c2BordaScore profilePos cand1 = 0 := by
-  classical
-  have hne : cand2 ≠ cand3 := by decide
-  have hsum :
-      c2BordaScore profilePos cand1 =
-        ∑ x ∈ ({cand2, cand3} : Finset PosCand), margin profilePos cand1 x := by
-    simp [c2BordaScore, univ_profilePos_eq, self_margin_zero,
-      cand1, cand2, cand3]
-  calc
-    c2BordaScore profilePos cand1 =
-        ∑ x ∈ ({cand2, cand3} : Finset PosCand), margin profilePos cand1 x := hsum
-    _ = margin profilePos cand1 cand2 + margin profilePos cand1 cand3 := by
-        simp [Finset.sum_pair hne]
-    _ = 0 := by simp [margin_profilePos_cand1_cand2, margin_profilePos_cand1_cand3]
+  rw [c2Borda_profilePos_eq, self_margin_zero, margin_profilePos_cand1_cand2,
+    margin_profilePos_cand1_cand3]
+  norm_num
 
 lemma c2Borda_profilePos_cand2 : c2BordaScore profilePos cand2 = 0 := by
-  classical
-  have hne : cand1 ≠ cand3 := by decide
-  have h12 : cand1 ≠ cand2 := by decide
-  have h23 : cand2 ≠ cand3 := by decide
-  have hsum :
-      c2BordaScore profilePos cand2 =
-        ∑ x ∈ ({cand1, cand3} : Finset PosCand), margin profilePos cand2 x := by
-    unfold c2BordaScore
-    have hunivSum := congrArg
-      (fun s : Finset PosCand => Finset.sum s (fun x => margin profilePos cand2 x))
-      univ_profilePos_eq
-    have hmem : cand2 ∈ ({cand1, cand2, cand3} : Finset PosCand) := by simp
-    have herase :
-        ({cand1, cand2, cand3} : Finset PosCand).erase cand2 = {cand1, cand3} := by
-      native_decide
-    calc
-      ∑ x : PosCand, margin profilePos cand2 x =
-          Finset.sum ({cand1, cand2, cand3} : Finset PosCand)
-            (fun x => margin profilePos cand2 x) := hunivSum
-      _ = Finset.sum (({cand1, cand2, cand3} : Finset PosCand).erase cand2)
-            (fun x => margin profilePos cand2 x) + margin profilePos cand2 cand2 :=
-        (Finset.sum_erase_add _ _ hmem).symm
-      _ = ∑ x ∈ ({cand1, cand3} : Finset PosCand), margin profilePos cand2 x := by
-        rw [herase, self_margin_zero, add_zero]
-  calc
-    c2BordaScore profilePos cand2 =
-        ∑ x ∈ ({cand1, cand3} : Finset PosCand), margin profilePos cand2 x := hsum
-    _ = margin profilePos cand2 cand1 + margin profilePos cand2 cand3 := by
-        simp [Finset.sum_pair hne]
-    _ = 0 := by simp [margin_profilePos_cand2_cand1, margin_profilePos_cand2_cand3]
+  rw [c2Borda_profilePos_eq, self_margin_zero, margin_profilePos_cand2_cand1,
+    margin_profilePos_cand2_cand3]
+  norm_num
 
 lemma c2Borda_profilePos_cand3 : c2BordaScore profilePos cand3 = 0 := by
-  classical
-  have hne : cand1 ≠ cand2 := by decide
-  have h13 : cand1 ≠ cand3 := by decide
-  have h23 : cand2 ≠ cand3 := by decide
-  have hsum :
-      c2BordaScore profilePos cand3 =
-        ∑ x ∈ ({cand1, cand2} : Finset PosCand), margin profilePos cand3 x := by
-    unfold c2BordaScore
-    have hunivSum := congrArg
-      (fun s : Finset PosCand => Finset.sum s (fun x => margin profilePos cand3 x))
-      univ_profilePos_eq
-    have hmem : cand3 ∈ ({cand1, cand2, cand3} : Finset PosCand) := by simp
-    have herase :
-        ({cand1, cand2, cand3} : Finset PosCand).erase cand3 = {cand1, cand2} := by
-      native_decide
-    calc
-      ∑ x : PosCand, margin profilePos cand3 x =
-          Finset.sum ({cand1, cand2, cand3} : Finset PosCand)
-            (fun x => margin profilePos cand3 x) := hunivSum
-      _ = Finset.sum (({cand1, cand2, cand3} : Finset PosCand).erase cand3)
-            (fun x => margin profilePos cand3 x) + margin profilePos cand3 cand3 :=
-        (Finset.sum_erase_add _ _ hmem).symm
-      _ = ∑ x ∈ ({cand1, cand2} : Finset PosCand), margin profilePos cand3 x := by
-        rw [herase, self_margin_zero, add_zero]
-  calc
-    c2BordaScore profilePos cand3 =
-        ∑ x ∈ ({cand1, cand2} : Finset PosCand), margin profilePos cand3 x := hsum
-    _ = margin profilePos cand3 cand1 + margin profilePos cand3 cand2 := by
-        simp [Finset.sum_pair hne]
-    _ = 0 := by simp [margin_profilePos_cand3_cand1, margin_profilePos_cand3_cand2]
+  rw [c2Borda_profilePos_eq, self_margin_zero, margin_profilePos_cand3_cand1,
+    margin_profilePos_cand3_cand2]
+  norm_num
 
 lemma c2Borda_profilePos_all_zero (x : PosCand) : c2BordaScore profilePos x = 0 := by
   rcases x with ⟨x, hxpos⟩
@@ -461,36 +404,18 @@ lemma margin_profilePos'_cand3_cand2 : margin profilePos' cand3' cand2' = 1 := b
   have h := margin_antisymmetric (P := profilePos') cand3' cand2'
   simpa [margin_profilePos'_cand2_cand3] using h
 
+private lemma c2Borda_profilePos'_eq (x : PosCand') :
+    c2BordaScore profilePos' x = margin profilePos' x cand2' + margin profilePos' x cand3' := by
+  simp only [c2BordaScore, univ_profilePos'_eq]
+  rw [Finset.sum_pair (by decide)]
+
 lemma c2Borda_profilePos'_cand2 : c2BordaScore profilePos' cand2' = -1 := by
-  classical
-  have hsum :
-      c2BordaScore profilePos' cand2' =
-        ∑ x ∈ ({cand2', cand3'} : Finset PosCand'), margin profilePos' cand2' x := by
-    simp [c2BordaScore, univ_profilePos'_eq, self_margin_zero,
-      Finset.sum_singleton, cand2', cand3']
-  have hne : cand2' ≠ cand3' := by decide
-  calc
-    c2BordaScore profilePos' cand2' =
-        ∑ x ∈ ({cand2', cand3'} : Finset PosCand'), margin profilePos' cand2' x := hsum
-    _ = margin profilePos' cand2' cand2' + margin profilePos' cand2' cand3' := by
-        simp [Finset.sum_pair hne]
-    _ = -1 := by
-        simp [self_margin_zero, margin_profilePos'_cand2_cand3]
+  rw [c2Borda_profilePos'_eq, self_margin_zero, margin_profilePos'_cand2_cand3]
+  norm_num
 
 lemma c2Borda_profilePos'_cand3 : c2BordaScore profilePos' cand3' = 1 := by
-  classical
-  have hsum :
-      c2BordaScore profilePos' cand3' =
-        ∑ x ∈ ({cand2', cand3'} : Finset PosCand'), margin profilePos' cand3' x := by
-    simp [c2BordaScore, univ_profilePos'_eq, cand2', cand3']
-  have hne : cand2' ≠ cand3' := by decide
-  calc
-    c2BordaScore profilePos' cand3' =
-        ∑ x ∈ ({cand2', cand3'} : Finset PosCand'), margin profilePos' cand3' x := hsum
-    _ = margin profilePos' cand3' cand2' + margin profilePos' cand3' cand3' := by
-        simp [Finset.sum_pair hne]
-    _ = 1 := by
-        simp [self_margin_zero, margin_profilePos'_cand3_cand2]
+  rw [c2Borda_profilePos'_eq, self_margin_zero, margin_profilePos'_cand3_cand2]
+  norm_num
 
 lemma profilePos'_pos_iff (x : PosCand') :
     0 < c2BordaScore profilePos' x ↔ x = cand3' := by
@@ -542,8 +467,7 @@ lemma poscand''_subsingleton : Subsingleton PosCand'' := by
   simp [hx, hy]
 
 lemma c2Borda_profilePos''_all_zero (x : PosCand'') : c2BordaScore profilePos'' x = 0 := by
-  classical
-  haveI : Subsingleton PosCand'' := poscand''_subsingleton
+  have : Subsingleton PosCand'' := poscand''_subsingleton
   exact c2BordaScore_eq_zero_of_subsingleton (P := profilePos'') (a := x)
 
 lemma nansonAux_profilePos' : nansonAux 3 PosCand' profilePos' = ({cand3'} : Finset PosCand') := by
@@ -618,7 +542,7 @@ private lemma simpleLift_profile : simpleLift profile' profile (2 : Fin 4) := by
       (first
         | cases ha rfl
         | cases hb rfl
-        | (simp [profile, profile', ballots, ballots', prefers_iff_prefersInList, prefersInList] <;> decide))
+        | (simp only [profile, profile', ballots, ballots', prefers_iff_prefersInList]; decide))
   · intro a v
     constructor
     · fin_cases a <;> fin_cases v <;>

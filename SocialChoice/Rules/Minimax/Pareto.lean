@@ -60,7 +60,7 @@ private lemma margin_le_card_sub_one_of_topRank {V A : Type} [Fintype V] [Fintyp
 theorem minimax_pareto_efficiency : ParetoEfficiency minimax := by
   intro V A _ _ _ P c d hpref hd
   classical
-  letI : Nonempty A := ⟨c⟩
+  let : Nonempty A := ⟨c⟩
   have hcard_pos : 0 < Fintype.card V := Fintype.card_pos
   have hmargin_cd : margin P c d = (Fintype.card V : Int) :=
     unanimous_margin_eq_card (P := P) c d hpref

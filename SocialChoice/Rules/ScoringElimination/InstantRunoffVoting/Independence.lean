@@ -498,7 +498,7 @@ theorem instantRunoffVoting_independent_of_non_top
             (scoringEliminationAux pluralityScore _ (restrictCandidates P (fun _ : A => True))).map
               e.toEmbedding := by
         classical
-        letI : DecidableEq A := Classical.decEq A
+        let : DecidableEq A := Classical.decEq A
         ext a
         constructor
         · intro ha

@@ -13,7 +13,7 @@ lemma nanson_score_pos_of_mem {V A : Type} [Fintype V] [Fintype A]
     {x : A} (hx : x ∈ nanson P) :
     0 < c2BordaScore P x := by
   classical
-  letI : DecidableEq A := Classical.decEq A
+  let : DecidableEq A := Classical.decEq A
   cases hcardA : Fintype.card A with
   | zero =>
       have hpos : 0 < Fintype.card A := Fintype.card_pos_iff.mpr ⟨x⟩
@@ -33,7 +33,7 @@ theorem nanson_reversal_symmetry : ReversalSymmetry nanson := by
   have hnotall : ¬ ∀ a, c2BordaScore P a = 0 := by
     intro hall
     classical
-    letI : DecidableEq A := Classical.decEq A
+    let : DecidableEq A := Classical.decEq A
     have haux : nansonAux (Fintype.card A) A P = (Finset.univ : Finset A) := by
       cases hcardA : Fintype.card A with
       | zero =>

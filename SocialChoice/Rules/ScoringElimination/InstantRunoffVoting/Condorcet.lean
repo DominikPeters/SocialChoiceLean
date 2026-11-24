@@ -212,7 +212,7 @@ lemma lowestScoring_restrict_eq_singleton_cand2 :
     lowestScoring profile' (fun r => pluralityScore 2 r) =
       ({cand2} : Finset {x : Fin 3 // x ≠ (1 : Fin 3)}) := by
   classical
-  haveI : Nonempty {x : Fin 3 // x ≠ (1 : Fin 3)} := by
+  have : Nonempty {x : Fin 3 // x ≠ (1 : Fin 3)} := by
     exact ⟨cand0⟩
   have hLne :
       (lowestScoring profile' (fun r => pluralityScore 2 r)).Nonempty := by

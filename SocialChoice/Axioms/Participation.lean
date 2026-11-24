@@ -449,9 +449,9 @@ lemma tieBrokenVotingRule_resoluteParticipation (f : VotingRule) (hf : IsVotingR
   intro U A _ _ V u hu P Q x y hagree hx hy
   classical
   by_cases hA : Nonempty A
-  · letI : Nonempty A := hA
+  · let : Nonempty A := hA
     let r := Q.pref (newVoter (u := u) (V := V) hu)
-    letI : LinearOrder A := r
+    let : LinearOrder A := r
     have hfish : FishburnWeak r (f Q) (f P) := by
       simpa [StrongFishburnParticipation, StrongParticipation, FishburnExtension] using
         (hpart (V := V) (u := u) hu P Q hagree)
@@ -480,7 +480,7 @@ lemma tieBrokenVotingRule_resoluteParticipation (f : VotingRule) (hf : IsVotingR
       exact Finset.mem_singleton.mp hxmem
     have hle : r.le y x := by
       simpa [hymin, hxmin] using hmin
-    letI : LinearOrder A := r
+    let : LinearOrder A := r
     exact not_lt.mpr (by simpa using hle)
   ·
     have hA' : IsEmpty A := (not_nonempty_iff.mp hA)

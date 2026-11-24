@@ -9,8 +9,6 @@ import SocialChoice.Rules.TopCycle.Condorcet
 namespace SocialChoice
 
 open Finset
-open Classical
-attribute [instance] Classical.decEq
 
 set_option maxHeartbeats 5000000
 
@@ -159,53 +157,29 @@ lemma votersPreferring_profile2_0_1 :
     votersPreferring profile2 (0 : Fin 3) (1 : Fin 3) =
       ({⟨1, by simp [voters2, voters1]⟩} :
         Finset (Electorate (Fin 2) voters2)) := by
-  classical
   rw [votersPreferring_profile2_eq_filter]
-  ext v
-  cases v with
-  | mk val hmem =>
-      fin_cases val <;>
-        (simp [voters2, voters1, ballots2, ballot120, ballot201, prefersInList] at hmem ⊢;
-          all_goals decide +revert)
+  decide
 
 lemma votersPreferring_profile2_1_0 :
     votersPreferring profile2 (1 : Fin 3) (0 : Fin 3) =
       ({⟨0, by simp [voters2, voters1]⟩} :
         Finset (Electorate (Fin 2) voters2)) := by
-  classical
   rw [votersPreferring_profile2_eq_filter]
-  ext v
-  cases v with
-  | mk val hmem =>
-      fin_cases val <;>
-        (simp [voters2, voters1, ballots2, ballot120, ballot201, prefersInList] at hmem ⊢;
-          all_goals decide +revert)
+  decide
 
 lemma votersPreferring_profile2_2_1 :
     votersPreferring profile2 (2 : Fin 3) (1 : Fin 3) =
       ({⟨1, by simp [voters2, voters1]⟩} :
         Finset (Electorate (Fin 2) voters2)) := by
-  classical
   rw [votersPreferring_profile2_eq_filter]
-  ext v
-  cases v with
-  | mk val hmem =>
-      fin_cases val <;>
-        (simp [voters2, voters1, ballots2, ballot120, ballot201, prefersInList] at hmem ⊢;
-          all_goals decide +revert)
+  decide
 
 lemma votersPreferring_profile2_1_2 :
     votersPreferring profile2 (1 : Fin 3) (2 : Fin 3) =
       ({⟨0, by simp [voters2, voters1]⟩} :
         Finset (Electorate (Fin 2) voters2)) := by
-  classical
   rw [votersPreferring_profile2_eq_filter]
-  ext v
-  cases v with
-  | mk val hmem =>
-      fin_cases val <;>
-        (simp [voters2, voters1, ballots2, ballot120, ballot201, prefersInList] at hmem ⊢;
-          all_goals decide +revert)
+  decide
 
 private lemma margin_profile2_0_1 : margin profile2 (0 : Fin 3) (1 : Fin 3) = 0 := by
   classical

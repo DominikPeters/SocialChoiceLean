@@ -18,7 +18,7 @@ lemma addCopiesProfile_restrict {U A : Type} [DecidableEq U] [Fintype A]
       exact Finset.mem_union.mpr (Or.inl hx)) = P := by
   apply Profile.ext
   intro v
-  simp only [restrictElectorate, addCopiesProfile, dif_pos v.2]
+  simp only [restrictElectorate, addCopiesProfile, dite_eq_left v.2]
 
 lemma addCopiesProfile_pref_of_mem {U A : Type} [DecidableEq U] [Fintype A]
     (V W : Finset U) (P : Profile (Electorate U V) A) (r : LinearOrder A)

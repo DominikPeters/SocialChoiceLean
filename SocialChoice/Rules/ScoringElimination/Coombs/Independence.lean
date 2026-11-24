@@ -15,8 +15,6 @@ import SocialChoice.Axioms.Clones
 namespace SocialChoice
 
 open Finset
-open Classical
-attribute [instance] Classical.decEq Classical.decPred
 
 variable {V A : Type} [Fintype V] [Fintype A]
 
@@ -234,170 +232,12 @@ def cand3_0 : {x : Fin 4 // x ≠ (0 : Fin 4)} := ⟨3, by decide⟩
 @[reducible] def scoreVec : Nat → Int := fun r => vetoScore (Fintype.card (Fin 4)) r
 
 lemma prefers_3_0 : ∀ v : Fin 4, Prefers profile v (3 : Fin 4) (0 : Fin 4) := by
-  intro v
-  fin_cases v
-  · simp [profile, ballots, prefers_iff_prefersInList, prefersInList]; decide
-  · simp [profile, ballots, prefers_iff_prefersInList, prefersInList]; decide
-  · simp [profile, ballots, prefers_iff_prefersInList, prefersInList]; decide
-  · simp [profile, ballots, prefers_iff_prefersInList, prefersInList]; decide
-
-lemma votersBottom_profile_0_card : (votersBottom profile (0 : Fin 4)).card = 1 := by
-  have h : countBottom (fun v => (ballots v).ranking) (0 : Fin 4) = 1 := by decide
-  simpa [profile] using
-    (votersBottom_card_eq_countBottom (ballots := ballots) (c := (0 : Fin 4))).trans h
-
-lemma votersBottom_profile_1_card : (votersBottom profile (1 : Fin 4)).card = 1 := by
-  have h : countBottom (fun v => (ballots v).ranking) (1 : Fin 4) = 1 := by decide
-  simpa [profile] using
-    (votersBottom_card_eq_countBottom (ballots := ballots) (c := (1 : Fin 4))).trans h
-
-lemma votersBottom_profile_2_card : (votersBottom profile (2 : Fin 4)).card = 2 := by
-  have h : countBottom (fun v => (ballots v).ranking) (2 : Fin 4) = 2 := by decide
-  simpa [profile] using
-    (votersBottom_card_eq_countBottom (ballots := ballots) (c := (2 : Fin 4))).trans h
-
-lemma votersBottom_profile_3_card : (votersBottom profile (3 : Fin 4)).card = 0 := by
-  have h : countBottom (fun v => (ballots v).ranking) (3 : Fin 4) = 0 := by decide
-  simpa [profile] using
-    (votersBottom_card_eq_countBottom (ballots := ballots) (c := (3 : Fin 4))).trans h
-
-lemma notBottom_card {V A : Type} [Fintype V] [Fintype A]
-    (P : Profile V A) (c : A) {k : Nat} (hcard : (votersBottom P c).card = k) :
-    (Finset.univ.filter (fun v => ¬ BottomRank P v c)).card = Fintype.card V - k := by
-  classical
-  have hsum :
-      (Finset.univ.filter (fun v => BottomRank P v c)).card +
-        (Finset.univ.filter (fun v => ¬ BottomRank P v c)).card =
-        (Finset.univ : Finset V).card := by
-    simpa using
-      (Finset.card_filter_add_card_filter_not
-        (s := (Finset.univ : Finset V)) (p := fun v => BottomRank P v c))
-  have hbottom :
-      (Finset.univ.filter (fun v => BottomRank P v c)).card = k := by
-    simpa [votersBottom] using hcard
-  have hcardV : (Finset.univ : Finset V).card = Fintype.card V := by
-    simp
-  have hsum' :
-      k + (Finset.univ.filter (fun v => ¬ BottomRank P v c)).card = Fintype.card V := by
-    simpa [hbottom, hcardV] using hsum
-  calc
-    (Finset.univ.filter (fun v => ¬ BottomRank P v c)).card =
-        k + (Finset.univ.filter (fun v => ¬ BottomRank P v c)).card - k := by
-          symm
-          simp
-    _ = Fintype.card V - k := by
-          simp [hsum']
-
-lemma scoreCandidate_profile_0 :
-    scoreCandidate profile scoreVec (0 : Fin 4) = (3 : Int) := by
-  have hnotBottom :
-      (Finset.univ.filter (fun v => ¬ BottomRank profile v (0 : Fin 4))).card = 3 := by
-    simpa using
-      (notBottom_card (P := profile) (c := (0 : Fin 4)) (k := 1) votersBottom_profile_0_card)
-  calc
-    scoreCandidate profile scoreVec (0 : Fin 4) =
-        ((Finset.univ.filter (fun v => ¬ BottomRank profile v (0 : Fin 4))).card : Int) := by
-          exact
-            (vetoScore_scoreCandidate_eq_notBottom_card (P := profile) (c := (0 : Fin 4)))
-    _ = (3 : Int) := by exact_mod_cast hnotBottom
-
-lemma scoreCandidate_profile_1 :
-    scoreCandidate profile scoreVec (1 : Fin 4) = (3 : Int) := by
-  have hnotBottom :
-      (Finset.univ.filter (fun v => ¬ BottomRank profile v (1 : Fin 4))).card = 3 := by
-    simpa using
-      (notBottom_card (P := profile) (c := (1 : Fin 4)) (k := 1) votersBottom_profile_1_card)
-  calc
-    scoreCandidate profile scoreVec (1 : Fin 4) =
-        ((Finset.univ.filter (fun v => ¬ BottomRank profile v (1 : Fin 4))).card : Int) := by
-          exact
-            (vetoScore_scoreCandidate_eq_notBottom_card (P := profile) (c := (1 : Fin 4)))
-    _ = (3 : Int) := by exact_mod_cast hnotBottom
-
-lemma scoreCandidate_profile_2 :
-    scoreCandidate profile scoreVec (2 : Fin 4) = (2 : Int) := by
-  have hnotBottom :
-      (Finset.univ.filter (fun v => ¬ BottomRank profile v (2 : Fin 4))).card = 2 := by
-    simpa using
-      (notBottom_card (P := profile) (c := (2 : Fin 4)) (k := 2) votersBottom_profile_2_card)
-  calc
-    scoreCandidate profile scoreVec (2 : Fin 4) =
-        ((Finset.univ.filter (fun v => ¬ BottomRank profile v (2 : Fin 4))).card : Int) := by
-          exact
-            (vetoScore_scoreCandidate_eq_notBottom_card (P := profile) (c := (2 : Fin 4)))
-    _ = (2 : Int) := by exact_mod_cast hnotBottom
-
-lemma scoreCandidate_profile_3 :
-    scoreCandidate profile scoreVec (3 : Fin 4) = (4 : Int) := by
-  have hnotBottom :
-      (Finset.univ.filter (fun v => ¬ BottomRank profile v (3 : Fin 4))).card = 4 := by
-    simpa using
-      (notBottom_card (P := profile) (c := (3 : Fin 4)) (k := 0) votersBottom_profile_3_card)
-  calc
-    scoreCandidate profile scoreVec (3 : Fin 4) =
-        ((Finset.univ.filter (fun v => ¬ BottomRank profile v (3 : Fin 4))).card : Int) := by
-          exact
-            (vetoScore_scoreCandidate_eq_notBottom_card (P := profile) (c := (3 : Fin 4)))
-    _ = (4 : Int) := by exact_mod_cast hnotBottom
-
-lemma score2_lt_score0 :
-    scoreCandidate profile scoreVec (2 : Fin 4) <
-      scoreCandidate profile scoreVec (0 : Fin 4) := by
-  simp [scoreCandidate_profile_2, scoreCandidate_profile_0]
-
-lemma score2_lt_score1 :
-    scoreCandidate profile scoreVec (2 : Fin 4) <
-      scoreCandidate profile scoreVec (1 : Fin 4) := by
-  simp [scoreCandidate_profile_2, scoreCandidate_profile_1]
-
-lemma score2_lt_score3 :
-    scoreCandidate profile scoreVec (2 : Fin 4) <
-      scoreCandidate profile scoreVec (3 : Fin 4) := by
-  simp [scoreCandidate_profile_2, scoreCandidate_profile_3]
+  simp only [profile, prefers_iff_prefersInList]
+  decide
 
 lemma lowestScoring_profile_eq_singleton_2 :
     lowestScoring profile scoreVec = ({2} : Finset (Fin 4)) := by
-  classical
-  have hLne :
-      (lowestScoring profile scoreVec).Nonempty := by
-    exact lowestScoring_nonempty (P := profile) (score := scoreVec)
-      (hA := (Finset.univ_nonempty : (Finset.univ : Finset (Fin 4)).Nonempty))
-  have hsubset : lowestScoring profile scoreVec ⊆ ({2} : Finset (Fin 4)) := by
-    intro x hx
-    fin_cases x
-    ·
-      have hle :=
-        scoreCandidate_le_of_mem_lowestScoring (P := profile) (score := scoreVec)
-          (c := (0 : Fin 4)) (e := (2 : Fin 4)) hx
-      have hcontra : False := (not_lt_of_ge hle) score2_lt_score0
-      exact (False.elim hcontra)
-    ·
-      have hle :=
-        scoreCandidate_le_of_mem_lowestScoring (P := profile) (score := scoreVec)
-          (c := (1 : Fin 4)) (e := (2 : Fin 4)) hx
-      have hcontra : False := (not_lt_of_ge hle) score2_lt_score1
-      exact (False.elim hcontra)
-    · simp
-    ·
-      have hle :=
-        scoreCandidate_le_of_mem_lowestScoring (P := profile) (score := scoreVec)
-          (c := (3 : Fin 4)) (e := (2 : Fin 4)) hx
-      have hcontra : False := (not_lt_of_ge hle) score2_lt_score3
-      exact (False.elim hcontra)
-  rcases hLne with ⟨x, hx⟩
-  have hx' : x = (2 : Fin 4) := by
-    have : x ∈ ({2} : Finset (Fin 4)) := hsubset hx
-    simpa using this
-  have h2mem : (2 : Fin 4) ∈ lowestScoring profile scoreVec := by
-    simpa [hx'] using hx
-  apply Finset.ext
-  intro x
-  constructor
-  · intro hxmem
-    exact hsubset hxmem
-  · intro hxmem
-    have hx' : x = (2 : Fin 4) := by simpa using hxmem
-    simpa [hx'] using h2mem
+  decide
 
 lemma coombs_profile_not_2 : (2 : Fin 4) ∉ coombs profile := by
   classical
@@ -441,43 +281,9 @@ lemma coombs_profile_not_2 : (2 : Fin 4) ∉ coombs profile := by
 @[reducible] noncomputable def scoreVec0 : Nat → Int := fun r =>
   vetoScore (Fintype.card {x : Fin 4 // x ≠ (0 : Fin 4)}) r
 
-lemma scoreCandidate_profile0_1 :
-    scoreCandidate profile0 scoreVec0 cand1_0 = (2 : Int) := by
-  decide
-
-lemma scoreCandidate_profile0_2 :
-    scoreCandidate profile0 scoreVec0 cand2_0 = (2 : Int) := by
-  decide
-
-lemma scoreCandidate_profile0_3 :
-    scoreCandidate profile0 scoreVec0 cand3_0 = (4 : Int) := by
-  decide
-
 lemma lowestScoring_profile0_has_1 :
     cand1_0 ∈ lowestScoring profile0 scoreVec0 := by
-  have hA : (Finset.univ : Finset {x : Fin 4 // x ≠ (0 : Fin 4)}).Nonempty := by
-    exact ⟨cand1_0, by simp⟩
-  apply (lowestScoring_iff_forall_le (P := profile0) (score := scoreVec0) hA cand1_0).2
-  intro d
-  cases d with
-  | mk val h =>
-      fin_cases val
-      · cases h rfl
-      ·
-        have hd : (⟨1, h⟩ : {x : Fin 4 // x ≠ (0 : Fin 4)}) = cand1_0 := by
-          apply Subtype.ext
-          rfl
-        simp [hd, scoreCandidate_profile0_1]
-      ·
-        have hd : (⟨2, h⟩ : {x : Fin 4 // x ≠ (0 : Fin 4)}) = cand2_0 := by
-          apply Subtype.ext
-          rfl
-        simp [hd, scoreCandidate_profile0_1, scoreCandidate_profile0_2]
-      ·
-        have hd : (⟨3, h⟩ : {x : Fin 4 // x ≠ (0 : Fin 4)}) = cand3_0 := by
-          apply Subtype.ext
-          rfl
-        simp [hd, scoreCandidate_profile0_1, scoreCandidate_profile0_3]
+  decide
 
 def cand2_0_1 : {x : {x : Fin 4 // x ≠ (0 : Fin 4)} // x ≠ cand1_0} :=
   ⟨cand2_0, by decide⟩
@@ -589,112 +395,10 @@ lemma coombs_profile0_lift_has_2 :
 def cloneSet : Set (Fin 4) := {0, 1}
 
 lemma cloneSet_profile : CloneSet profile cloneSet := by
-  refine ⟨?_, ?_⟩
-  · exact ⟨0, by simp [cloneSet]⟩
-  · intro v c hc
-    fin_cases c
-    · exact (hc (by simp [cloneSet])).elim
-    · exact (hc (by simp [cloneSet])).elim
-    · -- c = 2
-      fin_cases v
-      ·
-        refine Or.inr ?_
-        intro x hx
-        have hx' : x = (0 : Fin 4) ∨ x = (1 : Fin 4) := by
-          simpa [cloneSet] using hx
-        cases hx' with
-        | inl hx0 =>
-            subst hx0
-            simp [profile, ballots, prefers_iff_prefersInList, prefersInList]; decide
-        | inr hx1 =>
-            subst hx1
-            simp [profile, ballots, prefers_iff_prefersInList, prefersInList]; decide
-      ·
-        refine Or.inr ?_
-        intro x hx
-        have hx' : x = (0 : Fin 4) ∨ x = (1 : Fin 4) := by
-          simpa [cloneSet] using hx
-        cases hx' with
-        | inl hx0 =>
-            subst hx0
-            simp [profile, ballots, prefers_iff_prefersInList, prefersInList]; decide
-        | inr hx1 =>
-            subst hx1
-            simp [profile, ballots, prefers_iff_prefersInList, prefersInList]; decide
-      ·
-        refine Or.inl ?_
-        intro x hx
-        have hx' : x = (0 : Fin 4) ∨ x = (1 : Fin 4) := by
-          simpa [cloneSet] using hx
-        cases hx' with
-        | inl hx0 =>
-            subst hx0
-            simp [profile, ballots, prefers_iff_prefersInList, prefersInList]; decide
-        | inr hx1 =>
-            subst hx1
-            simp [profile, ballots, prefers_iff_prefersInList, prefersInList]; decide
-      ·
-        refine Or.inl ?_
-        intro x hx
-        have hx' : x = (0 : Fin 4) ∨ x = (1 : Fin 4) := by
-          simpa [cloneSet] using hx
-        cases hx' with
-        | inl hx0 =>
-            subst hx0
-            simp [profile, ballots, prefers_iff_prefersInList, prefersInList]; decide
-        | inr hx1 =>
-            subst hx1
-            simp [profile, ballots, prefers_iff_prefersInList, prefersInList]; decide
-    · -- c = 3
-      fin_cases v
-      ·
-        refine Or.inr ?_
-        intro x hx
-        have hx' : x = (0 : Fin 4) ∨ x = (1 : Fin 4) := by
-          simpa [cloneSet] using hx
-        cases hx' with
-        | inl hx0 =>
-            subst hx0
-            simp [profile, ballots, prefers_iff_prefersInList, prefersInList]; decide
-        | inr hx1 =>
-            subst hx1
-            simp [profile, ballots, prefers_iff_prefersInList, prefersInList]; decide
-      ·
-        refine Or.inr ?_
-        intro x hx
-        have hx' : x = (0 : Fin 4) ∨ x = (1 : Fin 4) := by
-          simpa [cloneSet] using hx
-        cases hx' with
-        | inl hx0 =>
-            subst hx0
-            simp [profile, ballots, prefers_iff_prefersInList, prefersInList]; decide
-        | inr hx1 =>
-            subst hx1
-            simp [profile, ballots, prefers_iff_prefersInList, prefersInList]; decide
-      ·
-        refine Or.inr ?_
-        intro x hx
-        have hx' : x = (0 : Fin 4) ∨ x = (1 : Fin 4) := by
-          simpa [cloneSet] using hx
-        cases hx' with
-        | inl hx0 =>
-            subst hx0
-            simp [profile, ballots, prefers_iff_prefersInList, prefersInList]; decide
-        | inr hx1 =>
-            subst hx1
-            simp [profile, ballots, prefers_iff_prefersInList, prefersInList]; decide
-      ·
-        refine Or.inr ?_
-        intro x hx
-        have hx' : x = (0 : Fin 4) ∨ x = (1 : Fin 4) := by
-          simpa [cloneSet] using hx
-        cases hx' with
-        | inl hx0 =>
-            subst hx0
-            simp [profile, ballots, prefers_iff_prefersInList, prefersInList]; decide
-        | inr hx1 =>
-            subst hx1
-            simp [profile, ballots, prefers_iff_prefersInList, prefersInList]; decide
+  refine ⟨⟨0, by simp [cloneSet]⟩, ?_⟩
+  simp only [cloneSet, Set.mem_insert_iff, Set.mem_singleton_iff, forall_eq_or_imp, forall_eq,
+    profile, prefers_iff_prefersInList]
+  decide
 
 lemma clonePred_eq_ne :
     clonePred cloneSet (1 : Fin 4) = (fun a : Fin 4 => a ≠ (0 : Fin 4)) := by

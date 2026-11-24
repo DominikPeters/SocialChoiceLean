@@ -10,10 +10,7 @@ import SocialChoice.Rules.ScoringElimination.Baldwin.Defs
 
 namespace SocialChoice
 
-open Classical
 open Finset
-
-attribute [instance] Classical.decEq Classical.decPred
 
 /-!
 ## Baldwin fails independence of dominated alternatives and independence of clones

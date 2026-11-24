@@ -9,7 +9,6 @@ import SocialChoice.Rules.ScoringRules.Veto.Defs
 namespace SocialChoice
 
 open Finset
-open Classical
 
 namespace CoombsReversalCounterexample
 

@@ -11,9 +11,7 @@ import SocialChoice.Rules.ScoringRules.Plurality.Defs
 namespace SocialChoice
 
 open Finset
-open Classical
 
-attribute [instance] Classical.decEq Classical.decPred
 
 /-!
 # Scoring elimination fails monotonicity (Smith 1973)
@@ -769,7 +767,7 @@ private lemma topCount_profileAB_A : topCount profileAB candA = 22 := by
   have hprefset :
       votersPreferring profileAB candA candB = votersPreferring profile (0 : Fin 3) (1 : Fin 3) := by
     ext v
-    simp [profileAB, votersPreferring, prefers_restrictProfile_iff, candA, candB]
+    simp [profileAB, candA, candB]
   have hcardtop : (votersTop profileAB candA).card =
       (votersPreferring profile (0 : Fin 3) (1 : Fin 3)).card := by
     exact (congrArg Finset.card htopset).trans (congrArg Finset.card hprefset)
@@ -789,7 +787,7 @@ private lemma topCount_profileAB_B : topCount profileAB candB = 15 := by
   have hprefset :
       votersPreferring profileAB candB candA = votersPreferring profile (1 : Fin 3) (0 : Fin 3) := by
     ext v
-    simp [profileAB, votersPreferring, prefers_restrictProfile_iff, candA, candB]
+    simp [profileAB, candA, candB]
   have hcardtop : (votersTop profileAB candB).card =
       (votersPreferring profile (1 : Fin 3) (0 : Fin 3)).card := by
     exact (congrArg Finset.card htopset).trans (congrArg Finset.card hprefset)
@@ -809,7 +807,7 @@ private lemma topCount_profileAC'_A : topCount profileAC' candA' = 18 := by
   have hprefset :
       votersPreferring profileAC' candA' candC' = votersPreferring profile' (0 : Fin 3) (2 : Fin 3) := by
     ext v
-    simp [profileAC', votersPreferring, prefers_restrictProfile_iff, candA', candC']
+    simp [profileAC', candA', candC']
   have hcardtop : (votersTop profileAC' candA').card =
       (votersPreferring profile' (0 : Fin 3) (2 : Fin 3)).card := by
     exact (congrArg Finset.card htopset).trans (congrArg Finset.card hprefset)
@@ -829,7 +827,7 @@ private lemma topCount_profileAC'_C : topCount profileAC' candC' = 19 := by
   have hprefset :
       votersPreferring profileAC' candC' candA' = votersPreferring profile' (2 : Fin 3) (0 : Fin 3) := by
     ext v
-    simp [profileAC', votersPreferring, prefers_restrictProfile_iff, candA', candC']
+    simp [profileAC', candA', candC']
   have hcardtop : (votersTop profileAC' candC').card =
       (votersPreferring profile' (2 : Fin 3) (0 : Fin 3)).card := by
     exact (congrArg Finset.card htopset).trans (congrArg Finset.card hprefset)

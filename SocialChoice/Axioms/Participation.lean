@@ -37,6 +37,30 @@ lemma liftVoter_ne_newVoter {U : Type} [DecidableEq U] {V : Finset U} {u : U} (h
   have hval : v.1 = u := congrArg Subtype.val h
   exact hu (by simpa [hval] using v.2)
 
+/-- The electorate `insert u V` consists of the old electorate `V` plus the new voter `u`. -/
+def insertElectorateEquiv {U : Type} [DecidableEq U] {V : Finset U} {u : U} (hu : u ∉ V) :
+    Electorate U V ⊕ Unit ≃ Electorate U (insert u V) where
+  toFun := Sum.elim (liftVoter u) (fun _ => newVoter u hu)
+  invFun w := if h : w.1 ∈ V then Sum.inl ⟨w.1, h⟩ else Sum.inr ()
+  left_inv := by
+    rintro (v | ⟨⟩)
+    · simp [liftVoter, v.2]
+    · simp [newVoter, hu]
+  right_inv w := by
+    by_cases h : w.1 ∈ V
+    · simp [h, liftVoter]
+    · have hw : w.1 = u := (Finset.mem_insert.mp w.2).resolve_right h
+      simp only [h, dite_false, Sum.elim_inr]
+      exact Subtype.ext hw.symm
+
+@[simp] lemma insertElectorateEquiv_inl {U : Type} [DecidableEq U] {V : Finset U} {u : U}
+    (hu : u ∉ V) (v : Electorate U V) : insertElectorateEquiv hu (Sum.inl v) = liftVoter u v :=
+  rfl
+
+@[simp] lemma insertElectorateEquiv_inr {U : Type} [DecidableEq U] {V : Finset U} {u : U}
+    (hu : u ∉ V) (x : Unit) : insertElectorateEquiv hu (Sum.inr x) = newVoter u hu :=
+  rfl
+
 @[scAxiom]
 def PositiveInvolvement (f : VotingRule) : Prop :=
   ∀ {U A : Type} [DecidableEq U] [Fintype A]

@@ -183,6 +183,16 @@ noncomputable def votersTop {V A : Type} [Fintype V] [Fintype A]
   classical
   exact Finset.univ.filter (fun v => TopRank P v c)
 
+@[simp] lemma mem_votersPreferring {V A : Type} [Fintype V] [Fintype A]
+    {P : Profile V A} {a b : A} {v : V} : v ∈ votersPreferring P a b ↔ Prefers P v a b := by
+  classical
+  simp [votersPreferring]
+
+@[simp] lemma mem_votersTop {V A : Type} [Fintype V] [Fintype A]
+    {P : Profile V A} {c : A} {v : V} : v ∈ votersTop P c ↔ TopRank P v c := by
+  classical
+  simp [votersTop]
+
 noncomputable def votersBottom {V A : Type} [Fintype V] [Fintype A]
     (P : Profile V A) (c : A) : Finset V := by
   classical

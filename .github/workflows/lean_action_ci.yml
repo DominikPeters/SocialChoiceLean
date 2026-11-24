@@ -20,6 +20,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
+      - name: Reject sorry and native_decide
+        run: |
+          if grep -rnwE 'sorry|native_decide' --include='*.lean' SocialChoice SocialChoice.lean; then
+            echo "::error::Found sorry or native_decide (see matches above)."
+            exit 1
+          fi
       # Builds the default target (SocialChoice). Pivato is not built: it does
       # not currently compile against Mathlib.
       - uses: leanprover/lean-action@v1

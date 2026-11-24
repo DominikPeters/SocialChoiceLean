@@ -46,7 +46,7 @@ def voters8 : Finset (Fin 9) :=
   {0, 1, 2, 3, 4, 5, 6, 7}
 
 noncomputable def fullProfile : Profile (Electorate (Fin 9) (Finset.univ)) (Fin 3) :=
-  { pref := fun v => (ballots9 v.1).toLinearOrder }
+  profileOfListBallots (fun v => ballots9 v.1)
 
 noncomputable def profile8 : Profile (Electorate (Fin 9) voters8) (Fin 3) :=
   restrictElectorate fullProfile voters8 (by
@@ -78,124 +78,20 @@ lemma newVoter_top_b :
     BallotTop
       (profile9.pref (newVoter (u := (8 : Fin 9)) (V := voters8) voters8_not_mem))
       (1 : Fin 3) := by
-  have hpref :
-      profile9.pref (newVoter (u := (8 : Fin 9)) (V := voters8) voters8_not_mem) =
-        ballotBAC.toLinearOrder := by
-    simp [profile9, fullProfile, restrictElectorate, ballots9, newVoter]
-  simpa [hpref] using ballotBAC_top_b
+  change BallotTop ballotBAC.toLinearOrder (1 : Fin 3)
+  exact ballotBAC_top_b
 
-lemma voters8_card : (#voters8 : Nat) = 8 := by
-  simp [voters8]
+private lemma profile8_eq : profile8 = profileOfListBallots (fun v => ballots9 v.1) := rfl
 
-lemma voters9_card : (#(insert (8 : Fin 9) voters8) : Nat) = 9 := by
-  simp [voters8]
-
-private lemma votersPreferring_profile8_eq_filter (x y : Fin 3) :
-    votersPreferring profile8 x y =
-      Finset.univ.filter (fun v => prefersInList (ballots9 v.1).ranking x y) := by
-  ext v
-  simp only [votersPreferring, Finset.mem_filter, Finset.mem_univ, true_and]
-  change Prefers (profileOfListBallots ballots9) v.1 x y ↔ _
-  exact prefers_iff_prefersInList ballots9 v.1 x y
-
-private lemma votersPreferring_profile9_eq_filter (x y : Fin 3) :
-    votersPreferring profile9 x y =
-      Finset.univ.filter (fun v => prefersInList (ballots9 v.1).ranking x y) := by
-  ext v
-  simp only [votersPreferring, Finset.mem_filter, Finset.mem_univ, true_and]
-  change Prefers (profileOfListBallots ballots9) v.1 x y ↔ _
-  exact prefers_iff_prefersInList ballots9 v.1 x y
-
-lemma votersPreferring_profile8_0_2 :
-    votersPreferring profile8 (0 : Fin 3) (2 : Fin 3) =
-      ({⟨0, by simp [voters8]⟩,
-        ⟨1, by simp [voters8]⟩,
-        ⟨2, by simp [voters8]⟩,
-        ⟨3, by simp [voters8]⟩} :
-        Finset (Electorate (Fin 9) voters8)) := by
-  rw [votersPreferring_profile8_eq_filter]
-  decide
-
-lemma votersPreferring_profile8_1_0 :
-    votersPreferring profile8 (1 : Fin 3) (0 : Fin 3) =
-      ({⟨4, by simp [voters8]⟩,
-        ⟨5, by simp [voters8]⟩,
-        ⟨6, by simp [voters8]⟩} :
-        Finset (Electorate (Fin 9) voters8)) := by
-  rw [votersPreferring_profile8_eq_filter]
-  decide
-
-lemma votersPreferring_profile8_2_1 :
-    votersPreferring profile8 (2 : Fin 3) (1 : Fin 3) =
-      ({⟨7, by simp [voters8]⟩} :
-        Finset (Electorate (Fin 9) voters8)) := by
-  rw [votersPreferring_profile8_eq_filter]
-  decide
-
-lemma votersPreferring_profile9_0_1 :
-    votersPreferring profile9 (0 : Fin 3) (1 : Fin 3) =
-      ({⟨0, by simp [voters8]⟩,
-        ⟨1, by simp [voters8]⟩,
-        ⟨2, by simp [voters8]⟩,
-        ⟨3, by simp [voters8]⟩,
-        ⟨7, by simp [voters8]⟩} :
-        Finset (Electorate (Fin 9) (insert (8 : Fin 9) voters8))) := by
-  rw [votersPreferring_profile9_eq_filter]
-  decide
-
-lemma votersPreferring_profile9_0_2 :
-    votersPreferring profile9 (0 : Fin 3) (2 : Fin 3) =
-      ({⟨0, by simp [voters8]⟩,
-        ⟨1, by simp [voters8]⟩,
-        ⟨2, by simp [voters8]⟩,
-        ⟨3, by simp [voters8]⟩,
-        ⟨8, by simp [voters8]⟩} :
-        Finset (Electorate (Fin 9) (insert (8 : Fin 9) voters8))) := by
-  rw [votersPreferring_profile9_eq_filter]
-  decide
-
-lemma not_strictMajority_profile8_0_2 :
-    ¬ StrictMajority (votersPreferring profile8 (0 : Fin 3) (2 : Fin 3)) := by
-  rw [StrictMajority, votersPreferring_profile8_0_2]
-  decide
-
-lemma not_strictMajority_profile8_1_0 :
-    ¬ StrictMajority (votersPreferring profile8 (1 : Fin 3) (0 : Fin 3)) := by
-  rw [StrictMajority, votersPreferring_profile8_1_0]
-  decide
-
-lemma not_strictMajority_profile8_2_1 :
-    ¬ StrictMajority (votersPreferring profile8 (2 : Fin 3) (1 : Fin 3)) := by
-  rw [StrictMajority, votersPreferring_profile8_2_1]
-  decide
+private lemma profile9_eq : profile9 = profileOfListBallots (fun v => ballots9 v.1) := rfl
 
 lemma no_condorcet_profile8 : ¬ ∃ x, CondorcetWinner profile8 x := by
-  intro h
-  rcases h with ⟨x, hx⟩
-  fin_cases x
-  · have hmaj := hx (2 : Fin 3) (by decide +revert)
-    exact (not_strictMajority_profile8_0_2 hmaj).elim
-  · have hmaj := hx (0 : Fin 3) (by decide +revert)
-    exact (not_strictMajority_profile8_1_0 hmaj).elim
-  · have hmaj := hx (1 : Fin 3) (by decide +revert)
-    exact (not_strictMajority_profile8_2_1 hmaj).elim
-
-lemma strictMajority_profile9_0_1 :
-    StrictMajority (votersPreferring profile9 (0 : Fin 3) (1 : Fin 3)) := by
-  rw [StrictMajority, votersPreferring_profile9_0_1]
-  decide
-
-lemma strictMajority_profile9_0_2 :
-    StrictMajority (votersPreferring profile9 (0 : Fin 3) (2 : Fin 3)) := by
-  rw [StrictMajority, votersPreferring_profile9_0_2]
+  simp only [CondorcetWinner_iff_margin_pos, margin_pos, profile8_eq, margin_profileOfListBallots]
   decide
 
 lemma condorcet_profile9 : CondorcetWinner profile9 (0 : Fin 3) := by
-  intro d hne
-  fin_cases d
-  · cases hne rfl
-  · simpa using strictMajority_profile9_0_1
-  · simpa using strictMajority_profile9_0_2
+  simp only [CondorcetWinner_iff_margin_pos, margin_pos, profile9_eq, margin_profileOfListBallots]
+  decide
 
 lemma black_profile8 : black profile8 = ({1} : Finset (Fin 3)) := by
   have h : ¬ ∃ x, CondorcetWinner profile8 x := no_condorcet_profile8

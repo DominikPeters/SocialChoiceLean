@@ -6,10 +6,7 @@ import SocialChoice.Rules.TopCycle.Defs
 
 namespace SocialChoice
 
-open Classical
 open Finset
-
-attribute [instance] Classical.decEq Classical.decPred
 
 namespace TopCycleParetoCounterexample
 
@@ -24,33 +21,11 @@ def ballots : Fin 2 → ListBallot 3
 noncomputable def profile : Profile (Fin 2) (Fin 3) :=
   profileOfListBallots ballots
 
-private lemma not_marginList_profile_1_0_pos :
-    ¬ marginList (fun v => (ballots v).ranking) (1 : Fin 3) (0 : Fin 3) > 0 := by
-  decide
-
-private lemma not_marginList_profile_2_1_pos :
-    ¬ marginList (fun v => (ballots v).ranking) (2 : Fin 3) (1 : Fin 3) > 0 := by
-  decide
-
 private lemma not_margin_pos_profile_1_0 : ¬ margin_pos profile (1 : Fin 3) (0 : Fin 3) := by
-  intro hpos
-  have hpos' : margin_pos (profileOfListBallots ballots) (1 : Fin 3) (0 : Fin 3) := by
-    simpa [profile] using hpos
-  have h' :
-      marginList (fun v => (ballots v).ranking) (1 : Fin 3) (0 : Fin 3) > 0 :=
-    (margin_pos_iff_marginList_pos (ballots := ballots)
-      (a := (1 : Fin 3)) (b := (0 : Fin 3))).1 hpos'
-  exact not_marginList_profile_1_0_pos h'
+  rw [profile, margin_pos_iff_marginList_pos]; decide
 
 private lemma not_margin_pos_profile_2_1 : ¬ margin_pos profile (2 : Fin 3) (1 : Fin 3) := by
-  intro hpos
-  have hpos' : margin_pos (profileOfListBallots ballots) (2 : Fin 3) (1 : Fin 3) := by
-    simpa [profile] using hpos
-  have h' :
-      marginList (fun v => (ballots v).ranking) (2 : Fin 3) (1 : Fin 3) > 0 :=
-    (margin_pos_iff_marginList_pos (ballots := ballots)
-      (a := (2 : Fin 3)) (b := (1 : Fin 3))).1 hpos'
-  exact not_marginList_profile_2_1_pos h'
+  rw [profile, margin_pos_iff_marginList_pos]; decide
 
 private lemma zero_mem_topCycleSet : (0 : Fin 3) ∈ topCycleSet (P := profile) := by
   classical
@@ -88,9 +63,8 @@ lemma zero_mem_topCycle : (0 : Fin 3) ∈ topCycle profile := by
   simpa [topCycle, hA] using h0
 
 lemma prefers_2_over_0 : ∀ v : Fin 2, Prefers profile v (2 : Fin 3) (0 : Fin 3) := by
-  intro v
-  fin_cases v <;>
-    simp [profile, ballots, prefers_iff_prefersInList, prefersInList] <;> decide
+  simp only [profile, prefers_iff_prefersInList]
+  decide
 
 end TopCycleParetoCounterexample
 

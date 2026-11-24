@@ -9,7 +9,6 @@ import SocialChoice.Rules.ScoringRules.Borda.Reversal
 namespace SocialChoice
 
 open Finset
-open Classical
 
 private lemma exists_ne_of_black_ne_univ {V A : Type} [Fintype V] [Fintype A]
     (P : Profile V A) (x : A) (hnot : black P ≠ (Finset.univ : Finset A)) :

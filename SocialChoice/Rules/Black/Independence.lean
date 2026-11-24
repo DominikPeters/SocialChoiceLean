@@ -7,10 +7,7 @@ import SocialChoice.Rules.Black.Defs
 
 namespace SocialChoice
 
-open Classical
 open Finset
-
-attribute [instance] Classical.decEq Classical.decPred
 
 /-!
 ## Black fails independence of dominated
@@ -35,10 +32,8 @@ noncomputable def profile : Profile (Fin 2) (Fin 3) :=
   profileOfListBallots ballots
 
 lemma prefers_2_0 : ∀ v : Fin 2, Prefers profile v (2 : Fin 3) (0 : Fin 3) := by
-  intro v
-  fin_cases v <;>
-    simp [profile, ballots, prefers_iff_prefersInList, prefersInList] <;>
-    decide
+  simp only [profile, prefers_iff_prefersInList]
+  decide
 
 noncomputable def profile' : Profile (Fin 2) {x : Fin 3 // x ≠ (0 : Fin 3)} :=
   restrictProfile profile (0 : Fin 3)
@@ -48,27 +43,18 @@ def cand2 : {x : Fin 3 // x ≠ (0 : Fin 3)} := ⟨2, by decide⟩
 
 lemma votersPreferring_profile_1_2 :
     votersPreferring profile (1 : Fin 3) (2 : Fin 3) = ({0} : Finset (Fin 2)) := by
-  classical
-  ext v
-  fin_cases v <;>
-    simp [votersPreferring, profile, ballots, prefers_iff_prefersInList, prefersInList] <;>
-    decide
+  rw [profile, votersPreferring_eq_filter_prefersInList]
+  decide
 
 lemma votersPreferring_profile_2_1 :
     votersPreferring profile (2 : Fin 3) (1 : Fin 3) = ({1} : Finset (Fin 2)) := by
-  classical
-  ext v
-  fin_cases v <;>
-    simp [votersPreferring, profile, ballots, prefers_iff_prefersInList, prefersInList] <;>
-    decide
+  rw [profile, votersPreferring_eq_filter_prefersInList]
+  decide
 
 lemma votersPreferring_profile_0_2 :
     votersPreferring profile (0 : Fin 3) (2 : Fin 3) = (∅ : Finset (Fin 2)) := by
-  classical
-  ext v
-  fin_cases v <;>
-    simp [votersPreferring, profile, ballots, prefers_iff_prefersInList, prefersInList] <;>
-    decide
+  rw [profile, votersPreferring_eq_filter_prefersInList]
+  decide
 
 lemma not_strictMajority_profile_1_2 :
     ¬ StrictMajority (votersPreferring profile (1 : Fin 3) (2 : Fin 3)) := by
@@ -84,15 +70,13 @@ lemma not_strictMajority_profile_0_2 :
 
 lemma votersPreferring_restrict_cand1 :
     votersPreferring profile' cand1 cand2 = votersPreferring profile (1 : Fin 3) (2 : Fin 3) := by
-  classical
   ext v
-  simp [profile', votersPreferring, prefers_restrictProfile_iff, cand1, cand2]
+  simp [profile', cand1, cand2]
 
 lemma votersPreferring_restrict_cand2 :
     votersPreferring profile' cand2 cand1 = votersPreferring profile (2 : Fin 3) (1 : Fin 3) := by
-  classical
   ext v
-  simp [profile', votersPreferring, prefers_restrictProfile_iff, cand1, cand2]
+  simp [profile', cand1, cand2]
 
 lemma not_strictMajority_profile'_1_2 :
     ¬ StrictMajority (votersPreferring profile' cand1 cand2) := by
@@ -214,27 +198,18 @@ def cand2 : {x : Fin 3 // x ≠ (0 : Fin 3)} := ⟨2, by decide⟩
 
 lemma votersPreferring_profile_0_2 :
     votersPreferring profile (0 : Fin 3) (2 : Fin 3) = ({0} : Finset (Fin 4)) := by
-  classical
-  ext v
-  fin_cases v <;>
-    simp [votersPreferring, profile, ballots, prefers_iff_prefersInList, prefersInList] <;>
-    decide
+  rw [profile, votersPreferring_eq_filter_prefersInList]
+  decide
 
 lemma votersPreferring_profile_1_2 :
     votersPreferring profile (1 : Fin 3) (2 : Fin 3) = ({1, 2} : Finset (Fin 4)) := by
-  classical
-  ext v
-  fin_cases v <;>
-    simp [votersPreferring, profile, ballots, prefers_iff_prefersInList, prefersInList] <;>
-    decide
+  rw [profile, votersPreferring_eq_filter_prefersInList]
+  decide
 
 lemma votersPreferring_profile_2_1 :
     votersPreferring profile (2 : Fin 3) (1 : Fin 3) = ({0, 3} : Finset (Fin 4)) := by
-  classical
-  ext v
-  fin_cases v <;>
-    simp [votersPreferring, profile, ballots, prefers_iff_prefersInList, prefersInList] <;>
-    decide
+  rw [profile, votersPreferring_eq_filter_prefersInList]
+  decide
 
 lemma not_strictMajority_profile_0_2 :
     ¬ StrictMajority (votersPreferring profile (0 : Fin 3) (2 : Fin 3)) := by
@@ -250,15 +225,13 @@ lemma not_strictMajority_profile_2_1 :
 
 lemma votersPreferring_profile'_1_2 :
     votersPreferring profile' cand1 cand2 = votersPreferring profile (1 : Fin 3) (2 : Fin 3) := by
-  classical
   ext v
-  simp [profile', votersPreferring, prefers_restrictProfile_iff, cand1, cand2]
+  simp [profile', cand1, cand2]
 
 lemma votersPreferring_profile'_2_1 :
     votersPreferring profile' cand2 cand1 = votersPreferring profile (2 : Fin 3) (1 : Fin 3) := by
-  classical
   ext v
-  simp [profile', votersPreferring, prefers_restrictProfile_iff, cand1, cand2]
+  simp [profile', cand1, cand2]
 
 lemma not_strictMajority_profile'_1_2 :
     ¬ StrictMajority (votersPreferring profile' cand1 cand2) := by
@@ -327,41 +300,10 @@ lemma black_profile'_has_1 : cand1 ∈ black profile' := by
 def cloneSet : Set (Fin 3) := {0, 2}
 
 lemma cloneSet_profile : CloneSet profile cloneSet := by
-  refine ⟨?_, ?_⟩
-  · refine ⟨(0 : Fin 3), by simp [cloneSet]⟩
-  intro v c hc
-  have hc' : c = (1 : Fin 3) := by
-    fin_cases c
-    · have hmem : (0 : Fin 3) ∈ cloneSet := by simp [cloneSet]
-      exact (hc hmem).elim
-    · rfl
-    · have hmem : (2 : Fin 3) ∈ cloneSet := by simp [cloneSet]
-      exact (hc hmem).elim
-  subst hc'
-  fin_cases v <;>
-    (first
-      | right
-        intro x hx
-        have hx' : x = (0 : Fin 3) ∨ x = (2 : Fin 3) := by
-          simpa [cloneSet] using hx
-        cases hx' with
-        | inl hx0 =>
-            subst hx0
-            simp [profile, ballots, prefers_iff_prefersInList, prefersInList]; decide
-        | inr hx2 =>
-            subst hx2
-            simp [profile, ballots, prefers_iff_prefersInList, prefersInList]; decide
-      | left
-        intro x hx
-        have hx' : x = (0 : Fin 3) ∨ x = (2 : Fin 3) := by
-          simpa [cloneSet] using hx
-        cases hx' with
-        | inl hx0 =>
-            subst hx0
-            simp [profile, ballots, prefers_iff_prefersInList, prefersInList]; decide
-        | inr hx2 =>
-            subst hx2
-            simp [profile, ballots, prefers_iff_prefersInList, prefersInList]; decide)
+  refine ⟨⟨0, by simp [cloneSet]⟩, ?_⟩
+  simp only [cloneSet, Set.mem_insert_iff, Set.mem_singleton_iff, forall_eq_or_imp, forall_eq,
+    profile, prefers_iff_prefersInList]
+  decide
 
 lemma clonePred_eq_ne :
     clonePred cloneSet (2 : Fin 3) = (fun a : Fin 3 => a ≠ (0 : Fin 3)) := by

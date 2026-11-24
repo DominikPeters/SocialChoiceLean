@@ -9,10 +9,7 @@ import SocialChoice.Rules.ScoringRules.Veto.Defs
 
 namespace SocialChoice
 
-open Classical
 open Finset
-
-attribute [instance] Classical.decEq Classical.decPred
 
 /-!
 ## Veto fails independence of clones
@@ -40,41 +37,10 @@ noncomputable def profile : Profile (Fin 2) (Fin 3) :=
 def cloneSet : Set (Fin 3) := {0, 1}
 
 lemma cloneSet_profile : CloneSet profile cloneSet := by
-  refine ⟨?_, ?_⟩
-  · refine ⟨(0 : Fin 3), by simp [cloneSet]⟩
-  intro v c hc
-  have hc' : c = (2 : Fin 3) := by
-    fin_cases c
-    · have hmem : (0 : Fin 3) ∈ cloneSet := by simp [cloneSet]
-      exact (hc hmem).elim
-    · have hmem : (1 : Fin 3) ∈ cloneSet := by simp [cloneSet]
-      exact (hc hmem).elim
-    · rfl
-  subst hc'
-  fin_cases v <;>
-    (first
-      | left
-        intro x hx
-        have hx' : x = (0 : Fin 3) ∨ x = (1 : Fin 3) := by
-          simpa [cloneSet] using hx
-        cases hx' with
-        | inl hx0 =>
-            subst hx0
-            simp [profile, ballots, prefers_iff_prefersInList, prefersInList]; decide
-        | inr hx1 =>
-            subst hx1
-            simp [profile, ballots, prefers_iff_prefersInList, prefersInList]; decide
-      | right
-        intro x hx
-        have hx' : x = (0 : Fin 3) ∨ x = (1 : Fin 3) := by
-          simpa [cloneSet] using hx
-        cases hx' with
-        | inl hx0 =>
-            subst hx0
-            simp [profile, ballots, prefers_iff_prefersInList, prefersInList]; decide
-        | inr hx1 =>
-            subst hx1
-            simp [profile, ballots, prefers_iff_prefersInList, prefersInList]; decide)
+  refine ⟨⟨0, by simp [cloneSet]⟩, ?_⟩
+  simp only [cloneSet, Set.mem_insert_iff, Set.mem_singleton_iff, forall_eq_or_imp, forall_eq,
+    profile, prefers_iff_prefersInList]
+  decide
 
 lemma veto_profile_has_0 : (0 : Fin 3) ∈ veto profile := by
   decide
@@ -122,31 +88,15 @@ lemma votersPreferring_restrictCandidates_eq {V A : Type} [Fintype V] [Fintype A
     (a b : {x : A // p x}) :
     votersPreferring (restrictCandidates P p) a b = votersPreferring P a b := by
   ext v
-  simp [votersPreferring, prefers_restrictCandidates_iff]
+  simp [prefers_restrictCandidates_iff]
 
 lemma votersPreferring_profile_2_0 :
     (votersPreferring profile (2 : Fin 3) (0 : Fin 3)).card = 1 := by
-  calc
-    (votersPreferring profile (2 : Fin 3) (0 : Fin 3)).card =
-        countPrefers (fun v => (ballots v).ranking) 2 0 := by
-          unfold countPrefers
-          simpa [profile] using
-            congrArg Finset.card
-              (votersPreferring_eq_filter_prefersInList
-                (ballots := ballots) (a := 2) (b := 0))
-    _ = 1 := rfl
+  rw [profile, votersPreferring_eq_filter_prefersInList]; decide
 
 lemma votersPreferring_profile_0_2 :
     (votersPreferring profile (0 : Fin 3) (2 : Fin 3)).card = 1 := by
-  calc
-    (votersPreferring profile (0 : Fin 3) (2 : Fin 3)).card =
-        countPrefers (fun v => (ballots v).ranking) 0 2 := by
-          unfold countPrefers
-          simpa [profile] using
-            congrArg Finset.card
-              (votersPreferring_eq_filter_prefersInList
-                (ballots := ballots) (a := 0) (b := 2))
-    _ = 1 := rfl
+  rw [profile, votersPreferring_eq_filter_prefersInList]; decide
 
 @[reducible] noncomputable def scoreVecQ : Nat → Int :=
   fun r => vetoScore (Fintype.card {a : Fin 3 // q a}) r

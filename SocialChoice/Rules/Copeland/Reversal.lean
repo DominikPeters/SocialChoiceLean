@@ -7,7 +7,6 @@ import SocialChoice.Rules.Copeland.Defs
 namespace SocialChoice
 
 open Finset
-open Classical
 
 lemma copelandPairScore2_neg (m : Int) :
     copelandPairScore2 (-m) = 2 - copelandPairScore2 m := by

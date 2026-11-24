@@ -10,8 +10,6 @@ namespace SocialChoice
 
 open Finset
 
-set_option maxHeartbeats 5000000
-
 /-!
 # TopCycle fails negative involvement
 
@@ -41,7 +39,7 @@ def voters1 : Finset (Fin 2) := {1}
 def voters2 : Finset (Fin 2) := insert (0 : Fin 2) voters1
 
 noncomputable def fullProfile : Profile (Electorate (Fin 2) (Finset.univ)) (Fin 3) :=
-  { pref := fun v => (ballots2 v.1).toLinearOrder }
+  profileOfListBallots (fun v => ballots2 v.1)
 
 noncomputable def profile1 : Profile (Electorate (Fin 2) voters1) (Fin 3) :=
   restrictElectorate fullProfile voters1 (by
@@ -66,18 +64,9 @@ lemma profiles_agree :
 
 private lemma ballot120_bottom_0 : BallotBottom (ballot120.toLinearOrder) (0 : Fin 3) := by
   intro d hd
-  fin_cases d
-  · cases hd rfl
-  ·
-    have hlt :
-        ballot120.ranking.idxOf (1 : Fin 3) < ballot120.ranking.idxOf (0 : Fin 3) := by
-      decide
-    simpa [ballot120, ListBallot.lt_iff_idxOf] using hlt
-  ·
-    have hlt :
-        ballot120.ranking.idxOf (2 : Fin 3) < ballot120.ranking.idxOf (0 : Fin 3) := by
-      decide
-    simpa [ballot120, ListBallot.lt_iff_idxOf] using hlt
+  rw [ListBallot.lt_iff_idxOf]
+  revert d
+  decide
 
 lemma newVoter_bottom_0 :
     BallotBottom
@@ -86,57 +75,14 @@ lemma newVoter_bottom_0 :
   change BallotBottom ballot120.toLinearOrder (0 : Fin 3)
   exact ballot120_bottom_0
 
-lemma margin_eq_card_diff {V A : Type} [Fintype V] [Fintype A]
-    (P : Profile V A) (a b : A) :
-    margin P a b =
-      Int.ofNat (votersPreferring P a b).card -
-        Int.ofNat (votersPreferring P b a).card := by
-  classical
-  simp [margin, votersPreferring]
+private lemma profile1_eq : profile1 = profileOfListBallots (fun v => ballots2 v.1) := rfl
 
-private lemma prefers_profile1_2_0 :
-    ∀ v : Electorate (Fin 2) voters1, Prefers profile1 v (2 : Fin 3) (0 : Fin 3) := by
-  intro v
-  cases v with
-  | mk val hmem =>
-      have hval : val = (1 : Fin 2) := by
-        simpa [voters1] using hmem
-      subst hval
-      change Prefers (profileOfListBallots ballots2) (1 : Fin 2) (2 : Fin 3) (0 : Fin 3)
-      rw [prefers_iff_prefersInList]
-      decide
-
-private lemma prefers_profile1_2_1 :
-    ∀ v : Electorate (Fin 2) voters1, Prefers profile1 v (2 : Fin 3) (1 : Fin 3) := by
-  intro v
-  cases v with
-  | mk val hmem =>
-      have hval : val = (1 : Fin 2) := by
-        simpa [voters1] using hmem
-      subst hval
-      change Prefers (profileOfListBallots ballots2) (1 : Fin 2) (2 : Fin 3) (1 : Fin 3)
-      rw [prefers_iff_prefersInList]
-      decide
-
-private lemma margin_pos_profile1_2_0 : margin_pos profile1 (2 : Fin 3) (0 : Fin 3) := by
-  classical
-  let _ : Nonempty (Electorate (Fin 2) voters1) := ⟨⟨1, by simp [voters1]⟩⟩
-  exact unanimous_margin (P := profile1) (x := (2 : Fin 3)) (y := (0 : Fin 3))
-    prefers_profile1_2_0
-
-private lemma margin_pos_profile1_2_1 : margin_pos profile1 (2 : Fin 3) (1 : Fin 3) := by
-  classical
-  let _ : Nonempty (Electorate (Fin 2) voters1) := ⟨⟨1, by simp [voters1]⟩⟩
-  exact unanimous_margin (P := profile1) (x := (2 : Fin 3)) (y := (1 : Fin 3))
-    prefers_profile1_2_1
+private lemma profile2_eq : profile2 = profileOfListBallots (fun v => ballots2 v.1) := rfl
 
 private lemma condorcetWinner_profile1 : CondorcetWinner profile1 (2 : Fin 3) := by
-  apply (CondorcetWinner_iff_margin_pos (P := profile1) (c := (2 : Fin 3))).2
-  intro d hd
-  fin_cases d
-  · exact margin_pos_profile1_2_0
-  · exact margin_pos_profile1_2_1
-  · cases hd rfl
+  rw [CondorcetWinner_iff_margin_pos]
+  simp only [margin_pos, profile1_eq, margin_profileOfListBallots]
+  decide
 
 lemma topCycle_profile1_eq : topCycle profile1 = ({2} : Finset (Fin 3)) := by
   exact topCycle_condorcetConsistency (P := profile1) (c := (2 : Fin 3))
@@ -145,69 +91,14 @@ lemma topCycle_profile1_eq : topCycle profile1 = ({2} : Finset (Fin 3)) := by
 lemma topCycle_profile1_not_0 : (0 : Fin 3) ∉ topCycle profile1 := by
   simp [topCycle_profile1_eq]
 
-private lemma votersPreferring_profile2_eq_filter (x y : Fin 3) :
-    votersPreferring profile2 x y =
-      Finset.univ.filter (fun v => prefersInList (ballots2 v.1).ranking x y) := by
-  ext v
-  simp only [votersPreferring, Finset.mem_filter, Finset.mem_univ, true_and]
-  change Prefers (profileOfListBallots ballots2) v.1 x y ↔ _
-  exact prefers_iff_prefersInList ballots2 v.1 x y
-
-lemma votersPreferring_profile2_0_1 :
-    votersPreferring profile2 (0 : Fin 3) (1 : Fin 3) =
-      ({⟨1, by simp [voters2, voters1]⟩} :
-        Finset (Electorate (Fin 2) voters2)) := by
-  rw [votersPreferring_profile2_eq_filter]
-  decide
-
-lemma votersPreferring_profile2_1_0 :
-    votersPreferring profile2 (1 : Fin 3) (0 : Fin 3) =
-      ({⟨0, by simp [voters2, voters1]⟩} :
-        Finset (Electorate (Fin 2) voters2)) := by
-  rw [votersPreferring_profile2_eq_filter]
-  decide
-
-lemma votersPreferring_profile2_2_1 :
-    votersPreferring profile2 (2 : Fin 3) (1 : Fin 3) =
-      ({⟨1, by simp [voters2, voters1]⟩} :
-        Finset (Electorate (Fin 2) voters2)) := by
-  rw [votersPreferring_profile2_eq_filter]
-  decide
-
-lemma votersPreferring_profile2_1_2 :
-    votersPreferring profile2 (1 : Fin 3) (2 : Fin 3) =
-      ({⟨0, by simp [voters2, voters1]⟩} :
-        Finset (Electorate (Fin 2) voters2)) := by
-  rw [votersPreferring_profile2_eq_filter]
-  decide
-
-private lemma margin_profile2_0_1 : margin profile2 (0 : Fin 3) (1 : Fin 3) = 0 := by
-  classical
-  simp [margin_eq_card_diff, votersPreferring_profile2_0_1, votersPreferring_profile2_1_0]
-
-private lemma margin_profile2_2_1 : margin profile2 (2 : Fin 3) (1 : Fin 3) = 0 := by
-  classical
-  simp [margin_eq_card_diff, votersPreferring_profile2_2_1, votersPreferring_profile2_1_2]
-
-private lemma margin_profile2_1_0 : margin profile2 (1 : Fin 3) (0 : Fin 3) = 0 := by
-  classical
-  simp [margin_eq_card_diff, votersPreferring_profile2_1_0, votersPreferring_profile2_0_1]
-
-private lemma margin_profile2_1_2 : margin profile2 (1 : Fin 3) (2 : Fin 3) = 0 := by
-  classical
-  simp [margin_eq_card_diff, votersPreferring_profile2_1_2, votersPreferring_profile2_2_1]
-
 private lemma not_margin_pos_profile2_0_1 : ¬ margin_pos profile2 (0 : Fin 3) (1 : Fin 3) := by
-  simp [margin_pos, margin_profile2_0_1]
+  rw [margin_pos, profile2_eq, margin_profileOfListBallots]; decide
 
 private lemma not_margin_pos_profile2_2_1 : ¬ margin_pos profile2 (2 : Fin 3) (1 : Fin 3) := by
-  simp [margin_pos, margin_profile2_2_1]
+  rw [margin_pos, profile2_eq, margin_profileOfListBallots]; decide
 
 private lemma not_margin_pos_profile2_1_0 : ¬ margin_pos profile2 (1 : Fin 3) (0 : Fin 3) := by
-  simp [margin_pos, margin_profile2_1_0]
-
-private lemma not_margin_pos_profile2_1_2 : ¬ margin_pos profile2 (1 : Fin 3) (2 : Fin 3) := by
-  simp [margin_pos, margin_profile2_1_2]
+  rw [margin_pos, profile2_eq, margin_profileOfListBallots]; decide
 
 lemma topCycleSet_profile2_has_1 : (1 : Fin 3) ∈ topCycleSet (P := profile2) := by
   classical

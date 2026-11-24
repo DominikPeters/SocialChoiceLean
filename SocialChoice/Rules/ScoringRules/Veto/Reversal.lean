@@ -8,7 +8,6 @@ import SocialChoice.Rules.ScoringRules.Veto.Defs
 namespace SocialChoice
 
 open Finset
-open Classical
 
 namespace VetoReversalCounterexample
 
@@ -36,46 +35,13 @@ private lemma veto_score (c : Fin 3) :
     scoreCandidate profile (fun r => vetoScore 3 r) c =
       (if c = (0 : Fin 3) then (2 : Int) else 1) := by
   classical
-  fin_cases c
-  ·
-    have hcard :
-        (Finset.univ.filter (fun v => ¬ BottomRank profile v (0 : Fin 3))).card = 2 := by
-      have hset :
-          (Finset.univ.filter (fun v => ¬ BottomRank profile v (0 : Fin 3))) =
-            ({0, 1} : Finset (Fin 2)) := by
-        ext v
-        fin_cases v <;>
-          simp [profile, ballots, bottomRank_iff_prefersInList, prefersInList] <;>
-          decide
-      simp [hset]
-    simpa [vetoScore, hcard] using
-      (vetoScore_scoreCandidate_eq_notBottom_card (P := profile) (c := (0 : Fin 3)))
-  ·
-    have hcard :
-        (Finset.univ.filter (fun v => ¬ BottomRank profile v (1 : Fin 3))).card = 1 := by
-      have hset :
-          (Finset.univ.filter (fun v => ¬ BottomRank profile v (1 : Fin 3))) =
-            ({0} : Finset (Fin 2)) := by
-        ext v
-        fin_cases v <;>
-          simp [profile, ballots, bottomRank_iff_prefersInList, prefersInList] <;>
-          decide
-      simp [hset]
-    simpa [vetoScore, hcard] using
-      (vetoScore_scoreCandidate_eq_notBottom_card (P := profile) (c := (1 : Fin 3)))
-  ·
-    have hcard :
-        (Finset.univ.filter (fun v => ¬ BottomRank profile v (2 : Fin 3))).card = 1 := by
-      have hset :
-          (Finset.univ.filter (fun v => ¬ BottomRank profile v (2 : Fin 3))) =
-            ({1} : Finset (Fin 2)) := by
-        ext v
-        fin_cases v <;>
-          simp [profile, ballots, bottomRank_iff_prefersInList, prefersInList] <;>
-          decide
-      simp [hset]
-    simpa [vetoScore, hcard] using
-      (vetoScore_scoreCandidate_eq_notBottom_card (P := profile) (c := (2 : Fin 3)))
+  have h := vetoScore_scoreCandidate_eq_notBottom_card (P := profile) (c := c)
+  simp only [Fintype.card_fin] at h
+  rw [show (fun r => vetoScore 3 r) = fun r => if r = 3 - 1 then 0 else 1 from rfl, h]
+  clear h
+  simp only [profile, bottomRank_iff_prefersInList]
+  revert c
+  decide
 
 private lemma veto_profile_has_0 : (0 : Fin 3) ∈ veto profile := by
   classical
@@ -152,52 +118,13 @@ private lemma veto_reverse_score (c : Fin 3) :
     scoreCandidate (reverse_profile profile) (fun r => vetoScore 3 r) c =
       (if c = (0 : Fin 3) then (2 : Int) else 1) := by
   classical
-  fin_cases c
-  ·
-    have hcard :
-        (Finset.univ.filter (fun v => ¬ BottomRank (reverse_profile profile) v (0 : Fin 3))).card = 2 := by
-      have hset :
-          (Finset.univ.filter (fun v => ¬ BottomRank (reverse_profile profile) v (0 : Fin 3))) =
-            ({0, 1} : Finset (Fin 2)) := by
-        ext v
-        fin_cases v <;>
-          simp [profile, ballots, bottomRank_reverse_profile_iff_topRank, topRank_iff_isTopOfList,
-            isTopOfList] <;>
-          decide
-      simp [hset]
-    simpa [vetoScore, hcard] using
-      (vetoScore_scoreCandidate_eq_notBottom_card
-        (P := reverse_profile profile) (c := (0 : Fin 3)))
-  ·
-    have hcard :
-        (Finset.univ.filter (fun v => ¬ BottomRank (reverse_profile profile) v (1 : Fin 3))).card = 1 := by
-      have hset :
-          (Finset.univ.filter (fun v => ¬ BottomRank (reverse_profile profile) v (1 : Fin 3))) =
-            ({1} : Finset (Fin 2)) := by
-        ext v
-        fin_cases v <;>
-          simp [profile, ballots, bottomRank_reverse_profile_iff_topRank, topRank_iff_isTopOfList,
-            isTopOfList] <;>
-          decide
-      simp [hset]
-    simpa [vetoScore, hcard] using
-      (vetoScore_scoreCandidate_eq_notBottom_card
-        (P := reverse_profile profile) (c := (1 : Fin 3)))
-  ·
-    have hcard :
-        (Finset.univ.filter (fun v => ¬ BottomRank (reverse_profile profile) v (2 : Fin 3))).card = 1 := by
-      have hset :
-          (Finset.univ.filter (fun v => ¬ BottomRank (reverse_profile profile) v (2 : Fin 3))) =
-            ({0} : Finset (Fin 2)) := by
-        ext v
-        fin_cases v <;>
-          simp [profile, ballots, bottomRank_reverse_profile_iff_topRank, topRank_iff_isTopOfList,
-            isTopOfList] <;>
-          decide
-      simp [hset]
-    simpa [vetoScore, hcard] using
-      (vetoScore_scoreCandidate_eq_notBottom_card
-        (P := reverse_profile profile) (c := (2 : Fin 3)))
+  have h := vetoScore_scoreCandidate_eq_notBottom_card (P := reverse_profile profile) (c := c)
+  simp only [Fintype.card_fin] at h
+  rw [show (fun r => vetoScore 3 r) = fun r => if r = 3 - 1 then 0 else 1 from rfl, h]
+  clear h
+  simp only [bottomRank_reverse_profile_iff_topRank, profile, topRank_iff_isTopOfList]
+  revert c
+  decide
 
 lemma reverse_profile_has_0 : (0 : Fin 3) ∈ veto (reverse_profile profile) := by
   classical

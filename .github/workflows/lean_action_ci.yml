@@ -2,8 +2,17 @@ name: Lean Action CI
 
 on:
   push:
+    branches: [master]
   pull_request:
   workflow_dispatch:
+
+# A new push to a PR cancels that PR's in-flight build; builds of master always finish.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
 
 jobs:
   build:
@@ -12,3 +21,6 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - uses: leanprover/lean-action@v1
+        with:
+          # Pivato is not a default target, so a plain `lake build` skips it.
+          build-args: "SocialChoice Pivato"

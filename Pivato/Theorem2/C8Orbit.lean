@@ -97,9 +97,9 @@ theorem lemmaC8_of_neutral_perfect_balance_of_cycle
       (D := D)
       (F := balanceRule (D := D) B) := by
   classical
-  letI : DecidableEq X := Classical.decEq X
-  letI : Fintype X := Fintype.ofFinite X
-  letI : Fintype (Equiv.Perm X) := inferInstance
+  let : DecidableEq X := Classical.decEq X
+  let : Fintype X := Fintype.ofFinite X
+  let : Fintype (Equiv.Perm X) := inferInstance
   have hSeed :
       ∃ x y z : X,
         x ≠ y ∧ y ≠ z ∧ z ≠ x ∧
@@ -138,9 +138,9 @@ theorem lemmaC8_of_neutral_perfect_balance
       (D := D)
       (F := balanceRule (D := D) B) := by
   classical
-  letI : DecidableEq X := Classical.decEq X
-  letI : DecidableEq V := Classical.decEq V
-  letI : Fintype X := Fintype.ofFinite X
+  let : DecidableEq X := Classical.decEq X
+  let : DecidableEq V := Classical.decEq V
+  let : Fintype X := Fintype.ofFinite X
   by_cases hCard : Fintype.card X ≤ 2
   · have hCocycle : BalanceCocycleOn D B :=
       balanceCocycleOn_of_skew_card_le_two
@@ -188,9 +188,9 @@ theorem lemmaC8_of_representation
       (D := D)
       (F := F) := by
   classical
-  letI : DecidableEq X := Classical.decEq X
-  letI : Fintype X := Fintype.ofFinite X
-  letI : Fintype (Equiv.Perm X) := inferInstance
+  let : DecidableEq X := Classical.decEq X
+  let : Fintype X := Fintype.ofFinite X
+  let : Fintype (Equiv.Perm X) := inferInstance
   rcases exists_balanceNeutralPerfectSkew_of_ruleNeutral_representation_with_nonempty
       (mu := MonoidHom.id (Equiv.Perm X)) (nu := nu) (D := D) (F := F)
       hNeutral hRep hNE with

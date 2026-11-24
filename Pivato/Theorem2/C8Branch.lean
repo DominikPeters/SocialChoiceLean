@@ -817,7 +817,7 @@ theorem exists_orbitSet_hull_eq_of_neutral_balance
           (Kx x)) :
     ∃ x : X, K = Kx x := by
   classical
-  letI : Fintype X := Fintype.ofFinite X
+  let : Fintype X := Fintype.ofFinite X
   let orbitMap : NProfile V → NProfile V := orbitProfileSum (nu φ) M
   have horbit : ∀ {d : NProfile V}, d ∈ D → orbitMap d ∈ D := by
     intro d hd

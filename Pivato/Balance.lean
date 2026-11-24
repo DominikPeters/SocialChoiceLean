@@ -14,6 +14,21 @@ variable {V X R : Type*}
 structure BalanceSystem (R X V : Type*) where
   bal : X → X → V → R
 
+section AddGroup
+
+variable [AddCommGroup R]
+
+/-- Canonical conversion from scores to pairwise balances (`s^x - s^y`). -/
+def scoreToBalance (S : ScoreSystem R X V) : BalanceSystem R X V where
+  bal x y v := S.score x v - S.score y v
+
+lemma scoreToBalance_skew (S : ScoreSystem R X V) (x y : X) :
+    (scoreToBalance S).bal x y = fun v => -((scoreToBalance S).bal y x v) := by
+  funext v
+  simp [scoreToBalance, sub_eq_add_neg]
+
+end AddGroup
+
 variable [AddCommMonoid R]
 
 /-- Total pairwise balance value for profile `d`. -/
@@ -30,22 +45,6 @@ lemma mem_balanceRule_iff {B : BalanceSystem R X V}
     {d : {d : NProfile V // d ∈ D}} {x : X} :
     x ∈ balanceRule (D := D) B d ↔ ∀ y, (0 : R) ≤ balanceAt B x y d.1 :=
   Iff.rfl
-
-section AddGroup
-
-variable [AddCommGroup R]
-
-/-- Canonical conversion from scores to pairwise balances (`s^x - s^y`). -/
-def scoreToBalance (S : ScoreSystem R X V) : BalanceSystem R X V where
-  bal x y v := S.score x v - S.score y v
-
-omit [AddCommMonoid R] [Preorder R] [Zero R] in
-lemma scoreToBalance_skew (S : ScoreSystem R X V) (x y : X) :
-    (scoreToBalance S).bal x y = fun v => -((scoreToBalance S).bal y x v) := by
-  funext v
-  simp [scoreToBalance, sub_eq_add_neg]
-
-end AddGroup
 
 omit [Preorder R] [Zero R] in
 lemma balanceAt_add [DecidableEq V] (B : BalanceSystem R X V) (x y : X)

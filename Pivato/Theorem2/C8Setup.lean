@@ -38,7 +38,7 @@ theorem orbitProfileSum_nsmul
   | zero =>
       simp [orbitProfileSum]
   | succ n ih =>
-      simp [add_nsmul, ih, orbitProfileSum_add]
+      simp [add_nsmul, ih, orbitProfileSum_add, one_nsmul]
 
 /-- Block-filtered orbit domain:
 profiles whose orbit-sum winners contain a designated block. -/

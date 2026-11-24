@@ -86,7 +86,7 @@ lemma additivelyClosed_strict_of_total_preorder_homogeneous
 
 lemma strict_mem_of_nsmul_mem_total_preorder_homogeneous
     [AddCommGroup A] {r : A → A → Prop}
-    (hPre : IsPreorderRel r) (hTot : IsTotal A r) (hHom : Homogeneous r)
+    (hPre : IsPreorderRel r) (hTot : Std.Total r) (hHom : Homogeneous r)
     {a : A} {n : ℕ} (_hn : n ≠ 0)
     (hnStrict : n • a ∈ {x : A | r 0 x ∧ ¬ r x 0}) :
     a ∈ {x : A | r 0 x ∧ ¬ r x 0} := by
@@ -108,14 +108,14 @@ lemma strict_mem_of_nsmul_mem_total_preorder_homogeneous
     have hMulA0 : r (n • a) 0 := hNsmulNonpos ha0 n
     exact hnStrict.2 hMulA0
   have h0A : r 0 a := by
-    rcases IsTotal.total (r := r) 0 a with h0A | hA0
+    rcases hTot.total 0 a with h0A | hA0
     · exact h0A
     · exact False.elim (hNotA0 hA0)
   exact ⟨h0A, hNotA0⟩
 
 lemma isConeSet_strict_of_total_preorder_homogeneous
     [AddCommGroup A] {r : A → A → Prop}
-    (hPre : IsPreorderRel r) (hTot : IsTotal A r) (hHom : Homogeneous r) :
+    (hPre : IsPreorderRel r) (hTot : Std.Total r) (hHom : Homogeneous r) :
     IsConeSet {a : A | r 0 a ∧ ¬ r a 0} := by
   refine ⟨additivelyClosed_strict_of_total_preorder_homogeneous
       (hPre := hPre) (hHom := hHom), ?_⟩
@@ -282,7 +282,7 @@ theorem lemmaC7
           ext x
           constructor
           · intro hx
-            rcases IsTotal.total (r := r) 0 x with h0x | hx0
+            rcases hTot.total 0 x with h0x | hx0
             · exact Or.inl ⟨hx, h0x⟩
             · exact Or.inr ⟨hx, hx0⟩
           · intro hx
@@ -299,7 +299,7 @@ theorem lemmaC7
         have finish :
             ∀ (q : A → A → Prop) (Kpos : AddSubgroup A),
               IsPreorderRel q →
-              IsTotal A q →
+              Std.Total q →
               Homogeneous q →
               {x : A | symmPart q x 0} = Kᵢ a →
               IsDivisibleHull (SAll ∩ {x : A | q 0 x}) Kpos →
@@ -417,10 +417,10 @@ theorem lemmaC7
               exact hPre.1 x
             · intro x y z hxy hyz
               exact hPre.2 hyz hxy
-          have hTotRev : IsTotal A rRev := by
+          have hTotRev : Std.Total rRev := by
             refine ⟨?_⟩
             intro x y
-            rcases IsTotal.total (r := r) y x with hyx | hxy
+            rcases hTot.total y x with hyx | hxy
             · exact Or.inl hyx
             · exact Or.inr hxy
           have hHomRev : Homogeneous rRev := by

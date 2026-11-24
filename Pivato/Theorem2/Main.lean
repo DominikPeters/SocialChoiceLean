@@ -114,9 +114,9 @@ theorem theorem2_backward
       IsNeutralScoringRepresentable (mu := mu) (nu := nu) (D := D) (F := F)) :
     RuleNeutral mu nu D F ∧ Reinforcement D F := by
   rcases hScore with ⟨R, instAdd, instLin, instOrdCancel, S, hSNeutral, hFS⟩
-  letI : AddCommGroup R := instAdd
-  letI : LinearOrder R := instLin
-  letI : IsOrderedCancelAddMonoid R := instOrdCancel
+  let : AddCommGroup R := instAdd
+  let : LinearOrder R := instLin
+  let : IsOrderedCancelAddMonoid R := instOrdCancel
   have hNeutralS : RuleNeutral mu nu D (scoringRule (D := D) S) :=
     scoringRule_ruleNeutral_of_scoreNeutral
       (mu := mu) (nu := nu) (S := S) hInv hSNeutral
@@ -147,15 +147,15 @@ theorem theorem2_forward
   rcases lemmaC1_reinforcement_to_isPerfectSkewBalanceRepresentable
       (F := F) hD hA hR hNE with
       ⟨R, instAdd, instLin, instCovLe, instCovLt, B, hSkew, hPerfect, hFB⟩
-  letI : AddCommGroup R := instAdd
-  letI : LinearOrder R := instLin
-  letI : CovariantClass R R (fun a b => a + b) (· ≤ ·) := instCovLe
-  letI : CovariantClass R R (fun a b => a + b) (· < ·) := instCovLt
+  let : AddCommGroup R := instAdd
+  let : LinearOrder R := instLin
+  let : CovariantClass R R (fun a b => a + b) (· ≤ ·) := instCovLe
+  let : CovariantClass R R (fun a b => a + b) (· < ·) := instCovLt
   let instOrdCancel : IsOrderedCancelAddMonoid R :=
     IsOrderedCancelAddMonoid.of_add_lt_add_left
       (fun a b c hbc => by
         simpa [add_assoc, add_left_comm, add_comm] using add_lt_add_left hbc a)
-  letI : IsOrderedCancelAddMonoid R := instOrdCancel
+  let : IsOrderedCancelAddMonoid R := instOrdCancel
   have hRep :
       ∃ B0 : BalanceSystem R X V,
         BalanceSkew (B := B0) ∧

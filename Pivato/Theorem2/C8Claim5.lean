@@ -53,11 +53,8 @@ theorem claimC85_globalCocycle_of_seedTriple
           nth_rewrite 2 [hsk]
           rfl
         _ = 0 := by simp
-    have htwo :
-        (2 : ℕ) • t = (2 : ℕ) • (0 : R) := by
-      simpa [two_nsmul] using hsum
     have ht0 : t = 0 :=
-      (nsmul_right_injective (M := R) (by decide : (2 : ℕ) ≠ 0)) htwo
+      (nsmul_eq_zero_iff_right two_ne_zero).1 (by simpa [two_nsmul] using hsum)
     simpa [t] using ht0
   have hToSeed : TripleTransportTo (mu := mu) x y z :=
     hTransport x y z hxy hyz hzx

@@ -25,8 +25,7 @@ def ltOfLinearOrder (instLin : LinearOrder G) : G → G → Prop :=
 /-- Package the order from an additive cone into ordered-additive typeclass
 witnesses, with an explicit characterization of the induced `≤`. -/
 theorem orderedAdditiveLinearOrder_of_cone
-    (M : AddGroupCone G)
-    [HasMemOrNegMem M]
+    {M : AddSubmonoid G} (hMp : M.IsPointed) (hMs : M.IsSpanning)
     [DecidablePred (fun x : G => x ∈ M)] :
     ∃ (instLin : LinearOrder G),
       ∃ (instOrd : IsOrderedAddMonoid G),
@@ -37,13 +36,10 @@ theorem orderedAdditiveLinearOrder_of_cone
         letI : CovariantClass G G (fun a b => a + b) (leOfLinearOrder instLin) := instCovLe
         letI : CovariantClass G G (fun a b => a + b) (ltOfLinearOrder instLin) := instCovLt
         ∀ x y, leOfLinearOrder instLin x y ↔ y - x ∈ M := by
-  let instLin : LinearOrder G := LinearOrder.mkOfAddGroupCone M
-  let instOrd : IsOrderedAddMonoid G := by
-    letI : LinearOrder G := instLin
-    letI : PartialOrder G := PartialOrder.mkOfAddGroupCone M
-    exact IsOrderedAddMonoid.mkOfCone M
-  letI : LinearOrder G := instLin
-  letI : IsOrderedAddMonoid G := instOrd
+  let instLin : LinearOrder G := LinearOrder.ofAddSubmonoid hMp hMs
+  let instOrd : IsOrderedAddMonoid G := IsOrderedAddMonoid.ofAddSubmonoid hMp
+  let : LinearOrder G := instLin
+  let : IsOrderedAddMonoid G := instOrd
   let instCovLe : CovariantClass G G (fun a b => a + b) (leOfLinearOrder instLin) := by
     change CovariantClass G G (fun a b => a + b) (· ≤ ·)
     infer_instance
@@ -52,7 +48,7 @@ theorem orderedAdditiveLinearOrder_of_cone
     infer_instance
   refine ⟨instLin, instOrd, instCovLe, instCovLt, ?_⟩
   intro x y
-  simp [leOfLinearOrder, PartialOrder.mkOfAddGroupCone_le_iff]
+  simp [leOfLinearOrder, instLin]
 
 /-- Homogeneous Szpilrajn with ordered-additive packaging: the extended
 linear order is provided together with `IsOrderedAddMonoid` and covariance
@@ -69,12 +65,11 @@ theorem homogeneous_szpilrajn_orderedAdditive
         letI : CovariantClass G G (fun a b => a + b) (leOfLinearOrder instLin) := instCovLe
         letI : CovariantClass G G (fun a b => a + b) (ltOfLinearOrder instLin) := instCovLt
         r ≤ leOfLinearOrder instLin ∧ Homogeneous (leOfLinearOrder instLin) := by
-  let C0 : AddGroupCone G := coneOfHomogeneous r hr
-  obtain ⟨M, hC0M, htotal⟩ := homogeneous_szpilrajn_cone C0
-  letI : HasMemOrNegMem M := htotal
-  letI : DecidablePred (fun x : G => x ∈ M) := Classical.decPred _
+  classical
+  obtain ⟨M, hC0M, hMp, hMs⟩ :=
+    homogeneous_szpilrajn_cone (coneOfHomogeneous r hr) (coneOfHomogeneous_isPointed r hr)
   obtain ⟨instLin, instOrd, instCovLe, instCovLt, hleiff⟩ :=
-    orderedAdditiveLinearOrder_of_cone (G := G) (M := M)
+    orderedAdditiveLinearOrder_of_cone hMp hMs
   refine ⟨instLin, instOrd, instCovLe, instCovLt, ?_⟩
   constructor
   · intro x y hxy

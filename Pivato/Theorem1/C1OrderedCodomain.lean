@@ -52,6 +52,13 @@ lemma c1RawRel_homogeneous
   · intro h0 p
     exact (pairwiseQuotientRel_homogeneous (F := F) hD hA hR p.1 p.2 (f p) (g p)).2 (h0 p)
 
+lemma pairwiseQuotientRel_zero_left_iff
+    {hD : IsDomain D} {hA : GeneralAbstention D F} {hR : Reinforcement D F} {x y : X}
+    {q : PairwiseQuotient (F := F) hD hA hR x y} :
+    pairwiseQuotientRel (F := F) hD hA hR x y 0 q ↔
+      q ∈ pairwiseQuotientCone (F := F) hD hA hR x y := by
+  simp [pairwiseQuotientRel, relOfConoid]
+
 lemma c1RawRel_nonneg_of_winner
     [DecidableEq X] [DecidableEq V]
     (hD : IsDomain D) (hA : GeneralAbstention D F) (hR : Reinforcement D F)
@@ -63,14 +70,11 @@ lemma c1RawRel_nonneg_of_winner
   intro p
   by_cases hp : p = (x, y)
   · subst hp
-    letI : PartialOrder (PairwiseQuotient (F := F) hD hA hR x y) :=
+    let : PartialOrder (PairwiseQuotient (F := F) hD hA hR x y) :=
       pairwiseQuotientPartialOrder (F := F) hD hA hR x y
     change
       pairwiseQuotientRel (F := F) hD hA hR x y 0
         ((balanceAt (B := c1RawBalanceSystem (F := F) hD hA hR) x y d) (x, y))
-    change
-      (balanceAt (B := c1RawBalanceSystem (F := F) hD hA hR) x y d (x, y) - 0) ∈
-        pairwiseQuotientCone (F := F) hD hA hR x y
     have hmem :
         toZProfile d ∈ pairwiseDifferenceCone F x y :=
       toZProfile_mem_pairwiseDifferenceCone_of_winner (F := F) hD hA
@@ -96,20 +100,14 @@ lemma c1RawRel_nonneg_of_winner
               (QuotientAddGroup.mk'
                 (pairwiseKernelSubgroup (F := F) hD hA hR x y) (toZProfile d))
         rfl
-      refine ⟨toZProfile d, hmem, ?_⟩
-      calc
-        (QuotientAddGroup.mk'
-          (pairwiseKernelSubgroup (F := F) hD hA hR x y) (toZProfile d) :
-            PairwiseQuotient (F := F) hD hA hR x y)
-            = pairwiseLinearMap (F := F) hD hA hR x y (toZProfile d) := hmap
-        _ = balanceAt (B := c1RawBalanceSystem (F := F) hD hA hR) x y d (x, y) :=
-          hcoord.symm
-    simpa using hcone
+      exact ⟨toZProfile d, hmem, hmap.trans hcoord.symm⟩
+    exact (pairwiseQuotientRel_zero_left_iff F).2 hcone
   · have hrefl :
       pairwiseQuotientRel (F := F) hD hA hR p.1 p.2
         (0 : C1PairCoord (F := F) hD hA hR p) 0 :=
       (pairwiseQuotientRel_isPartialOrderRel (F := F) hD hA hR p.1 p.2).1.1 0
-    simpa [c1_balanceAt_apply (F := F) hD hA hR x y d p, hp] using hrefl
+    rw [c1_balanceAt_apply (F := F) hD hA hR x y d p, ite_eq_right hp]
+    exact hrefl
 
 lemma c1RawRel_nonpos_of_winner_loser_swapped
     [DecidableEq X] [DecidableEq V]
@@ -123,7 +121,7 @@ lemma c1RawRel_nonpos_of_winner_loser_swapped
   intro p
   by_cases hp : p = (x, y)
   · subst hp
-    letI : PartialOrder (PairwiseQuotient (F := F) hD hA hR x y) :=
+    let : PartialOrder (PairwiseQuotient (F := F) hD hA hR x y) :=
       pairwiseQuotientPartialOrder (F := F) hD hA hR x y
     change
       pairwiseQuotientRel (F := F) hD hA hR x y
@@ -155,24 +153,18 @@ lemma c1RawRel_nonpos_of_winner_loser_swapped
             (QuotientAddGroup.mk'
               (pairwiseKernelSubgroup (F := F) hD hA hR x y) (toZProfile d))
       rfl
-    refine ⟨-toZProfile d, hnegMem, ?_⟩
-    calc
-      (QuotientAddGroup.mk'
-        (pairwiseKernelSubgroup (F := F) hD hA hR x y) (-toZProfile d) :
-          PairwiseQuotient (F := F) hD hA hR x y)
-          = -(pairwiseLinearMap (F := F) hD hA hR x y (toZProfile d)) := by
-            simpa [hmap]
-      _ = (0 : C1PairCoord (F := F) hD hA hR (x, y)) -
-          pairwiseLinearMap (F := F) hD hA hR x y (toZProfile d) := by
-            simp
-      _ = (0 : C1PairCoord (F := F) hD hA hR (x, y)) -
-          balanceAt (B := c1RawBalanceSystem (F := F) hD hA hR) x y d (x, y) := by
-            simp [hcoord]
+    have hneg :
+        (0 : C1PairCoord (F := F) hD hA hR (x, y)) -
+            balanceAt (B := c1RawBalanceSystem (F := F) hD hA hR) x y d (x, y) =
+          pairwiseLinearMap (F := F) hD hA hR x y (-toZProfile d) := by
+      rw [hcoord, zero_sub, map_neg]
+    exact ⟨-toZProfile d, hnegMem, hneg.symm⟩
   · have hrefl :
       pairwiseQuotientRel (F := F) hD hA hR p.1 p.2
         (0 : C1PairCoord (F := F) hD hA hR p) 0 :=
       (pairwiseQuotientRel_isPartialOrderRel (F := F) hD hA hR p.1 p.2).1.1 0
-    simpa [c1_balanceAt_apply (F := F) hD hA hR x y d p, hp] using hrefl
+    rw [c1_balanceAt_apply (F := F) hD hA hR x y d p, ite_eq_right hp]
+    exact hrefl
 
 /-- Torsion-freeness of each pairwise linear quotient. -/
 theorem c1PairCoord_isAddTorsionFree
@@ -191,7 +183,7 @@ theorem c1RawCodomain_isAddTorsionFree_of_pairwise
     (hTF :
       ∀ p : X × X, IsAddTorsionFree (C1PairCoord (F := F) hD hA hR p)) :
     IsAddTorsionFree (C1RawCodomain (F := F) hD hA hR) := by
-  letI : ∀ p : X × X, IsAddTorsionFree (C1PairCoord (F := F) hD hA hR p) := hTF
+  let : ∀ p : X × X, IsAddTorsionFree (C1PairCoord (F := F) hD hA hR p) := hTF
   infer_instance
 
 /-- Unconditional torsion-freeness of the C.1 raw codomain. -/
@@ -210,7 +202,7 @@ theorem c1RawCodomain_orderedAdditive
     ∃ (instLin : LinearOrder (C1RawCodomain (F := F) hD hA hR)),
       ∃ (instOrd :
           @IsOrderedAddMonoid (C1RawCodomain (F := F) hD hA hR)
-            (by infer_instance) instLin.toPartialOrder),
+            (by infer_instance) instLin.toPreorder),
       ∃ (instCovLe :
           CovariantClass (C1RawCodomain (F := F) hD hA hR)
             (C1RawCodomain (F := F) hD hA hR)
@@ -221,7 +213,7 @@ theorem c1RawCodomain_orderedAdditive
             (fun a b => a + b) (ltOfLinearOrder instLin)),
         letI : LinearOrder (C1RawCodomain (F := F) hD hA hR) := instLin
         letI : @IsOrderedAddMonoid (C1RawCodomain (F := F) hD hA hR)
-          (by infer_instance) instLin.toPartialOrder := instOrd
+          (by infer_instance) instLin.toPreorder := instOrd
         letI : CovariantClass (C1RawCodomain (F := F) hD hA hR)
           (C1RawCodomain (F := F) hD hA hR)
           (fun a b => a + b) (leOfLinearOrder instLin) := instCovLe
@@ -247,39 +239,28 @@ theorem lemmaC1_reinforcement_to_isPerfectSkewBalanceRepresentable
     (hD : IsDomain D) (hA : GeneralAbstention D F) (hR : Reinforcement D F)
     (hNE : NonemptyOnDomain D F) :
     IsPerfectSkewBalanceRepresentable.{uV, uX, max uV uX} (F := F) := by
-  letI : IsAddTorsionFree (C1RawCodomain (F := F) hD hA hR) :=
+  let : IsAddTorsionFree (C1RawCodomain (F := F) hD hA hR) :=
     c1RawCodomain_isAddTorsionFree (F := F) hD hA hR
   rcases c1RawCodomain_orderedAdditive (F := F) hD hA hR with
       ⟨instLin, _instOrd, instCovLe, instCovLt, hExt⟩
-  letI : LE (C1RawCodomain (F := F) hD hA hR) := instLin.toLE
-  letI : LT (C1RawCodomain (F := F) hD hA hR) := instLin.toLT
-  letI : LinearOrder (C1RawCodomain (F := F) hD hA hR) := instLin
-  letI : Preorder (C1RawCodomain (F := F) hD hA hR) := instLin.toPreorder
-  letI : PartialOrder (C1RawCodomain (F := F) hD hA hR) := instLin.toPartialOrder
+  let : LE (C1RawCodomain (F := F) hD hA hR) := instLin.toLE
+  let : LT (C1RawCodomain (F := F) hD hA hR) := instLin.toLT
+  let : LinearOrder (C1RawCodomain (F := F) hD hA hR) := instLin
+  let : Preorder (C1RawCodomain (F := F) hD hA hR) := instLin.toPreorder
+  let : PartialOrder (C1RawCodomain (F := F) hD hA hR) := instLin.toPartialOrder
   have instCovLe' :
       CovariantClass
         (C1RawCodomain (F := F) hD hA hR)
         (C1RawCodomain (F := F) hD hA hR)
-        (fun a b => a + b) (· ≤ ·) := by
-    simpa [leOfLinearOrder] using instCovLe
+        (fun a b => a + b) (· ≤ ·) := instCovLe
   have instCovLt' :
       CovariantClass
         (C1RawCodomain (F := F) hD hA hR)
         (C1RawCodomain (F := F) hD hA hR)
-        (fun a b => a + b) (· < ·) := by
-    simpa [ltOfLinearOrder] using instCovLt
-  letI : CovariantClass
-      (C1RawCodomain (F := F) hD hA hR)
-      (C1RawCodomain (F := F) hD hA hR)
-      (fun a b => a + b) (· ≤ ·) := instCovLe'
-  letI : CovariantClass
-      (C1RawCodomain (F := F) hD hA hR)
-      (C1RawCodomain (F := F) hD hA hR)
-      (fun a b => a + b) (· < ·) := instCovLt'
+        (fun a b => a + b) (· < ·) := instCovLt
   have hExt' :
       c1RawRel (F := F) hD hA hR ≤ (· ≤ ·) := by
-    intro a b hab
-    simpa [leOfLinearOrder] using hExt a b hab
+    exact hExt
   let B0 : BalanceSystem (C1RawCodomain (F := F) hD hA hR) X V :=
     c1RawBalanceSystem (F := F) hD hA hR
   let B : BalanceSystem (C1RawCodomain (F := F) hD hA hR) X V :=

@@ -121,10 +121,8 @@ lemma balanceAt_averaged_eq_sum (B : BalanceSystem R X V) (x y : X) (d : NProfil
       evalNat_weight_sum (w := fun g v => B.bal ((mu g) x) ((mu g) y) ((nu g) v)) d
     _ = ∑ g : G, balanceAt B ((mu g) x) ((mu g) y) (permuteNProfile (nu g) d) := by
       apply Finset.sum_congr rfl
-      intro g hg
-      simpa [balanceAt, permuteWeight] using
-        (lemmaC2a_evalNat_permuteWeight
-          (b := B.bal ((mu g) x) ((mu g) y)) (n := d) (π := nu g))
+      intro g _
+      exact lemmaC2a_evalNat_permuteWeight (b := B.bal ((mu g) x) ((mu g) y)) (n := d) (π := nu g)
 
 omit [LinearOrder R]
     [CovariantClass R R (fun a b => a + b) (· ≤ ·)]
@@ -461,10 +459,10 @@ theorem exists_balanceNeutralPerfectSkewRepresentation_of_ruleNeutral
         PerfectOn (D := D) (B := B) ∧
         F = balanceRule (D := D) B := by
   rcases hRep with ⟨R, instAdd, instLin, instCovLe, instCovLt, B, hRepB⟩
-  letI : AddCommGroup R := instAdd
-  letI : LinearOrder R := instLin
-  letI : CovariantClass R R (fun a b => a + b) (· ≤ ·) := instCovLe
-  letI : CovariantClass R R (fun a b => a + b) (· < ·) := instCovLt
+  let : AddCommGroup R := instAdd
+  let : LinearOrder R := instLin
+  let : CovariantClass R R (fun a b => a + b) (· ≤ ·) := instCovLe
+  let : CovariantClass R R (fun a b => a + b) (· < ·) := instCovLt
   rcases hRepB with ⟨hskew, hperfect, hFB⟩
   have hN_B : RuleNeutral mu nu D (balanceRule (D := D) B) := by
     simpa [hFB] using hN
@@ -538,10 +536,10 @@ theorem proposition2_of_perfectSkewRepresentation
       (mu := mu) (nu := nu) hN hRep hNE
   · intro hNeutralRep
     rcases hNeutralRep with ⟨R, instAdd, instLin, instCovLe, instCovLt, B, hB⟩
-    letI : AddCommGroup R := instAdd
-    letI : LinearOrder R := instLin
-    letI : CovariantClass R R (fun a b => a + b) (· ≤ ·) := instCovLe
-    letI : CovariantClass R R (fun a b => a + b) (· < ·) := instCovLt
+    let : AddCommGroup R := instAdd
+    let : LinearOrder R := instLin
+    let : CovariantClass R R (fun a b => a + b) (· ≤ ·) := instCovLe
+    let : CovariantClass R R (fun a b => a + b) (· < ·) := instCovLt
     rcases hB with ⟨hNeutral, _hSkew, _hPerfect, hFB⟩
     have hRuleNeutralB : RuleNeutral mu nu D (balanceRule (D := D) B) :=
       balanceRule_ruleNeutral_of_balanceNeutral
@@ -596,7 +594,7 @@ theorem exists_balanceNeutralPerfectSkew_of_ruleNeutral_representation_with_none
       PerfectOn (D := D) (B := Bbar) ∧
       F = balanceRule (D := D) Bbar := by
   classical
-  letI : Fintype G := Fintype.ofFinite G
+  let : Fintype G := Fintype.ofFinite G
   exact exists_balanceNeutralPerfectSkew_of_ruleNeutral_representation_with_nonempty
     (mu := mu) (nu := nu) (D := D) (F := F) hN hRep hNE
 

@@ -8,7 +8,6 @@ namespace SocialChoice
 
 open Finset
 open scoped BigOperators
-open Classical
 
 noncomputable def c2BordaScore {V A : Type} [Fintype V] [Fintype A]
     (P : Profile V A) (x : A) : Int := by

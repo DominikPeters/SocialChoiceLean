@@ -72,7 +72,7 @@ theorem plurality_with_runoff_nonempty
     {V A : Type} [Fintype V] [Fintype A] [DecidableEq A] [Nonempty A]
     (P : Profile V A) : (pluralityWithRunoff P).Nonempty := by
   classical
-  letI := Classical.decEq A
+  let := Classical.decEq A
   by_cases hcard : Fintype.card A ≤ 1
   · simp [pluralityWithRunoff, hcard]
   · let S := plurality P
@@ -166,6 +166,16 @@ theorem plurality_with_runoff_nonempty
           refine ⟨t, ?_⟩
           simp [pluralityWithRunoff, hcard]
           exact ⟨s, by simpa [Finset.pair_comm] using hpair, hle_ts⟩
+
+/-- With at least two candidates, `x` wins the runoff iff it is in some runoff pair `{x, y}` and
+weakly beats `y` head-to-head. -/
+lemma mem_pluralityWithRunoff_iff {V A : Type} [Fintype V] [Fintype A] [DecidableEq A]
+    (P : Profile V A) (x : A) (hcard : ¬ Fintype.card A ≤ 1) :
+    x ∈ pluralityWithRunoff P ↔
+      ∃ y : A, ({x, y} : Finset A) ∈ pluralityWithRunoffPairs P ∧ 0 ≤ margin P x y := by
+  obtain rfl : ‹DecidableEq A› = fun a b => Classical.propDecidable (a = b) :=
+    Subsingleton.elim _ _
+  simp [pluralityWithRunoff, hcard]
 
 theorem pluralityWithRunoff_isVotingRule : IsVotingRule pluralityWithRunoff := by
   intro V A _ _ _ P

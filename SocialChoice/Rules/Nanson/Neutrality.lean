@@ -88,8 +88,8 @@ lemma nansonAux_relabelProfile {V A B : Type} [Fintype V]
           -- Define the restricted profiles and the induced equivalence between survivor types.
           let pA : A → Prop := fun a => scoreA a > 0
           let pB : B → Prop := fun b => scoreB b > 0
-          letI : DecidableEq {a : A // pA a} := by classical infer_instance
-          letI : DecidableEq {b : B // pB b} := by classical infer_instance
+          let : DecidableEq {a : A // pA a} := by classical infer_instance
+          let : DecidableEq {b : B // pB b} := by classical infer_instance
           let PA' : Profile V {a : A // pA a} := restrictCandidates P pA
           let PB' : Profile V {b : B // pB b} := restrictCandidates PB pB
           have hp : ∀ a : A, pB (e a) ↔ pA a := by
@@ -113,8 +113,8 @@ lemma nansonAux_relabelProfile {V A B : Type} [Fintype V]
                 liftWinners (nansonAux (V := V) n {b : B // pB b} PB') := by
             classical
             -- `liftWinners` is defined using `Classical.decEq`, so use the same instance here.
-            letI : DecidableEq A := Classical.decEq A
-            letI : DecidableEq B := Classical.decEq B
+            let : DecidableEq A := Classical.decEq A
+            let : DecidableEq B := Classical.decEq B
             ext b
             constructor
             · intro hb

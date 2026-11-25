@@ -10,7 +10,6 @@ import SocialChoice.Rules.ScoringRules.Borda.Defs
 namespace SocialChoice
 
 open Finset
-open Classical
 
 namespace BaldwinReversalCounterexample
 

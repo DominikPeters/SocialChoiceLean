@@ -7,10 +7,8 @@ import SocialChoice.Rules.Nanson.Reversal
 
 namespace SocialChoice
 
-open Classical
 open Finset
 
-attribute [instance] Classical.decEq Classical.decPred
 
 /-!
 ## Nanson fails independence of dominated
@@ -40,9 +38,8 @@ noncomputable def profile : Profile (Fin 2) A3 :=
   profileOfListBallots ballots
 
 lemma prefers_2_0 : ∀ v : Fin 2, Prefers profile v c a := by
-  intro v
-  fin_cases v <;>
-    simp [profile, ballots, prefers_iff_prefersInList, prefersInList] <;> decide
+  simp only [profile, prefers_iff_prefersInList]
+  decide
 
 noncomputable def profile' : Profile (Fin 2) {x : A3 // x ≠ a} :=
   restrictProfile profile a
@@ -50,89 +47,21 @@ noncomputable def profile' : Profile (Fin 2) {x : A3 // x ≠ a} :=
 def cand1 : {x : A3 // x ≠ a} := ⟨b, by decide⟩
 def cand2 : {x : A3 // x ≠ a} := ⟨c, by decide⟩
 
-lemma votersPreferring_profile_b_c :
-    votersPreferring profile b c = ({0} : Finset (Fin 2)) := by
-  classical
-  ext v
-  fin_cases v <;>
-    simp [votersPreferring, profile, ballots, prefers_iff_prefersInList, prefersInList] <;>
-    decide
-
-lemma votersPreferring_profile_c_b :
-    votersPreferring profile c b = ({1} : Finset (Fin 2)) := by
-  classical
-  ext v
-  fin_cases v <;>
-    simp [votersPreferring, profile, ballots, prefers_iff_prefersInList, prefersInList] <;>
-    decide
-
-lemma votersPreferring_profile_b_a :
-    votersPreferring profile b a = ({0} : Finset (Fin 2)) := by
-  classical
-  ext v
-  fin_cases v <;>
-    simp [votersPreferring, profile, ballots, prefers_iff_prefersInList, prefersInList] <;>
-    decide
-
-lemma votersPreferring_profile_a_b :
-    votersPreferring profile a b = ({1} : Finset (Fin 2)) := by
-  classical
-  ext v
-  fin_cases v <;>
-    simp [votersPreferring, profile, ballots, prefers_iff_prefersInList, prefersInList] <;>
-    decide
-
-lemma votersPreferring_profile_c_a :
-    votersPreferring profile c a = ({0, 1} : Finset (Fin 2)) := by
-  classical
-  ext v
-  fin_cases v <;>
-    simp [votersPreferring, profile, ballots, prefers_iff_prefersInList, prefersInList] <;>
-    decide
-
-lemma votersPreferring_profile_a_c :
-    votersPreferring profile a c = (∅ : Finset (Fin 2)) := by
-  classical
-  ext v
-  fin_cases v <;>
-    simp [votersPreferring, profile, ballots, prefers_iff_prefersInList, prefersInList] <;>
-    decide
-
 lemma margin_profile_b_c : margin profile b c = 0 := by
-  have h1 :
-      (Finset.univ.filter (fun v => Prefers profile v b c)) = ({0} : Finset (Fin 2)) := by
-    simpa [votersPreferring] using votersPreferring_profile_b_c
-  have h2 :
-      (Finset.univ.filter (fun v => Prefers profile v c b)) = ({1} : Finset (Fin 2)) := by
-    simpa [votersPreferring] using votersPreferring_profile_c_b
-  simp [margin, h1, h2]
+  rw [profile, margin_profileOfListBallots]
+  decide
 
 lemma margin_profile_b_a : margin profile b a = 0 := by
-  have h1 :
-      (Finset.univ.filter (fun v => Prefers profile v b a)) = ({0} : Finset (Fin 2)) := by
-    simpa [votersPreferring] using votersPreferring_profile_b_a
-  have h2 :
-      (Finset.univ.filter (fun v => Prefers profile v a b)) = ({1} : Finset (Fin 2)) := by
-    simpa [votersPreferring] using votersPreferring_profile_a_b
-  simp [margin, h1, h2]
+  rw [profile, margin_profileOfListBallots]
+  decide
 
 lemma margin_profile_c_a : margin profile c a = 2 := by
-  have h1 :
-      (Finset.univ.filter (fun v => Prefers profile v c a)) = ({0, 1} : Finset (Fin 2)) := by
-    simpa [votersPreferring] using votersPreferring_profile_c_a
-  have h2 :
-      (Finset.univ.filter (fun v => Prefers profile v a c)) = (∅ : Finset (Fin 2)) := by
-    simpa [votersPreferring] using votersPreferring_profile_a_c
-  simp [margin, h1, h2]
+  rw [profile, margin_profileOfListBallots]
+  decide
 
 lemma margin_profile_c_b : margin profile c b = 0 := by
-  have h1 :
-      (Finset.univ.filter (fun v => Prefers profile v c b)) = ({1} : Finset (Fin 2)) := by
-    simpa [votersPreferring] using votersPreferring_profile_c_b
-  have h2 :
-      (Finset.univ.filter (fun v => Prefers profile v b c)) = ({0} : Finset (Fin 2)) := by
-    simpa [votersPreferring] using votersPreferring_profile_b_c
-  simp [margin, h1, h2]
+  rw [profile, margin_profileOfListBallots]
+  decide
 
 lemma margin_profile_a_b : margin profile a b = 0 := by
   have h := margin_antisymmetric (P := profile) a b
@@ -158,7 +87,6 @@ lemma profile_pos_iff (x : A3) : 0 < c2BordaScore profile x ↔ x = c := by
   fin_cases x <;> simp [c2Borda_profile_a, c2Borda_profile_b, c2Borda_profile_c, c]
 
 lemma nanson_profile : nanson profile = ({c} : Finset A3) := by
-  classical
   have hnotall : ¬ ∀ x, c2BordaScore profile x = 0 := by
     intro hall
     have := hall c
@@ -187,35 +115,14 @@ lemma nanson_profile : nanson profile = ({c} : Finset A3) := by
   have : y ∈ ({c} : Finset A3) := hsubset hy
   simpa using this
 
-lemma votersPreferring_restrict_cand1 :
-    votersPreferring profile' cand1 cand2 = votersPreferring profile b c := by
-  classical
-  ext v
-  simp [profile', votersPreferring, prefers_restrictProfile_iff, cand1, cand2]
-
-lemma votersPreferring_restrict_cand2 :
-    votersPreferring profile' cand2 cand1 = votersPreferring profile c b := by
-  classical
-  ext v
-  simp [profile', votersPreferring, prefers_restrictProfile_iff, cand1, cand2]
-
-lemma margin_profile'_cand1_cand2 : margin profile' cand1 cand2 = 0 := by
-  have h1 :
-      (Finset.univ.filter (fun v => Prefers profile' v cand1 cand2)) =
-        ({0} : Finset (Fin 2)) := by
-    simpa [votersPreferring] using votersPreferring_restrict_cand1.trans votersPreferring_profile_b_c
-  have h2 :
-      (Finset.univ.filter (fun v => Prefers profile' v cand2 cand1)) =
-        ({1} : Finset (Fin 2)) := by
-    simpa [votersPreferring] using votersPreferring_restrict_cand2.trans votersPreferring_profile_c_b
-  simp [margin, h1, h2]
+lemma margin_profile'_cand1_cand2 : margin profile' cand1 cand2 = 0 :=
+  (margin_eq_margin_restrictProfile (P := profile) (c := a)).symm.trans margin_profile_b_c
 
 lemma margin_profile'_cand2_cand1 : margin profile' cand2 cand1 = 0 := by
   have h := margin_antisymmetric (P := profile') cand2 cand1
   simpa [margin_profile'_cand1_cand2] using h
 
 lemma univ_profile'_eq : (Finset.univ : Finset {x : A3 // x ≠ a}) = {cand1, cand2} := by
-  classical
   ext x
   constructor
   · intro _
@@ -229,15 +136,12 @@ lemma univ_profile'_eq : (Finset.univ : Finset {x : A3 // x ≠ a}) = {cand1, ca
     simp
 
 lemma c2Borda_profile'_cand1 : c2BordaScore profile' cand1 = 0 := by
-  classical
   simp [c2BordaScore, univ_profile'_eq, self_margin_zero, margin_profile'_cand1_cand2]
 
 lemma c2Borda_profile'_cand2 : c2BordaScore profile' cand2 = 0 := by
-  classical
   simp [c2BordaScore, univ_profile'_eq, self_margin_zero, margin_profile'_cand2_cand1]
 
 lemma nanson_profile' : nanson profile' = (Finset.univ : Finset {x : A3 // x ≠ a}) := by
-  classical
   have hall : ∀ x, c2BordaScore profile' x = 0 := by
     intro x
     rcases x with ⟨x, hxne⟩
@@ -303,38 +207,10 @@ lemma c_mem_cloneSet : (c : A3) ∈ cloneSet := by
   simp [cloneSet]
 
 lemma cloneSet_profile : CloneSet profile cloneSet := by
-  refine ⟨?_, ?_⟩
-  · exact ⟨a, by simp [cloneSet]⟩
-  · intro v d hd
-    fin_cases d
-    · exact (hd (by simp [cloneSet])).elim
-    · -- d = b
-      fin_cases v
-      ·
-        refine Or.inr ?_
-        intro x hx
-        have hx' : x = a ∨ x = c := by
-          simpa [cloneSet] using hx
-        cases hx' with
-        | inl hx0 =>
-            subst hx0
-            simp [profile, ballots, prefers_iff_prefersInList, prefersInList]; decide
-        | inr hx2 =>
-            subst hx2
-            simp [profile, ballots, prefers_iff_prefersInList, prefersInList]; decide
-      ·
-        refine Or.inl ?_
-        intro x hx
-        have hx' : x = a ∨ x = c := by
-          simpa [cloneSet] using hx
-        cases hx' with
-        | inl hx0 =>
-            subst hx0
-            simp [profile, ballots, prefers_iff_prefersInList, prefersInList]; decide
-        | inr hx2 =>
-            subst hx2
-            simp [profile, ballots, prefers_iff_prefersInList, prefersInList]; decide
-    · exact (hd (by simp [cloneSet])).elim
+  refine ⟨⟨a, by simp [cloneSet]⟩, ?_⟩
+  simp only [cloneSet, Set.mem_insert_iff, Set.mem_singleton_iff, profile,
+    prefers_iff_prefersInList]
+  decide
 
 lemma clonePred_eq_ne :
     clonePred cloneSet c = (fun x : A3 => x ≠ a) := by
@@ -379,16 +255,14 @@ lemma mem_castCandidates_iff {V A : Type} [Fintype V] [Fintype A]
     x ∈ f P ↔
       ((cast (congrArg (fun r => {a : A // r a}) h) x : {a : A // q a}) ∈
         f (castCandidates (p := p) (q := q) h P)) := by
-  classical
-  letI : DecidablePred p := dp
-  letI : DecidablePred q := dq
+  let : DecidablePred p := dp
+  let : DecidablePred q := dq
   cases h
   cases (Subsingleton.elim dq dp)
   rfl
 
 lemma nanson_cloneProfile_has_1_raw :
     cand1clone ∈ nanson (removeClonesExcept profile cloneSet c) := by
-  classical
   let q : A3 → Prop := fun x => x ≠ a
   have hb : cand1 ∈ nanson (restrictCandidates profile q) := by
     simpa [profile', restrictProfile, q] using nanson_profile'_has_1

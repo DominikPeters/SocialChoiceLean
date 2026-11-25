@@ -227,7 +227,7 @@ theorem nanson_smithCriterion : SmithCriterion nanson := by
     simpa [nanson, topCycle, hA] using hsubset
   ·
     have hA' : IsEmpty A := (not_nonempty_iff.mp hA)
-    haveI : IsEmpty A := hA'
+    have : IsEmpty A := hA'
     have hnanson : nanson P = (∅ : Finset A) := by
       simp [nanson, nansonAux]
     have htop : topCycle P = (∅ : Finset A) := by

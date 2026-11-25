@@ -205,7 +205,7 @@ lemma c1_balanceAt_ne_zero_raw_of_winner_loser [DecidableEq X] [DecidableEq V]
       (QuotientAddGroup.mk'
         (pairwiseKernelSubgroup (F := F) hD hA hR x y) (toZProfile d) :
           PairwiseQuotient (F := F) hD hA hR x y) = 0 := by
-    simpa only [pairwiseLinearMap, toLinearExtension] using hcoord
+    exact hcoord
   exact
     (pairwiseQuotientMap_ne_zero_of_winner_loser (F := F) hD hA hR
       (x := x) (y := y) (d := d) (hd := hd) hxd hynotd)
@@ -227,7 +227,7 @@ lemma c1_balanceAt_ne_zero_raw_of_winner_loser_swapped [DecidableEq X] [Decidabl
       (QuotientAddGroup.mk'
         (pairwiseKernelSubgroup (F := F) hD hA hR x y) (toZProfile d) :
           PairwiseQuotient (F := F) hD hA hR x y) = 0 := by
-    simpa only [pairwiseLinearMap, toLinearExtension] using hcoord
+    exact hcoord
   exact
     (pairwiseQuotientMap_ne_zero_of_not_pairwiseRel_zero (F := F) hD hA hR
       (x := x) (y := y) (d := d)
@@ -265,7 +265,7 @@ lemma c1_balanceAt_eq_zero_raw_of_winner_winner [DecidableEq X] [DecidableEq V]
         (x := toZProfile d)).2 hker
     have hcoord :
         pairwiseLinearMap (F := F) hD hA hR x y (toZProfile d) = 0 := by
-      simpa only [pairwiseLinearMap, toLinearExtension] using hEqQ
+      exact hEqQ
     simpa [c1_balanceAt_apply (F := F) hD hA hR x y d (x, y)] using hcoord
   · simp [c1_balanceAt_apply (F := F) hD hA hR x y d p, hp]
 
@@ -280,7 +280,7 @@ lemma c1_balanceAt_nonneg_of_winner [DecidableEq X] [DecidableEq V]
         balanceAt (B := c1RawBalanceSystem (F := F) hD hA hR) x y d :=
     c1_balanceAt_nonneg_raw_of_winner (F := F) hD hA hR
       (hd := hd) (x := x) (y := y) hxd
-  simpa [c1LinearBalanceSystem] using
+  exact
     (toLinearExtension (α := C1RawCodomain (F := F) hD hA hR)).monotone hraw
 
 lemma c1_balanceAt_nonpos_of_winner_loser_swapped [DecidableEq X] [DecidableEq V]
@@ -295,7 +295,7 @@ lemma c1_balanceAt_nonpos_of_winner_loser_swapped [DecidableEq X] [DecidableEq V
         (0 : C1RawCodomain (F := F) hD hA hR) :=
     c1_balanceAt_nonpos_raw_of_winner_loser_swapped (F := F) hD hA hR
       (hd := hd) (x := x) (y := y) hyd hxnotd
-  simpa [c1LinearBalanceSystem] using
+  exact
     (toLinearExtension (α := C1RawCodomain (F := F) hD hA hR)).monotone hraw
 
 lemma c1_balanceAt_ne_zero_of_winner_loser [DecidableEq X] [DecidableEq V]
@@ -311,7 +311,7 @@ lemma c1_balanceAt_ne_zero_of_winner_loser [DecidableEq X] [DecidableEq V]
     c1_balanceAt_ne_zero_raw_of_winner_loser (F := F) hD hA hR
       (hd := hd) (x := x) (y := y) hxd hynotd
   intro hEq
-  exact hraw (by simpa [c1LinearBalanceSystem] using hEq)
+  exact hraw hEq
 
 lemma c1_balanceAt_ne_zero_of_winner_loser_swapped [DecidableEq X] [DecidableEq V]
     (hD : IsDomain D) (hA : GeneralAbstention D F) (hR : Reinforcement D F)
@@ -326,7 +326,7 @@ lemma c1_balanceAt_ne_zero_of_winner_loser_swapped [DecidableEq X] [DecidableEq 
     c1_balanceAt_ne_zero_raw_of_winner_loser_swapped (F := F) hD hA hR
       (hd := hd) (x := x) (y := y) hyd hxnotd
   intro hEq
-  exact hraw (by simpa [c1LinearBalanceSystem] using hEq)
+  exact hraw hEq
 
 lemma c1_balanceAt_eq_zero_of_winner_winner [DecidableEq X] [DecidableEq V]
     (hD : IsDomain D) (hA : GeneralAbstention D F) (hR : Reinforcement D F)
@@ -340,7 +340,7 @@ lemma c1_balanceAt_eq_zero_of_winner_winner [DecidableEq X] [DecidableEq V]
         (0 : C1RawCodomain (F := F) hD hA hR) :=
     c1_balanceAt_eq_zero_raw_of_winner_winner (F := F) hD hA hR
       (hd := hd) (x := x) (y := y) hxd hyd
-  simpa [c1LinearBalanceSystem] using hraw
+  exact hraw
 
 /-- Full Lemma C.1 constructive theorem. -/
 theorem lemmaC1
@@ -350,10 +350,10 @@ theorem lemmaC1
     ∃ B : BalanceSystem (C1Codomain (F := F) hD hA hR) X V,
       PerfectOn (D := D) (B := B) ∧
         F = balanceRule (D := D) B := by
-  letI : AddCommGroup (C1RawCodomain (F := F) hD hA hR) := inferInstance
-  letI : PartialOrder (C1RawCodomain (F := F) hD hA hR) := inferInstance
-  letI : AddCommGroup (C1Codomain (F := F) hD hA hR) := inferInstance
-  letI : LinearOrder (C1Codomain (F := F) hD hA hR) := inferInstance
+  let : AddCommGroup (C1RawCodomain (F := F) hD hA hR) := inferInstance
+  let : PartialOrder (C1RawCodomain (F := F) hD hA hR) := inferInstance
+  let : AddCommGroup (C1Codomain (F := F) hD hA hR) := inferInstance
+  let : LinearOrder (C1Codomain (F := F) hD hA hR) := inferInstance
   let Braw : BalanceSystem (C1RawCodomain (F := F) hD hA hR) X V :=
     c1RawBalanceSystem (F := F) hD hA hR
   let B : BalanceSystem (C1Codomain (F := F) hD hA hR) X V :=
@@ -367,7 +367,7 @@ theorem lemmaC1
           (0 : C1RawCodomain (F := F) hD hA hR) ≤ balanceAt (B := Braw) x y d.1 :=
         c1_balanceAt_nonneg_raw_of_winner (F := F) hD hA hR
           (hd := d.2) (x := x) (y := y) hxd
-      simpa [B, Braw, c1LinearBalanceSystem] using
+      exact
         (toLinearExtension (α := C1RawCodomain (F := F) hD hA hR)).monotone hraw
     · intro hxB
       by_contra hxnot
@@ -380,7 +380,7 @@ theorem lemmaC1
           (hd := d.2) (x := x) (y := y) hyd hxnot
       have hlinNonpos :
           balanceAt (B := B) x y d.1 ≤ (0 : C1Codomain (F := F) hD hA hR) := by
-        simpa [B, Braw, c1LinearBalanceSystem] using
+        exact
           (toLinearExtension (α := C1RawCodomain (F := F) hD hA hR)).monotone hrawNonpos
       have hneqRaw :
           balanceAt (B := Braw) x y d.1 ≠ (0 : C1RawCodomain (F := F) hD hA hR) :=
@@ -389,7 +389,7 @@ theorem lemmaC1
       have hneqLin :
           balanceAt (B := B) x y d.1 ≠ (0 : C1Codomain (F := F) hD hA hR) := by
         intro hEq
-        exact hneqRaw (by simpa [B, Braw, c1LinearBalanceSystem] using hEq)
+        exact hneqRaw hEq
       have hzero :
           balanceAt (B := B) x y d.1 = (0 : C1Codomain (F := F) hD hA hR) :=
         le_antisymm hlinNonpos hlinNonneg
@@ -404,7 +404,7 @@ theorem lemmaC1
         (hd := hd) (x := x) (y := y) hxdF
     have hlinNonneg :
         (0 : C1Codomain (F := F) hD hA hR) ≤ balanceAt (B := B) x y d := by
-      simpa [B, Braw, c1LinearBalanceSystem] using
+      exact
         (toLinearExtension (α := C1RawCodomain (F := F) hD hA hR)).monotone hrawNonneg
     have hneqRaw :
         balanceAt (B := Braw) x y d ≠ (0 : C1RawCodomain (F := F) hD hA hR) :=
@@ -413,7 +413,7 @@ theorem lemmaC1
     have hneqLin :
         balanceAt (B := B) x y d ≠ (0 : C1Codomain (F := F) hD hA hR) := by
       intro hEq
-      exact hneqRaw (by simpa [B, Braw, c1LinearBalanceSystem] using hEq)
+      exact hneqRaw hEq
     have h0ne : (0 : C1Codomain (F := F) hD hA hR) ≠ balanceAt (B := B) x y d := by
       intro hEq
       exact hneqLin hEq.symm

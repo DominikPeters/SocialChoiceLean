@@ -67,7 +67,7 @@ theorem nanson_isVotingRule : IsVotingRule nanson := by
           ·
             let P' : Profile V {a : A // c2BordaScore P a > 0} :=
               restrictCandidates P (fun a => c2BordaScore P a > 0)
-            haveI : Nonempty {a : A // c2BordaScore P a > 0} := by
+            have : Nonempty {a : A // c2BordaScore P a > 0} := by
               rcases hsurv with ⟨a, ha⟩
               exact ⟨⟨a, (Finset.mem_filter.mp ha).2⟩⟩
             have hnonempty' :

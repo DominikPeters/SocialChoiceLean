@@ -51,7 +51,7 @@ theorem minimax_neutral : Neutrality minimax := by
   intro V A _ _ P σ
   classical
   by_cases hA : Nonempty A
-  · letI : Nonempty A := hA
+  · let : Nonempty A := hA
     apply Finset.ext
     intro c
     constructor

@@ -87,11 +87,8 @@ noncomputable def averagedScoreSystem (S : ScoreSystem R X V) : ScoreSystem R X 
 
 lemma nsmul_sum' {G R : Type*} [Fintype G] [AddCommMonoid R]
     (n : ℕ) (f : G → R) :
-    n • (∑ g : G, f g) = ∑ g : G, n • f g := by
-  induction n with
-  | zero => simp
-  | succ n ih =>
-      simp [add_nsmul, ih, Finset.sum_add_distrib, add_comm]
+    n • (∑ g : G, f g) = ∑ g : G, n • f g :=
+  (Finset.sum_nsmul _ _ _).symm
 
 omit [Group G] [LinearOrder R] [IsOrderedCancelAddMonoid R] in
 lemma evalNat_weight_sum (w : G → V → R) (d : NProfile V) :
@@ -123,9 +120,8 @@ lemma scoreAt_averaged_eq_sum (S : ScoreSystem R X V) (x : X) (d : NProfile V) :
       evalNat_weight_sum (w := fun g v => S.score ((mu g) x) ((nu g) v)) d
     _ = ∑ g : G, scoreAt S ((mu g) x) (permuteNProfile (nu g) d) := by
       apply Finset.sum_congr rfl
-      intro g hg
-      simpa [scoreAt, permuteWeight] using
-        (lemmaC2a_evalNat_permuteWeight (b := S.score ((mu g) x)) (n := d) (π := nu g))
+      intro g _
+      exact lemmaC2a_evalNat_permuteWeight (b := S.score ((mu g) x)) (n := d) (π := nu g)
 
 omit [LinearOrder R] [IsOrderedCancelAddMonoid R] in
 lemma averagedScoreSystem_scoreNeutral (S : ScoreSystem R X V) :
@@ -356,7 +352,7 @@ theorem exists_scoreNeutral_of_ruleNeutral_scoringRule_of_finiteGroup
     ∃ Sbar : ScoreSystem R X V,
       ScoreNeutral mu nu Sbar ∧ F = scoringRule (D := D) Sbar := by
   classical
-  letI : Fintype G := Fintype.ofFinite G
+  let : Fintype G := Fintype.ofFinite G
   exact exists_scoreNeutral_of_ruleNeutral_scoringRule
     (mu := mu) (nu := nu) (D := D) (F := F) hN hScore
 

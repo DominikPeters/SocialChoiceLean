@@ -7,10 +7,7 @@ import SocialChoice.Rules.TopCycle.Defs
 
 namespace SocialChoice
 
-open Classical
 open Finset
-
-attribute [instance] Classical.decEq Classical.decPred
 
 /-!
 ## Black fails the Smith criterion
@@ -47,36 +44,16 @@ noncomputable def profile : Profile (Fin 8) (Fin 4) :=
 def smithSet : Finset (Fin 4) := {2, 3}
 
 private lemma margin_pos_profile_2_0 : margin_pos profile (2 : Fin 4) (0 : Fin 4) := by
-  have h : marginList (fun v => (ballots v).ranking) (2 : Fin 4) (0 : Fin 4) > 0 := by
-    decide
-  have h' :=
-    (margin_pos_iff_marginList_pos (ballots := ballots)
-      (a := (2 : Fin 4)) (b := (0 : Fin 4))).2 h
-  simpa [profile] using h'
+  rw [profile, margin_pos_iff_marginList_pos]; decide
 
 private lemma margin_pos_profile_2_1 : margin_pos profile (2 : Fin 4) (1 : Fin 4) := by
-  have h : marginList (fun v => (ballots v).ranking) (2 : Fin 4) (1 : Fin 4) > 0 := by
-    decide
-  have h' :=
-    (margin_pos_iff_marginList_pos (ballots := ballots)
-      (a := (2 : Fin 4)) (b := (1 : Fin 4))).2 h
-  simpa [profile] using h'
+  rw [profile, margin_pos_iff_marginList_pos]; decide
 
 private lemma margin_pos_profile_3_0 : margin_pos profile (3 : Fin 4) (0 : Fin 4) := by
-  have h : marginList (fun v => (ballots v).ranking) (3 : Fin 4) (0 : Fin 4) > 0 := by
-    decide
-  have h' :=
-    (margin_pos_iff_marginList_pos (ballots := ballots)
-      (a := (3 : Fin 4)) (b := (0 : Fin 4))).2 h
-  simpa [profile] using h'
+  rw [profile, margin_pos_iff_marginList_pos]; decide
 
 private lemma margin_pos_profile_3_1 : margin_pos profile (3 : Fin 4) (1 : Fin 4) := by
-  have h : marginList (fun v => (ballots v).ranking) (3 : Fin 4) (1 : Fin 4) > 0 := by
-    decide
-  have h' :=
-    (margin_pos_iff_marginList_pos (ballots := ballots)
-      (a := (3 : Fin 4)) (b := (1 : Fin 4))).2 h
-  simpa [profile] using h'
+  rw [profile, margin_pos_iff_marginList_pos]; decide
 
 lemma dominatesSet_profile_smithSet : dominatesSet profile smithSet := by
   classical
@@ -110,54 +87,9 @@ lemma one_not_mem_topCycle : (1 : Fin 4) ∉ topCycle profile := by
   have : (1 : Fin 4) ∈ smithSet := hsubset hmem
   simp [smithSet] at this
 
-private lemma not_marginList_profile_0_1_pos :
-    ¬ marginList (fun v => (ballots v).ranking) (0 : Fin 4) (1 : Fin 4) > 0 := by
-  decide
-
-private lemma not_marginList_profile_1_2_pos :
-    ¬ marginList (fun v => (ballots v).ranking) (1 : Fin 4) (2 : Fin 4) > 0 := by
-  decide
-
-private lemma not_marginList_profile_2_3_pos :
-    ¬ marginList (fun v => (ballots v).ranking) (2 : Fin 4) (3 : Fin 4) > 0 := by
-  decide
-
-private lemma not_marginList_profile_3_2_pos :
-    ¬ marginList (fun v => (ballots v).ranking) (3 : Fin 4) (2 : Fin 4) > 0 := by
-  decide
-
 lemma no_condorcet_profile : ¬ ∃ x, CondorcetWinner profile x := by
-  intro h
-  rcases h with ⟨x, hx⟩
-  fin_cases x
-  · have hx' :
-      CondorcetWinner (profileOfListBallots ballots) (0 : Fin 4) := by
-      simpa [profile] using hx
-    have hpos :=
-      (CondorcetWinner_iff_marginList (ballots := ballots) (c := (0 : Fin 4))).1
-        hx' (1 : Fin 4) (by decide)
-    exact not_marginList_profile_0_1_pos hpos
-  · have hx' :
-      CondorcetWinner (profileOfListBallots ballots) (1 : Fin 4) := by
-      simpa [profile] using hx
-    have hpos :=
-      (CondorcetWinner_iff_marginList (ballots := ballots) (c := (1 : Fin 4))).1
-        hx' (2 : Fin 4) (by decide)
-    exact not_marginList_profile_1_2_pos hpos
-  · have hx' :
-      CondorcetWinner (profileOfListBallots ballots) (2 : Fin 4) := by
-      simpa [profile] using hx
-    have hpos :=
-      (CondorcetWinner_iff_marginList (ballots := ballots) (c := (2 : Fin 4))).1
-        hx' (3 : Fin 4) (by decide)
-    exact not_marginList_profile_2_3_pos hpos
-  · have hx' :
-      CondorcetWinner (profileOfListBallots ballots) (3 : Fin 4) := by
-      simpa [profile] using hx
-    have hpos :=
-      (CondorcetWinner_iff_marginList (ballots := ballots) (c := (3 : Fin 4))).1
-        hx' (2 : Fin 4) (by decide)
-    exact not_marginList_profile_3_2_pos hpos
+  simp only [profile, CondorcetWinner_iff_marginList]
+  decide
 
 lemma borda_profile : borda profile = ({1, 2, 3} : Finset (Fin 4)) := by
   ext x

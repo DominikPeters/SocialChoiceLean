@@ -322,7 +322,7 @@ lemma clonedRule_strategyproof {V A : Type} [Fintype V] [Fintype A] [Nonempty A]
         exact hpref
 
       -- Get the linear order
-      letI ord := (expandProfile v₁ v₂ hne P').pref v₁
+      let ord := (expandProfile v₁ v₂ hne P').pref v₁
 
       -- Use linear order properties
       unfold Prefers at hnot_v1 hnot_v2 hpref'

@@ -117,11 +117,11 @@ end ListBallot
 
 section ProfileOfListBallots
 
-variable {m n : ℕ}
+variable {m n : ℕ} {V : Type} [Fintype V]
 
 /-- Construct a Profile from a function assigning ListBallots to voters. -/
-noncomputable def profileOfListBallots (ballots : Fin m → ListBallot n) :
-    Profile (Fin m) (Fin n) where
+noncomputable def profileOfListBallots (ballots : V → ListBallot n) :
+    Profile V (Fin n) where
   pref := fun v => (ballots v).toLinearOrder
 
 /-- Access the underlying ranking list for a voter in a list-based profile. -/
@@ -433,10 +433,10 @@ end MarginFromBlocks
 
 section BridgeLemmas
 
-variable {m n : ℕ}
+variable {m n : ℕ} {V : Type} [Fintype V]
 
 /-- Prefers in a list-based profile corresponds to prefersInList. -/
-lemma prefers_iff_prefersInList (ballots : Fin m → ListBallot n) (v : Fin m) (a b : Fin n) :
+lemma prefers_iff_prefersInList (ballots : V → ListBallot n) (v : V) (a b : Fin n) :
     Prefers (profileOfListBallots ballots) v a b ↔ prefersInList (ballots v).ranking a b = true := by
   unfold Prefers profileOfListBallots prefersInList
   rw [(ballots v).lt_iff_idxOf]
@@ -450,7 +450,7 @@ lemma idxOf_head_eq_zero {α : Type} [DecidableEq α] {l : List α} (h : l ≠ [
   | cons x xs => simp [List.idxOf_cons_self]
 
 /-- TopRank in a list-based profile corresponds to isTopOfList on the ranking. -/
-lemma topRank_iff_isTopOfList (ballots : Fin m → ListBallot n) (v : Fin m) (c : Fin n) :
+lemma topRank_iff_isTopOfList (ballots : V → ListBallot n) (v : V) (c : Fin n) :
     TopRank (profileOfListBallots ballots) v c ↔ isTopOfList (ballots v).ranking c = true := by
   constructor
   · intro htop
@@ -501,7 +501,7 @@ lemma topRank_iff_isTopOfList (ballots : Fin m → ListBallot n) (v : Fin m) (c 
     omega
 
 /-- votersTop in a list-based profile equals the filter by isTopOfList. -/
-lemma votersTop_eq_filter_isTopOfList (ballots : Fin m → ListBallot n) (c : Fin n) :
+lemma votersTop_eq_filter_isTopOfList (ballots : V → ListBallot n) (c : Fin n) :
     votersTop (profileOfListBallots ballots) c =
     Finset.univ.filter (fun v => isTopOfList (ballots v).ranking c) := by
   ext v
@@ -516,12 +516,20 @@ lemma votersTop_card_eq_countTop (ballots : Fin m → ListBallot n) (c : Fin n) 
   rw [votersTop_eq_filter_isTopOfList]
 
 /-- votersPreferring in a list-based profile equals the filter by prefersInList. -/
-lemma votersPreferring_eq_filter_prefersInList (ballots : Fin m → ListBallot n) (a b : Fin n) :
+lemma votersPreferring_eq_filter_prefersInList (ballots : V → ListBallot n) (a b : Fin n) :
     votersPreferring (profileOfListBallots ballots) a b =
     Finset.univ.filter (fun v => prefersInList (ballots v).ranking a b) := by
   ext v
   simp only [votersPreferring, mem_filter, mem_univ, true_and]
   exact prefers_iff_prefersInList ballots v a b
+
+/-- The margin in a list-based profile, as a difference of two computable voter counts. -/
+lemma margin_profileOfListBallots (ballots : V → ListBallot n) (a b : Fin n) :
+    margin (profileOfListBallots ballots) a b =
+      Int.ofNat (Finset.univ.filter (fun v => prefersInList (ballots v).ranking a b)).card -
+        Int.ofNat (Finset.univ.filter (fun v => prefersInList (ballots v).ranking b a)).card := by
+  rw [margin_eq_card_diff, votersPreferring_eq_filter_prefersInList,
+    votersPreferring_eq_filter_prefersInList]
 
 /-- The margin in a list-based profile equals marginList. -/
 lemma margin_eq_marginList (ballots : Fin m → ListBallot n) (a b : Fin n) :

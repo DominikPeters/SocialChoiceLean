@@ -193,9 +193,7 @@ theorem lemmaC5
       (AddMonoidHom.mem_ker (f := φ) (x := n • b)).1 hnb
     have hphi0 : n • φ b = 0 := by
       simpa [map_nsmul] using hnb0
-    have hb0 : φ b = 0 := by
-      apply (nsmul_right_injective (M := R') hn)
-      simpa using hphi0
+    have hb0 : φ b = 0 := (nsmul_eq_zero_iff_right hn).1 hphi0
     exact (AddMonoidHom.mem_ker (f := φ) (x := b)).2 hb0
   have hSsubL : S ⊆ L := by
     intro s hs

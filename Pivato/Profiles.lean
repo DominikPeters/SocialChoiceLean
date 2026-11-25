@@ -58,12 +58,12 @@ def permuteZProfile (π : Equiv.Perm V) : ZProfile V ≃+ ZProfile V :=
 @[simp] lemma permuteNProfile_one (d : NProfile V) :
     permuteNProfile (1 : Equiv.Perm V) d = d := by
   ext v
-  simp [permuteNProfile_apply]
+  rfl
 
 @[simp] lemma permuteNProfile_mul (π ρ : Equiv.Perm V) (d : NProfile V) :
     permuteNProfile (π * ρ) d = permuteNProfile π (permuteNProfile ρ d) := by
   ext v
-  simp [permuteNProfile_apply, Equiv.Perm.mul_def, Equiv.symm_trans_apply]
+  simp [permuteNProfile_apply, Equiv.Perm.mul_def]
 
 @[simp] lemma permuteZProfile_apply (π : Equiv.Perm V) (d : ZProfile V) (v : V) :
     permuteZProfile π d v = d (π.symm v) := by
@@ -72,12 +72,12 @@ def permuteZProfile (π : Equiv.Perm V) : ZProfile V ≃+ ZProfile V :=
 @[simp] lemma permuteZProfile_one (d : ZProfile V) :
     permuteZProfile (1 : Equiv.Perm V) d = d := by
   ext v
-  simp [permuteZProfile_apply]
+  rfl
 
 @[simp] lemma permuteZProfile_mul (π ρ : Equiv.Perm V) (d : ZProfile V) :
     permuteZProfile (π * ρ) d = permuteZProfile π (permuteZProfile ρ d) := by
   ext v
-  simp [permuteZProfile_apply, Equiv.Perm.mul_def, Equiv.symm_trans_apply]
+  simp [permuteZProfile_apply, Equiv.Perm.mul_def]
 
 end Permutations
 

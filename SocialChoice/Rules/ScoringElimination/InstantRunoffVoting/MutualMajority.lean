@@ -101,7 +101,7 @@ lemma not_lowestScoring_of_strictMajority_top
 theorem irv_mutual_majority_criterion : MutualMajorityCriterion instantRunoffVoting := by
   intro V A _ _ P S T hmaj hTne hpref
   classical
-  letI : DecidableEq A := Classical.decEq A
+  let : DecidableEq A := Classical.decEq A
   change scoringEliminationAux pluralityScore A P ⊆ T
   set n : Nat := Fintype.card A
   let Motive : Nat → Prop := fun k =>

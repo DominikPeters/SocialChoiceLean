@@ -10,6 +10,16 @@ noncomputable def updateProfile {V A : Type} [Fintype V] [Fintype A]
   classical
   exact { pref := fun w => if w = v then ballot else P.pref w }
 
+lemma updateProfile_pref_self {V A : Type} [Fintype V] [Fintype A]
+    (P : Profile V A) (v : V) (ballot : LinearOrder A) :
+    (updateProfile P v ballot).pref v = ballot :=
+  ite_eq_left rfl
+
+lemma updateProfile_pref_of_ne {V A : Type} [Fintype V] [Fintype A]
+    (P : Profile V A) {v w : V} (ballot : LinearOrder A) (h : w ≠ v) :
+    (updateProfile P v ballot).pref w = P.pref w :=
+  ite_eq_right h
+
 /-- Strategyproofness for resolute rules: no voter can gain by misreporting. -/
 @[scAxiom]
 def ResoluteStrategyproofness (f : VotingRule) (_hf : Resolute f) : Prop :=

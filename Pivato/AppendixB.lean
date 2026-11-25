@@ -48,7 +48,7 @@ def IsLinearOrderCone (P : Set G) : Prop :=
 
 /-- Reflexive-transitive relation packaged as a proposition. -/
 def IsPreorderRel (r : G → G → Prop) : Prop :=
-  Reflexive r ∧ Transitive r
+  (∀ x, r x x) ∧ ∀ ⦃x y z⦄, r x y → r y z → r x z
 
 /-- Partial order relation packaged as a proposition. -/
 def IsPartialOrderRel (r : G → G → Prop) : Prop :=
@@ -56,7 +56,7 @@ def IsPartialOrderRel (r : G → G → Prop) : Prop :=
 
 /-- Linear order relation packaged as a proposition. -/
 def IsLinearOrderRel (r : G → G → Prop) : Prop :=
-  IsPartialOrderRel r ∧ IsTotal G r
+  IsPartialOrderRel r ∧ Std.Total r
 
 /-- Strict/asymmetric part of a relation. -/
 def asymmPart (r : G → G → Prop) : G → G → Prop := fun x y => r x y ∧ ¬ r y x
@@ -99,7 +99,7 @@ section LemmaB1a
 variable {G : Type*} [AddCommGroup G] {r : G → G → Prop}
 
 lemma homogeneous_reflexive_iff_zero_mem (hr : Homogeneous r) :
-    Reflexive r ↔ 0 ∈ positiveConoid r := by
+    (∀ x, r x x) ↔ 0 ∈ positiveConoid r := by
   constructor
   · intro href
     exact href 0
@@ -107,7 +107,7 @@ lemma homogeneous_reflexive_iff_zero_mem (hr : Homogeneous r) :
     exact (hr x x).2 (by simpa [positiveConoid] using h0)
 
 lemma homogeneous_transitive_iff_additivelyClosed (hr : Homogeneous r) :
-    Transitive r ↔ AdditivelyClosed (positiveConoid r) := by
+    (∀ ⦃x y z⦄, r x y → r y z → r x z) ↔ AdditivelyClosed (positiveConoid r) := by
   constructor
   · intro htrans a b ha hb
     have hab : r a (a + b) := by
@@ -138,17 +138,17 @@ lemma homogeneous_antisymm_iff_pointedConoid (hr : Homogeneous r) :
     exact (sub_eq_zero.mp hzero).symm
 
 lemma homogeneous_total_iff_completeConoid (hr : Homogeneous r) (h0 : 0 ∈ positiveConoid r) :
-    IsTotal G r ↔ IsCompleteConoid (positiveConoid r) := by
+    Std.Total r ↔ IsCompleteConoid (positiveConoid r) := by
   constructor
-  · intro htot a ha0
-    rcases IsTotal.total (r := r) 0 a with h | h
+  · intro htot a _
+    rcases htot.total 0 a with h | h
     · exact Or.inl h
     · exact Or.inr (by simpa [positiveConoid, sub_eq_add_neg] using (hr a 0).1 h)
   · intro hcomp
     refine ⟨?_⟩
     intro x y
     by_cases hxy : x = y
-    · exact Or.inl (hxy ▸ (hr y y).2 (by simpa using h0))
+    · exact Or.inl (hxy ▸ (hr y y).2 (by simpa [positiveConoid] using h0))
     · have hne : y - x ≠ 0 := sub_ne_zero.mpr (Ne.symm hxy)
       rcases hcomp (y - x) hne with hyx | hxy'
       · exact Or.inl ((hr x y).2 hyx)
@@ -202,7 +202,7 @@ theorem homogeneous_szpilrajn_strict
       HomogeneousStrict t := by
   obtain ⟨s, hsLin, hrs, hsHom⟩ := homogeneous_szpilrajn (G := G) r hr
   let t : G → G → Prop := asymmPart s
-  haveI : IsLinearOrder G s := hsLin
+  have : IsLinearOrder G s := hsLin
   have hconv : ∀ a b : G, s a b ↔ s (a - b) 0 := by
     intro a b
     constructor
@@ -214,22 +214,17 @@ theorem homogeneous_szpilrajn_strict
       have h0 : s 0 (0 - (a - b)) := (hsHom (a - b) 0).1 hab
       exact (hsHom a b).2 (by
         simpa [sub_eq_add_neg, add_assoc, add_left_comm, add_comm] using h0)
-  haveI : Std.Irrefl t := ⟨fun x hx => hx.2 (refl (r := s) x)⟩
-  haveI : IsTrans G t := ⟨fun x y z hxy hyz => by
+  have : Std.Irrefl t := ⟨fun x hx => hx.2 (refl (r := s) x)⟩
+  have : IsTrans G t := ⟨fun x y z hxy hyz => by
     refine ⟨_root_.trans (r := s) hxy.1 hyz.1, ?_⟩
     intro hzx
     exact hxy.2 (_root_.trans (r := s) hyz.1 hzx)⟩
-  haveI : IsTrichotomous G t := ⟨fun x y => by
-    by_cases hxy : s x y
-    · by_cases hyx : s y x
-      · exact Or.inr (Or.inl (antisymm (r := s) hxy hyx))
-      · exact Or.inl ⟨hxy, hyx⟩
-    · have hyx : s y x := (IsTotal.total (r := s) x y).resolve_left hxy
-      by_cases hxy' : s x y
-      · exact Or.inr (Or.inl (antisymm (r := s) hxy' hyx))
-      · exact Or.inr (Or.inr ⟨hyx, hxy'⟩)⟩
-  haveI : IsStrictOrder G t := ⟨⟩
-  haveI : IsStrictTotalOrder G t := ⟨⟩
+  have : Std.Trichotomous t := ⟨fun x y hxy hyx => by
+    rcases total_of s x y with h | h
+    · exact antisymm (r := s) h (not_not.1 fun h' => hxy ⟨h, h'⟩)
+    · exact antisymm (r := s) (not_not.1 fun h' => hyx ⟨h, h'⟩) h⟩
+  have : IsStrictOrder G t := ⟨⟩
+  have : IsStrictTotalOrder G t := ⟨⟩
   have hAsymmExtend : asymmPart r ≤ t := by
     intro x y hxy
     refine ⟨hrs x y hxy.1, ?_⟩
@@ -261,11 +256,11 @@ variable {G : Type*} [AddCommGroup G]
 theorem corollaryB1a [IsAddTorsionFree G] :
     ∃ r : G → G → Prop, IsLinearOrder G r ∧ Homogeneous r := by
   let r0 : G → G → Prop := (· = ·)
-  haveI : Std.Refl r0 := ⟨by intro x; rfl⟩
-  haveI : IsTrans G r0 := ⟨by intro x y z hxy hyz; exact hxy.trans hyz⟩
-  haveI : Std.Antisymm r0 := ⟨by intro x y hxy _hyx; exact hxy⟩
-  haveI : IsPreorder G r0 := ⟨⟩
-  haveI : IsPartialOrder G r0 := ⟨⟩
+  have : Std.Refl r0 := ⟨by intro x; rfl⟩
+  have : IsTrans G r0 := ⟨by intro x y z hxy hyz; exact hxy.trans hyz⟩
+  have : Std.Antisymm r0 := ⟨by intro x y hxy _hyx; exact hxy⟩
+  have : IsPreorder G r0 := ⟨⟩
+  have : IsPartialOrder G r0 := ⟨⟩
   have hr0 : Homogeneous r0 := by
     intro x y
     constructor
@@ -283,7 +278,7 @@ theorem quotient_isAddTorsionFree_of_divisibleSubgroup
     (B : AddSubgroup G) (hB : IsDivisibleSubgroup B) :
     IsAddTorsionFree (G ⧸ B) := by
   refine ⟨?_⟩
-  intro n hn q1 q2 hEq
+  intro n hn q1 q2 _ hEq
   have hsub : n • (q1 - q2) = 0 := by
     have : n • q1 - n • q2 = 0 := sub_eq_zero.mpr hEq
     simpa [nsmul_sub] using this
@@ -314,21 +309,16 @@ Assumptions match the paper wording:
 theorem corollaryB1b (A : Type*) [AddCommGroup A] (B : AddSubgroup A)
     (hB : IsDivisibleSubgroup B) (_hBproper : B ≠ ⊤) :
     ∃ r : A → A → Prop,
-      IsPreorderRel r ∧ IsTotal A r ∧ Homogeneous r ∧ {a : A | symmPart r a 0} = B := by
-  letI : IsAddTorsionFree (A ⧸ B) :=
+      IsPreorderRel r ∧ Std.Total r ∧ Homogeneous r ∧ {a : A | symmPart r a 0} = B := by
+  let : IsAddTorsionFree (A ⧸ B) :=
     quotient_isAddTorsionFree_of_divisibleSubgroup (B := B) hB
   obtain ⟨s, hsLin, hsHom⟩ := corollaryB1a (G := A ⧸ B)
-  haveI : IsLinearOrder (A ⧸ B) s := hsLin
+  have : IsLinearOrder (A ⧸ B) s := hsLin
   let r : A → A → Prop := fun x y => s (QuotientAddGroup.mk x) (QuotientAddGroup.mk y)
   refine ⟨r, ?_, ?_, ?_, ?_⟩
-  · refine ⟨?_, ?_⟩
-    · intro x
-      exact refl (r := s) (QuotientAddGroup.mk x)
-    · intro x y z hxy hyz
-      exact _root_.trans (r := s) hxy hyz
-  · refine ⟨?_⟩
-    intro x y
-    exact IsTotal.total (r := s) (QuotientAddGroup.mk x) (QuotientAddGroup.mk y)
+  · refine ⟨fun x => refl (r := s) (QuotientAddGroup.mk x), fun x y z hxy hyz => ?_⟩
+    exact _root_.trans (r := s) hxy hyz
+  · exact ⟨fun x y => total_of s (QuotientAddGroup.mk x) (QuotientAddGroup.mk y)⟩
   · intro x y
     simpa [r, sub_eq_add_neg] using (hsHom (QuotientAddGroup.mk x) (QuotientAddGroup.mk y))
   · ext a

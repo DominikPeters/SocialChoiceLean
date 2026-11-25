@@ -83,7 +83,7 @@ lemma topChoice_topRank {V A : Type} [Fintype V] [Fintype A] [Nonempty A]
     (P : Profile V A) (v : V) : TopRank P v (topChoice P v) := by
   intro d hd
   unfold topChoice Prefers
-  letI := P.pref v
+  let := P.pref v
   have hle := Finset.min'_le Finset.univ d (Finset.mem_univ d)
   exact lt_of_le_of_ne hle (Ne.symm hd)
 
@@ -94,7 +94,7 @@ lemma topRank_eq_topChoice {V A : Type} [Fintype V] [Fintype A] [Nonempty A]
   have hc_beats := htop (topChoice P v) (Ne.symm hne)
   have htop_beats := topChoice_topRank P v c hne
   unfold Prefers at hc_beats htop_beats
-  letI := P.pref v
+  let := P.pref v
   exact lt_asymm hc_beats htop_beats
 
 /-- TopRank implies the candidate equals the topChoice. -/

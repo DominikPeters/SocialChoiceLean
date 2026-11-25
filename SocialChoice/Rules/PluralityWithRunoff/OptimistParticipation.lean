@@ -13,7 +13,6 @@ set extension, that voter strictly prefers abstaining.
 namespace PluralityWithRunoffOptimistParticipationCounterexample
 
 open Finset
-open Classical
 open PluralityWithRunoffNegativeInvolvementCounterexample
 
 def ballot021OP : ListBallot 3 := ListBallot.mk' [0, 2, 1]
@@ -29,7 +28,7 @@ def ballots5OP : Fin 5 → ListBallot 3
   | _ => ballot210OP
 
 noncomputable def fullProfileOP : Profile (Electorate (Fin 5) (Finset.univ)) (Fin 3) :=
-  { pref := fun v => (ballots5OP v.1).toLinearOrder }
+  profileOfListBallots (fun v => ballots5OP v.1)
 
 def voters4OP : Finset (Fin 5) := Finset.univ.erase 0
 
@@ -49,10 +48,10 @@ def ballots4OP (v : Electorate (Fin 5) voters4OP) : ListBallot 3 := ballots5OP v
 def ballots5OP' (v : Electorate (Fin 5) (insert (0 : Fin 5) voters4OP)) : ListBallot 3 :=
   ballots5OP v.1
 
-private lemma profile4OP_eq : profile4OP = profileOfBallotsNI ballots4OP := by
+private lemma profile4OP_eq : profile4OP = profileOfListBallots ballots4OP := by
   rfl
 
-private lemma profile5OP_eq : profile5OP = profileOfBallotsNI ballots5OP' := by
+private lemma profile5OP_eq : profile5OP = profileOfListBallots ballots5OP' := by
   rfl
 
 lemma voters4OP_not_mem : (0 : Fin 5) ∉ voters4OP := by
@@ -65,48 +64,24 @@ lemma profiles_agreeOP :
   rfl
 
 private lemma plurality_profile5OP_eq : plurality profile5OP = ({1, 2} : Finset (Fin 3)) := by
-  classical
-  change plurality (profileOfBallotsNI ballots5OP') = ({1, 2} : Finset (Fin 3))
-  simp [plurality, topCount_eq_countTopNI, countTopNI]
+  rw [profile5OP_eq]
+  simp only [plurality, topCount, votersTop_eq_filter_isTopOfList]
   decide
 
 private lemma plurality_profile4OP_eq : plurality profile4OP = ({2} : Finset (Fin 3)) := by
-  classical
-  change plurality (profileOfBallotsNI ballots4OP) = ({2} : Finset (Fin 3))
-  simp [plurality, topCount_eq_countTopNI, countTopNI]
+  rw [profile4OP_eq]
+  simp only [plurality, topCount, votersTop_eq_filter_isTopOfList]
   decide
 
 private lemma secondPluralitySet_profile4OP :
     secondPluralitySet profile4OP ({2} : Finset (Fin 3)) = ({0, 1} : Finset (Fin 3)) := by
-  classical
-  change secondPluralitySet (profileOfBallotsNI ballots4OP) ({2} : Finset (Fin 3)) =
-    ({0, 1} : Finset (Fin 3))
-  simp [secondPluralitySet, topCount_eq_countTopNI, countTopNI]
+  rw [profile4OP_eq]
+  simp [secondPluralitySet, topCount, votersTop_eq_filter_isTopOfList]
   decide
-
-private lemma powersetCard_eq_singleton_of_card_two {A : Type} [DecidableEq A]
-    {S : Finset A} (hcard : S.card = 2) :
-    S.powersetCard 2 = ({S} : Finset (Finset A)) := by
-  classical
-  apply Finset.ext
-  intro T
-  constructor
-  · intro hT
-    have hsubset : T ⊆ S := (Finset.mem_powersetCard.mp hT).1
-    have hcardT : T.card = 2 := (Finset.mem_powersetCard.mp hT).2
-    have hEq : T = S := by
-      apply Finset.eq_of_subset_of_card_le hsubset
-      simp [hcard, hcardT]
-    simp [hEq]
-  · intro hT
-    have hEq : T = S := by simpa using hT
-    subst hEq
-    exact Finset.mem_powersetCard.mpr ⟨by intro x hx; exact hx, hcard⟩
 
 private lemma pluralityWithRunoffPairs_profile5OP :
     pluralityWithRunoffPairs profile5OP =
       ({({1, 2} : Finset (Fin 3))} : Finset (Finset (Fin 3))) := by
-  classical
   have hS : (plurality profile5OP).card ≥ 2 := by
     simp [plurality_profile5OP_eq]
   have hcard : (plurality profile5OP).card = 2 := by
@@ -121,267 +96,68 @@ private lemma pluralityWithRunoffPairs_profile4OP :
     pluralityWithRunoffPairs profile4OP =
       ({({2, 0} : Finset (Fin 3)), ({2, 1} : Finset (Fin 3))} :
         Finset (Finset (Fin 3))) := by
-  classical
-  change pluralityWithRunoffPairs (profileOfBallotsNI ballots4OP) =
-    ({({2, 0} : Finset (Fin 3)), ({2, 1} : Finset (Fin 3))} :
-      Finset (Finset (Fin 3)))
-  simp [pluralityWithRunoffPairs, secondPluralitySet, plurality, topCount_eq_countTopNI, countTopNI]
-  decide
+  simp [pluralityWithRunoffPairs, plurality_profile4OP_eq, secondPluralitySet_profile4OP]
 
 private lemma margin_profile5OP_2_1 : margin profile5OP (2 : Fin 3) (1 : Fin 3) = 1 := by
-  classical
-  simp [profile5OP_eq, margin_eq_marginListNI]
+  rw [profile5OP_eq, margin_profileOfListBallots]
   decide
 
 private lemma margin_profile5OP_1_2 : margin profile5OP (1 : Fin 3) (2 : Fin 3) = -1 := by
-  classical
-  simp [profile5OP_eq, margin_eq_marginListNI]
+  rw [profile5OP_eq, margin_profileOfListBallots]
   decide
 
 private lemma margin_profile4OP_0_2 : margin profile4OP (0 : Fin 3) (2 : Fin 3) = 0 := by
-  classical
-  simp [profile4OP_eq, margin_eq_marginListNI]
+  rw [profile4OP_eq, margin_profileOfListBallots]
   decide
 
 private lemma margin_profile4OP_2_0 : margin profile4OP (2 : Fin 3) (0 : Fin 3) = 0 := by
-  classical
-  simp [profile4OP_eq, margin_eq_marginListNI]
+  rw [profile4OP_eq, margin_profileOfListBallots]
   decide
 
 private lemma margin_profile4OP_1_2 : margin profile4OP (1 : Fin 3) (2 : Fin 3) = -2 := by
-  classical
-  simp [profile4OP_eq, margin_eq_marginListNI]
+  rw [profile4OP_eq, margin_profileOfListBallots]
   decide
 
-private noncomputable def pairC {A : Type} (x y : A) : Finset A := by
-  classical
-  exact {x, y}
-
-@[simp] private lemma pairC_eq_pair (x y : Fin 3) :
-    pairC x y = ({x, y} : Finset (Fin 3)) := by
-  classical
-  ext z
-  simp [pairC]
-
-private lemma mem_pluralityWithRunoff_iff {V A : Type} [Fintype V] [Fintype A]
-    (P : Profile V A) (x : A) (hcard : ¬ Fintype.card A ≤ 1) :
-    x ∈ pluralityWithRunoff P ↔
-      ∃ y : A,
-        pairC x y ∈
-          @pluralityWithRunoffPairs V A _ _ (Classical.decEq A) P ∧
-          0 ≤ margin P x y := by
-  classical
-  by_cases hcard' : Fintype.card A ≤ 1
-  · exact (hcard hcard').elim
-  · constructor
-    · intro hx
-      simpa [pluralityWithRunoff, hcard', pairC] using hx
-    · intro hx
-      have hx' :
-          x ∈ (Finset.univ : Finset A) ∧
-            ∃ y : A,
-              pairC x y ∈
-                @pluralityWithRunoffPairs V A _ _ (Classical.decEq A) P ∧
-                0 ≤ margin P x y := by
-        exact ⟨by simp, hx⟩
-      simpa [pluralityWithRunoff, hcard', pairC] using hx'
-
-lemma pluralityWithRunoff_profile5OP_has_2 : (2 : Fin 3) ∈ pluralityWithRunoff profile5OP := by
-  classical
-  have hcard : ¬ Fintype.card (Fin 3) <= 1 := by decide
-  have hpair : ({2, 1} : Finset (Fin 3)) ∈ pluralityWithRunoffPairs profile5OP := by
-    have hpair' : ({1, 2} : Finset (Fin 3)) ∈ pluralityWithRunoffPairs profile5OP := by
-      simp [pluralityWithRunoffPairs_profile5OP]
-    simpa [Finset.pair_comm] using hpair'
-  have hmargin : 0 <= margin profile5OP (2 : Fin 3) (1 : Fin 3) := by
-    simp [margin_profile5OP_2_1]
-  have hpair_default : pairC 2 1 ∈ pluralityWithRunoffPairs profile5OP := by
-    simpa [pairC_eq_pair] using hpair
-  have hpair_classical :
-      pairC 2 1 ∈
-        @pluralityWithRunoffPairs (Electorate (Fin 5) (insert 0 voters4OP)) (Fin 3) _ _
-          (Classical.decEq (Fin 3)) profile5OP := by
-    exact
-      (mem_pluralityWithRunoffPairs_decEq_congr (P := profile5OP)
-          (inst1 := (inferInstance : DecidableEq (Fin 3)))
-          (inst2 := Classical.decEq (Fin 3))
-          (s := pairC 2 1)).1 hpair_default
-  exact (mem_pluralityWithRunoff_iff (P := profile5OP) (x := (2 : Fin 3)) (hcard := hcard)).2
-    ⟨(1 : Fin 3), hpair_classical, hmargin⟩
+lemma pluralityWithRunoff_profile5OP_has_2 : (2 : Fin 3) ∈ pluralityWithRunoff profile5OP :=
+  (mem_pluralityWithRunoff_iff profile5OP 2 (by decide)).2
+    ⟨1, by simp [pluralityWithRunoffPairs_profile5OP, Finset.pair_comm],
+      by simp [margin_profile5OP_2_1]⟩
 
 lemma pluralityWithRunoff_profile5OP_not_0 : (0 : Fin 3) ∉ pluralityWithRunoff profile5OP := by
-  classical
-  have hcard : ¬ Fintype.card (Fin 3) <= 1 := by decide
   intro hmem
-  rcases (mem_pluralityWithRunoff_iff (P := profile5OP) (x := (0 : Fin 3)) (hcard := hcard)).1 hmem with
-    ⟨y, hyPair_classical, _hmargin⟩
-  have hyPair_default : pairC 0 y ∈ pluralityWithRunoffPairs profile5OP := by
-    exact
-      (mem_pluralityWithRunoffPairs_decEq_congr (P := profile5OP)
-          (inst1 := Classical.decEq (Fin 3))
-          (inst2 := (inferInstance : DecidableEq (Fin 3)))
-          (s := pairC 0 y)).1 hyPair_classical
-  have hyPair : ({0, y} : Finset (Fin 3)) ∈ pluralityWithRunoffPairs profile5OP := by
-    simpa [pairC_eq_pair] using hyPair_default
-  fin_cases y
-  ·
-    have hEq : ({0} : Finset (Fin 3)) = ({1, 2} : Finset (Fin 3)) := by
-      simpa [pluralityWithRunoffPairs_profile5OP] using hyPair
-    have hmem1 : (1 : Fin 3) ∈ ({1, 2} : Finset (Fin 3)) := by simp
-    have hmem1' : (1 : Fin 3) ∈ ({0} : Finset (Fin 3)) := by
-      rw [hEq]
-      exact hmem1
-    simp at hmem1'
-  ·
-    have hEq : ({0, 1} : Finset (Fin 3)) = ({1, 2} : Finset (Fin 3)) := by
-      simpa [pluralityWithRunoffPairs_profile5OP] using hyPair
-    have hmem2 : (2 : Fin 3) ∈ ({1, 2} : Finset (Fin 3)) := by simp
-    have hmem2' : (2 : Fin 3) ∈ ({0, 1} : Finset (Fin 3)) := by
-      rw [hEq]
-      exact hmem2
-    simp at hmem2'
-  ·
-    have hEq : ({0, 2} : Finset (Fin 3)) = ({1, 2} : Finset (Fin 3)) := by
-      simpa [pluralityWithRunoffPairs_profile5OP] using hyPair
-    have hmem1 : (1 : Fin 3) ∈ ({1, 2} : Finset (Fin 3)) := by simp
-    have hmem1' : (1 : Fin 3) ∈ ({0, 2} : Finset (Fin 3)) := by
-      rw [hEq]
-      exact hmem1
-    simp at hmem1'
+  obtain ⟨y, hyPair, -⟩ := (mem_pluralityWithRunoff_iff profile5OP 0 (by decide)).1 hmem
+  rw [pluralityWithRunoffPairs_profile5OP] at hyPair
+  have hnot : ∀ y : Fin 3,
+      ({0, y} : Finset (Fin 3)) ∉ ({({1, 2} : Finset (Fin 3))} : Finset (Finset (Fin 3))) := by
+    decide
+  exact hnot y hyPair
 
 lemma pluralityWithRunoff_profile5OP_not_1 : (1 : Fin 3) ∉ pluralityWithRunoff profile5OP := by
-  classical
-  have hcard : ¬ Fintype.card (Fin 3) <= 1 := by decide
   intro hmem
-  rcases (mem_pluralityWithRunoff_iff (P := profile5OP) (x := (1 : Fin 3)) (hcard := hcard)).1 hmem with
-    ⟨y, hyPair_classical, hmargin⟩
-  have hyPair_default : pairC 1 y ∈ pluralityWithRunoffPairs profile5OP := by
-    exact
-      (mem_pluralityWithRunoffPairs_decEq_congr (P := profile5OP)
-          (inst1 := Classical.decEq (Fin 3))
-          (inst2 := (inferInstance : DecidableEq (Fin 3)))
-          (s := pairC 1 y)).1 hyPair_classical
-  have hyPair : ({1, y} : Finset (Fin 3)) ∈ pluralityWithRunoffPairs profile5OP := by
-    simpa [pairC_eq_pair] using hyPair_default
+  obtain ⟨y, hyPair, hmargin⟩ := (mem_pluralityWithRunoff_iff profile5OP 1 (by decide)).1 hmem
+  rw [pluralityWithRunoffPairs_profile5OP] at hyPair
   fin_cases y
-  ·
-    have hEq : ({1, 0} : Finset (Fin 3)) = ({1, 2} : Finset (Fin 3)) := by
-      simpa [pluralityWithRunoffPairs_profile5OP] using hyPair
-    have hmem2 : (2 : Fin 3) ∈ ({1, 2} : Finset (Fin 3)) := by simp
-    have hmem2' : (2 : Fin 3) ∈ ({1, 0} : Finset (Fin 3)) := by
-      rw [hEq]
-      exact hmem2
-    simp at hmem2'
-  ·
-    have hEq : ({1} : Finset (Fin 3)) = ({1, 2} : Finset (Fin 3)) := by
-      simpa [pluralityWithRunoffPairs_profile5OP] using hyPair
-    have hmem2 : (2 : Fin 3) ∈ ({1, 2} : Finset (Fin 3)) := by simp
-    have hmem2' : (2 : Fin 3) ∈ ({1} : Finset (Fin 3)) := by
-      rw [hEq]
-      exact hmem2
-    simp at hmem2'
-  ·
-    have hmargin' : 0 <= margin profile5OP (1 : Fin 3) (2 : Fin 3) := by
-      exact hmargin
-    have hmargin'' := hmargin'
-    simp [margin_profile5OP_1_2] at hmargin''
+  · exact absurd hyPair (by decide)
+  · exact absurd hyPair (by decide)
+  · simp [margin_profile5OP_1_2] at hmargin
 
-lemma pluralityWithRunoff_profile4OP_has_0 : (0 : Fin 3) ∈ pluralityWithRunoff profile4OP := by
-  classical
-  have hcard : ¬ Fintype.card (Fin 3) <= 1 := by decide
-  have hpair : ({2, 0} : Finset (Fin 3)) ∈ pluralityWithRunoffPairs profile4OP := by
-    simp [pluralityWithRunoffPairs_profile4OP]
-  have hmargin : 0 <= margin profile4OP (0 : Fin 3) (2 : Fin 3) := by
-    simp [margin_profile4OP_0_2]
-  have hpair_default : pairC 0 2 ∈ pluralityWithRunoffPairs profile4OP := by
-    simpa [pairC_eq_pair, Finset.pair_comm] using hpair
-  have hpair_classical :
-      pairC 0 2 ∈
-        @pluralityWithRunoffPairs (Electorate (Fin 5) voters4OP) (Fin 3) _ _
-          (Classical.decEq (Fin 3)) profile4OP := by
-    exact
-      (mem_pluralityWithRunoffPairs_decEq_congr (P := profile4OP)
-          (inst1 := (inferInstance : DecidableEq (Fin 3)))
-          (inst2 := Classical.decEq (Fin 3))
-          (s := pairC 0 2)).1 hpair_default
-  exact (mem_pluralityWithRunoff_iff (P := profile4OP) (x := (0 : Fin 3)) (hcard := hcard)).2
-    ⟨(2 : Fin 3), hpair_classical, hmargin⟩
+lemma pluralityWithRunoff_profile4OP_has_0 : (0 : Fin 3) ∈ pluralityWithRunoff profile4OP :=
+  (mem_pluralityWithRunoff_iff profile4OP 0 (by decide)).2
+    ⟨2, by simp [pluralityWithRunoffPairs_profile4OP, Finset.pair_comm],
+      by simp [margin_profile4OP_0_2]⟩
 
-lemma pluralityWithRunoff_profile4OP_has_2 : (2 : Fin 3) ∈ pluralityWithRunoff profile4OP := by
-  classical
-  have hcard : ¬ Fintype.card (Fin 3) <= 1 := by decide
-  have hpair : ({2, 0} : Finset (Fin 3)) ∈ pluralityWithRunoffPairs profile4OP := by
-    simp [pluralityWithRunoffPairs_profile4OP]
-  have hmargin : 0 <= margin profile4OP (2 : Fin 3) (0 : Fin 3) := by
-    simp [margin_profile4OP_2_0]
-  have hpair_default : pairC 2 0 ∈ pluralityWithRunoffPairs profile4OP := by
-    simpa [pairC_eq_pair] using hpair
-  have hpair_classical :
-      pairC 2 0 ∈
-        @pluralityWithRunoffPairs (Electorate (Fin 5) voters4OP) (Fin 3) _ _
-          (Classical.decEq (Fin 3)) profile4OP := by
-    exact
-      (mem_pluralityWithRunoffPairs_decEq_congr (P := profile4OP)
-          (inst1 := (inferInstance : DecidableEq (Fin 3)))
-          (inst2 := Classical.decEq (Fin 3))
-          (s := pairC 2 0)).1 hpair_default
-  exact (mem_pluralityWithRunoff_iff (P := profile4OP) (x := (2 : Fin 3)) (hcard := hcard)).2
-    ⟨(0 : Fin 3), hpair_classical, hmargin⟩
+lemma pluralityWithRunoff_profile4OP_has_2 : (2 : Fin 3) ∈ pluralityWithRunoff profile4OP :=
+  (mem_pluralityWithRunoff_iff profile4OP 2 (by decide)).2
+    ⟨0, by simp [pluralityWithRunoffPairs_profile4OP], by simp [margin_profile4OP_2_0]⟩
 
 lemma pluralityWithRunoff_profile4OP_not_1 : (1 : Fin 3) ∉ pluralityWithRunoff profile4OP := by
-  classical
-  have hcard : ¬ Fintype.card (Fin 3) <= 1 := by decide
   intro hmem
-  rcases (mem_pluralityWithRunoff_iff (P := profile4OP) (x := (1 : Fin 3)) (hcard := hcard)).1 hmem with
-    ⟨y, hyPair_classical, hmargin⟩
-  have hyPair_default : pairC 1 y ∈ pluralityWithRunoffPairs profile4OP := by
-    exact
-      (mem_pluralityWithRunoffPairs_decEq_congr (P := profile4OP)
-          (inst1 := Classical.decEq (Fin 3))
-          (inst2 := (inferInstance : DecidableEq (Fin 3)))
-          (s := pairC 1 y)).1 hyPair_classical
-  have hyPair : ({1, y} : Finset (Fin 3)) ∈ pluralityWithRunoffPairs profile4OP := by
-    simpa [pairC_eq_pair] using hyPair_default
+  obtain ⟨y, hyPair, hmargin⟩ := (mem_pluralityWithRunoff_iff profile4OP 1 (by decide)).1 hmem
+  rw [pluralityWithRunoffPairs_profile4OP] at hyPair
   fin_cases y
-  ·
-    have hEq : ({1, 0} : Finset (Fin 3)) = ({2, 0} : Finset (Fin 3)) ∨
-        ({1, 0} : Finset (Fin 3)) = ({2, 1} : Finset (Fin 3)) := by
-      simpa [pluralityWithRunoffPairs_profile4OP] using hyPair
-    cases hEq with
-    | inl h =>
-        have hmem2 : (2 : Fin 3) ∈ ({2, 0} : Finset (Fin 3)) := by simp
-        have hmem2' : (2 : Fin 3) ∈ ({1, 0} : Finset (Fin 3)) := by
-          rw [h]
-          exact hmem2
-        simp at hmem2'
-    | inr h =>
-        have hmem2 : (2 : Fin 3) ∈ ({2, 1} : Finset (Fin 3)) := by simp
-        have hmem2' : (2 : Fin 3) ∈ ({1, 0} : Finset (Fin 3)) := by
-          rw [h]
-          exact hmem2
-        simp at hmem2'
-  ·
-    have hEq : ({1} : Finset (Fin 3)) = ({2, 0} : Finset (Fin 3)) ∨
-        ({1} : Finset (Fin 3)) = ({2, 1} : Finset (Fin 3)) := by
-      simpa [pluralityWithRunoffPairs_profile4OP] using hyPair
-    cases hEq with
-    | inl h =>
-        have hmem2 : (2 : Fin 3) ∈ ({2, 0} : Finset (Fin 3)) := by simp
-        have hmem2' : (2 : Fin 3) ∈ ({1} : Finset (Fin 3)) := by
-          rw [h]
-          exact hmem2
-        simp at hmem2'
-    | inr h =>
-        have hmem2 : (2 : Fin 3) ∈ ({2, 1} : Finset (Fin 3)) := by simp
-        have hmem2' : (2 : Fin 3) ∈ ({1} : Finset (Fin 3)) := by
-          rw [h]
-          exact hmem2
-        simp at hmem2'
-  ·
-    have hmargin' : 0 <= margin profile4OP (1 : Fin 3) (2 : Fin 3) := by
-      exact hmargin
-    have hmargin'' := hmargin'
-    simp [margin_profile4OP_1_2] at hmargin''
+  · exact absurd hyPair (by decide)
+  · exact absurd hyPair (by decide)
+  · simp [margin_profile4OP_1_2] at hmargin
 
 private lemma newVoter_prefers_0_2_OP :
     (profile5OP.pref (newVoter (u := (0 : Fin 5)) (V := voters4OP) voters4OP_not_mem)).lt
@@ -400,7 +176,7 @@ theorem pluralityWithRunoff_not_optimistParticipation :
     ¬ OptimistParticipation pluralityWithRunoff := by
   intro hopt
   let r := profile5OP.pref (newVoter (u := (0 : Fin 5)) (V := voters4OP) voters4OP_not_mem)
-  letI : LinearOrder (Fin 3) := r
+  let : LinearOrder (Fin 3) := r
   have hweak :
       @OptimistWeak (Fin 3) (fun a b => LinearOrder.toDecidableEq a b) r
         (pluralityWithRunoff profile5OP) (pluralityWithRunoff profile4OP) := by

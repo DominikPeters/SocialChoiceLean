@@ -289,7 +289,7 @@ lemma hagree_Q4raw_P4 {u2 : U450} (hu2 : u2 ∉ votersP4)
       unfold addCopiesProfile
       change (if h : v.1 ∈ V3 then Q3.pref ⟨v.1, h⟩ else ballot_bdeac.toLinearOrder) =
         P4Profile.pref v
-      simp only [dif_pos hvV3, hQ3pref, hP4]
+      simp only [dite_eq_left hvV3, hQ3pref, hP4]
   · have hballot : ballotsAll v.1 = ballot_bdeac :=
       ballotsAll_eq_ballot_bdeac_of_mem_votersP1_10 hv10
     have hP4 : P4Profile.pref v = (ballotsAll v.1).toLinearOrder := by
@@ -301,7 +301,7 @@ lemma hagree_Q4raw_P4 {u2 : U450} (hu2 : u2 ∉ votersP4)
     unfold addCopiesProfile
     change (if h : v.1 ∈ V3 then Q3.pref ⟨v.1, h⟩ else ballot_bdeac.toLinearOrder) =
       P4Profile.pref v
-    simp only [dif_neg hvV3', hP4, hballot]
+    simp only [dite_eq_right hvV3', hP4, hballot]
 
 lemma not_mem_P5_add_twoVoters_of_not_mem_P4_add_twoVoters {f : VotingRule} (hpos : PositiveInvolvement f)
     {u2 u4 : U450} (hu2 : u2 ∉ votersP4) (hu4 : u4 ∉ votersP4)

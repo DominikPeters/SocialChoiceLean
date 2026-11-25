@@ -1900,7 +1900,7 @@ theorem split_cycle_clone_choice_independence_of_clones : CloneChoiceIndependenc
   · intro hnone
     rcases hnone with ⟨hc_not, hD_not⟩
     let C := {x : A // ∀ h : x ≠ c, (⟨x, h⟩ : {x // x ≠ c}) ∈ D}
-    haveI : Fintype C := by classical infer_instance
+    have : Fintype C := by classical infer_instance
     have cC : C := ⟨c, by intro h; cases h rfl⟩
     have hnot_all : ¬ ∀ c' : C, ∃ d : C, splitCycleDefeats P d.1 c'.1 := by
       intro hdefC
@@ -1958,7 +1958,7 @@ theorem split_cycle_clone_choice_independence_of_clones : CloneChoiceIndependenc
     have hDne : D.Nonempty := clone.1
     rcases hDne with ⟨d0, hd0⟩
     let S := {x : {x : A // x ≠ c} // x ∈ D}
-    haveI : Fintype S := by classical infer_instance
+    have : Fintype S := by classical infer_instance
     have s0 : S := ⟨d0, hd0⟩
     have hnot_all :
         ¬ ∀ c' : S, ∃ d : S, splitCycleDefeats (minusCandidate P c) d.1 c'.1 := by

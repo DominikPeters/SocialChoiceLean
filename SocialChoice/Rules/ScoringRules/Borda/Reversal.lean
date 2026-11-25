@@ -5,7 +5,6 @@ import SocialChoice.Rules.ScoringRules.Borda.C2Borda
 namespace SocialChoice
 
 open Finset
-open Classical
 
 lemma c2BordaRule_score_pos_of_exists_pos {V A : Type} [Fintype V] [Fintype A]
     (P : Profile V A) {x : A} (hx : x ∈ c2BordaRule P)

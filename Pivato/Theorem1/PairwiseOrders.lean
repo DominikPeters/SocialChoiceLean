@@ -58,7 +58,7 @@ lemma nsmul_mem_of_additivelyClosed {G : Type*} [AddCommGroup G] {S : Set G}
   | succ k =>
       induction k with
       | zero =>
-          simpa using ha
+          simpa [one_nsmul] using ha
       | succ k ih =>
           have hk : (Nat.succ k) ≠ 0 := Nat.succ_ne_zero _
           have hPrev : (Nat.succ k) • a ∈ S := ih hk
@@ -68,7 +68,7 @@ lemma pairwiseDifferenceConeRaw_subset
     {F : RuleOn D X} {x y : X} {z : ZProfile V}
     (hz : z ∈ pairwiseDifferenceConeRaw F x y) :
     z ∈ pairwiseDifferenceCone F x y := by
-  exact ⟨1, by simp, by simpa using hz⟩
+  exact ⟨1, one_ne_zero, by simpa [one_nsmul] using hz⟩
 
 lemma pairwiseDifferenceConeRaw_add_closed
     {F : RuleOn D X} (hR : Reinforcement D F) (x y : X) :
@@ -149,13 +149,13 @@ lemma pairwiseRel_isPreorderRel
 lemma pairwiseRel_refl
     {F : RuleOn D X} (hD : IsDomain D) (hA : GeneralAbstention D F)
     (hR : Reinforcement D F) (x y : X) :
-    Reflexive (pairwiseRel F x y) :=
+    ∀ z, pairwiseRel F x y z z :=
   (pairwiseRel_isPreorderRel (F := F) hD hA hR x y).1
 
 lemma pairwiseRel_trans
     {F : RuleOn D X} (hD : IsDomain D) (hA : GeneralAbstention D F)
     (hR : Reinforcement D F) (x y : X) :
-    Transitive (pairwiseRel F x y) :=
+    ∀ ⦃z w u⦄, pairwiseRel F x y z w → pairwiseRel F x y w u → pairwiseRel F x y z u :=
   (pairwiseRel_isPreorderRel (F := F) hD hA hR x y).2
 
 def pairwiseKernelSubgroup
@@ -269,10 +269,10 @@ lemma winner_loser_nsmul_of_reinforcement
     induction k with
     | zero =>
         have h1D : (0 + 1) • d ∈ D := by
-          simpa using hd
+          simpa [one_nsmul] using hd
         have hsub : (⟨(0 + 1) • d, h1D⟩ : {d : NProfile V // d ∈ D}) = ⟨d, hd⟩ := by
           apply Subtype.ext
-          simp
+          simp [one_nsmul]
         refine ⟨h1D, ?_, ?_⟩
         · simpa [hsub] using hxd
         · intro hy
@@ -531,6 +531,7 @@ lemma pairwiseQuotientRel_isPartialOrderRel
     (r := pairwiseQuotientRel (F := F) hD hA hR x y)
     (pairwiseQuotientRel_homogeneous (F := F) hD hA hR x y)).2 hCone
 
+@[instance_reducible]
 noncomputable def pairwiseQuotientPartialOrder
     {F : RuleOn D X} (hD : IsDomain D) (hA : GeneralAbstention D F)
     (hR : Reinforcement D F) (x y : X) :
@@ -569,7 +570,7 @@ lemma pairwiseLinearMap_nonneg_of_winner
       pairwiseQuotientPartialOrder (F := F) hD hA hR x y
     (0 : PairwiseLinearQuotient (F := F) hD hA hR x y) ≤
       pairwiseLinearMap (F := F) hD hA hR x y (toZProfile d) := by
-  letI : PartialOrder (PairwiseQuotient (F := F) hD hA hR x y) :=
+  let : PartialOrder (PairwiseQuotient (F := F) hD hA hR x y) :=
     pairwiseQuotientPartialOrder (F := F) hD hA hR x y
   have hq :
       (0 : PairwiseQuotient (F := F) hD hA hR x y) ≤
@@ -583,9 +584,7 @@ lemma pairwiseLinearMap_nonneg_of_winner
     refine ⟨toZProfile d,
       toZProfile_mem_pairwiseDifferenceCone_of_winner (F := F) hD hA hxd, ?_⟩
     simp
-  simpa [pairwiseLinearMap] using
-    (toLinearExtension
-      (α := PairwiseQuotient (F := F) hD hA hR x y)).monotone hq
+  exact (toLinearExtension (α := PairwiseQuotient (F := F) hD hA hR x y)).monotone hq
 
 lemma pairwiseQuotientMap_ne_zero_of_winner_loser
     {F : RuleOn D X} (hD : IsDomain D) (hA : GeneralAbstention D F)
@@ -637,7 +636,7 @@ lemma pairwiseLinearMap_nonpos_of_winner_swapped
       pairwiseQuotientPartialOrder (F := F) hD hA hR x y
     pairwiseLinearMap (F := F) hD hA hR x y (toZProfile d) ≤
       (0 : PairwiseLinearQuotient (F := F) hD hA hR x y) := by
-  letI : PartialOrder (PairwiseQuotient (F := F) hD hA hR x y) :=
+  let : PartialOrder (PairwiseQuotient (F := F) hD hA hR x y) :=
     pairwiseQuotientPartialOrder (F := F) hD hA hR x y
   have hq :
       QuotientAddGroup.mk' (pairwiseKernelSubgroup (F := F) hD hA hR x y)
@@ -655,9 +654,7 @@ lemma pairwiseLinearMap_nonpos_of_winner_swapped
           (x := x) (y := y) (d := d) hyd)
     refine ⟨-toZProfile d, hmem, ?_⟩
     simp
-  simpa [pairwiseLinearMap] using
-    (toLinearExtension
-      (α := PairwiseQuotient (F := F) hD hA hR x y)).monotone hq
+  exact (toLinearExtension (α := PairwiseQuotient (F := F) hD hA hR x y)).monotone hq
 
 lemma pairwiseLinearMap_not_nonneg_of_winner_loser_swapped
     {F : RuleOn D X} (hD : IsDomain D) (hA : GeneralAbstention D F)
@@ -669,7 +666,7 @@ lemma pairwiseLinearMap_not_nonneg_of_winner_loser_swapped
       pairwiseQuotientPartialOrder (F := F) hD hA hR x y
     ¬ (0 : PairwiseLinearQuotient (F := F) hD hA hR x y) ≤
         pairwiseLinearMap (F := F) hD hA hR x y (toZProfile d) := by
-  letI : PartialOrder (PairwiseQuotient (F := F) hD hA hR x y) :=
+  let : PartialOrder (PairwiseQuotient (F := F) hD hA hR x y) :=
     pairwiseQuotientPartialOrder (F := F) hD hA hR x y
   have hnonpos :
       pairwiseLinearMap (F := F) hD hA hR x y (toZProfile d) ≤
@@ -683,7 +680,7 @@ lemma pairwiseLinearMap_not_nonneg_of_winner_loser_swapped
         (QuotientAddGroup.mk'
           (pairwiseKernelSubgroup (F := F) hD hA hR x y) (toZProfile d) :
             PairwiseQuotient (F := F) hD hA hR x y) = 0 := by
-      simpa only [pairwiseLinearMap, toLinearExtension] using hEq
+      exact hEq
     exact
       (pairwiseQuotientMap_ne_zero_of_not_pairwiseRel_zero (F := F) hD hA hR
         (x := x) (y := y) (d := d)
@@ -705,7 +702,7 @@ lemma pairwiseLinearMap_pos_of_winner_loser
     letI : PartialOrder (PairwiseQuotient (F := F) hD hA hR x y) :=
       pairwiseQuotientPartialOrder (F := F) hD hA hR x y
     0 < pairwiseLinearMap (F := F) hD hA hR x y (toZProfile d) := by
-  letI : PartialOrder (PairwiseQuotient (F := F) hD hA hR x y) :=
+  let : PartialOrder (PairwiseQuotient (F := F) hD hA hR x y) :=
     pairwiseQuotientPartialOrder (F := F) hD hA hR x y
   have hnonneg :
       (0 : PairwiseLinearQuotient (F := F) hD hA hR x y) ≤
@@ -719,7 +716,7 @@ lemma pairwiseLinearMap_pos_of_winner_loser
         (QuotientAddGroup.mk'
           (pairwiseKernelSubgroup (F := F) hD hA hR x y) (toZProfile d) :
             PairwiseQuotient (F := F) hD hA hR x y) = 0 := by
-      simpa only [pairwiseLinearMap, toLinearExtension] using hEq
+      exact hEq
     have hker :
         toZProfile d ∈ pairwiseKernelSubgroup (F := F) hD hA hR x y :=
       (QuotientAddGroup.eq_zero_iff
@@ -767,8 +764,7 @@ theorem pairwiseLinearQuotient_isAddTorsionFree
     {F : RuleOn D X} (hD : IsDomain D) (hA : GeneralAbstention D F)
     (hR : Reinforcement D F) (x y : X) :
     IsAddTorsionFree (PairwiseLinearQuotient (F := F) hD hA hR x y) := by
-  simpa [PairwiseLinearQuotient] using
-    pairwiseQuotient_isAddTorsionFree (F := F) hD hA hR x y
+  exact pairwiseQuotient_isAddTorsionFree (F := F) hD hA hR x y
 
 end PairwiseCones
 

@@ -65,7 +65,7 @@ lemma CondorcetLoser_lower_borda_two
 theorem baldwin_CondorcetLoser_criterion : CondorcetLoserCriterion baldwin := by
   intro V A _ _ P d hloser
   classical
-  letI : DecidableEq A := Classical.decEq A
+  let : DecidableEq A := Classical.decEq A
   change d ∉ scoringEliminationAux bordaScore A P
   set n : Nat := Fintype.card A
   let Motive : Nat → Prop := fun k =>

@@ -65,7 +65,7 @@ theorem coombs_paretoEfficiency : ParetoEfficiency coombs := by
         have hpos : 0 < Fintype.card A' := by
           have hpos' : 1 < Fintype.card A' := Nat.lt_of_not_ge hle
           exact lt_trans Nat.zero_lt_one hpos'
-        haveI : Nonempty A' := Fintype.card_pos_iff.mp hpos
+        have : Nonempty A' := Fintype.card_pos_iff.mp hpos
         exact Finset.univ_nonempty
       let b : A' := (Finset.univ : Finset A').max' hA'
       have hb_bottom : BottomRank P' v0 b := by

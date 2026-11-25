@@ -232,10 +232,7 @@ end SocialChoice
 
 namespace SocialChoice
 
-open Classical
 open Finset
-
-attribute [instance] Classical.decEq Classical.decPred
 
 /-!
 ## Borda fails independence of dominated and independence of clones
@@ -263,10 +260,8 @@ noncomputable def profile : Profile (Fin 5) (Fin 3) :=
   profileOfListBallots ballots
 
 lemma prefers_a_c : ∀ v : Fin 5, Prefers profile v (0 : Fin 3) (2 : Fin 3) := by
-  intro v
-  fin_cases v <;>
-    simp [profile, ballots, prefers_iff_prefersInList, prefersInList] <;>
-    decide
+  simp only [profile, prefers_iff_prefersInList]
+  decide
 
 lemma borda_profile_has_a : (0 : Fin 3) ∈ borda profile := by
   decide
@@ -293,41 +288,10 @@ lemma lift_borda_profile'_has_b : (1 : Fin 3) ∈ liftWinners (borda profile') :
 def cloneSet : Set (Fin 3) := {0, 2}
 
 lemma cloneSet_profile : CloneSet profile cloneSet := by
-  refine ⟨?_, ?_⟩
-  · refine ⟨(0 : Fin 3), by simp [cloneSet]⟩
-  intro v c hc
-  have hc' : c = (1 : Fin 3) := by
-    fin_cases c
-    · have hmem : (0 : Fin 3) ∈ cloneSet := by simp [cloneSet]
-      exact (hc hmem).elim
-    · rfl
-    · have hmem : (2 : Fin 3) ∈ cloneSet := by simp [cloneSet]
-      exact (hc hmem).elim
-  subst hc'
-  fin_cases v <;>
-    (first
-      | right
-        intro x hx
-        have hx' : x = (0 : Fin 3) ∨ x = (2 : Fin 3) := by
-          simpa [cloneSet] using hx
-        cases hx' with
-        | inl hx0 =>
-            subst hx0
-            simp [profile, ballots, prefers_iff_prefersInList, prefersInList]; decide
-        | inr hx2 =>
-            subst hx2
-            simp [profile, ballots, prefers_iff_prefersInList, prefersInList]; decide
-      | left
-        intro x hx
-        have hx' : x = (0 : Fin 3) ∨ x = (2 : Fin 3) := by
-          simpa [cloneSet] using hx
-        cases hx' with
-        | inl hx0 =>
-            subst hx0
-            simp [profile, ballots, prefers_iff_prefersInList, prefersInList]; decide
-        | inr hx2 =>
-            subst hx2
-            simp [profile, ballots, prefers_iff_prefersInList, prefersInList]; decide)
+  refine ⟨⟨0, by simp [cloneSet]⟩, ?_⟩
+  simp only [cloneSet, Set.mem_insert_iff, Set.mem_singleton_iff, forall_eq_or_imp, forall_eq,
+    profile, prefers_iff_prefersInList]
+  decide
 
 lemma clonePred_eq_ne :
     clonePred cloneSet (0 : Fin 3) = (fun a : Fin 3 => a ≠ (2 : Fin 3)) := by

@@ -201,7 +201,7 @@ theorem indepFast_large_chunk0 :
       (¬ 7 ≤ maskCard16 (0 + k.val)) ∧
         (maskCard16 (0 + k.val) = 6 →
           certFast (0 + k.val) = true) := by
-  decide
+  decide +kernel
 
 theorem indepFast_large_chunk1 :
     ∀ k : Fin 2048,
@@ -209,7 +209,7 @@ theorem indepFast_large_chunk1 :
       (¬ 7 ≤ maskCard16 (2048 + k.val)) ∧
         (maskCard16 (2048 + k.val) = 6 →
           certFast (2048 + k.val) = true) := by
-  decide
+  decide +kernel
 
 theorem indepFast_large_chunk2 :
     ∀ k : Fin 2048,
@@ -217,7 +217,7 @@ theorem indepFast_large_chunk2 :
       (¬ 7 ≤ maskCard16 (4096 + k.val)) ∧
         (maskCard16 (4096 + k.val) = 6 →
           certFast (4096 + k.val) = true) := by
-  decide
+  decide +kernel
 
 theorem indepFast_large_chunk3 :
     ∀ k : Fin 2048,
@@ -225,7 +225,7 @@ theorem indepFast_large_chunk3 :
       (¬ 7 ≤ maskCard16 (6144 + k.val)) ∧
         (maskCard16 (6144 + k.val) = 6 →
           certFast (6144 + k.val) = true) := by
-  decide
+  decide +kernel
 
 theorem indepFast_large_chunk4 :
     ∀ k : Fin 2048,
@@ -233,7 +233,7 @@ theorem indepFast_large_chunk4 :
       (¬ 7 ≤ maskCard16 (8192 + k.val)) ∧
         (maskCard16 (8192 + k.val) = 6 →
           certFast (8192 + k.val) = true) := by
-  decide
+  decide +kernel
 
 theorem indepFast_large_chunk5 :
     ∀ k : Fin 2048,
@@ -241,7 +241,7 @@ theorem indepFast_large_chunk5 :
       (¬ 7 ≤ maskCard16 (10240 + k.val)) ∧
         (maskCard16 (10240 + k.val) = 6 →
           certFast (10240 + k.val) = true) := by
-  decide
+  decide +kernel
 
 theorem indepFast_large_chunk6 :
     ∀ k : Fin 2048,
@@ -249,7 +249,7 @@ theorem indepFast_large_chunk6 :
       (¬ 7 ≤ maskCard16 (12288 + k.val)) ∧
         (maskCard16 (12288 + k.val) = 6 →
           certFast (12288 + k.val) = true) := by
-  decide
+  decide +kernel
 
 theorem indepFast_large_chunk7 :
     ∀ k : Fin 2048,
@@ -257,7 +257,7 @@ theorem indepFast_large_chunk7 :
       (¬ 7 ≤ maskCard16 (14336 + k.val)) ∧
         (maskCard16 (14336 + k.val) = 6 →
           certFast (14336 + k.val) = true) := by
-  decide
+  decide +kernel
 
 theorem indepFast_large_chunk8 :
     ∀ k : Fin 2048,
@@ -265,7 +265,7 @@ theorem indepFast_large_chunk8 :
       (¬ 7 ≤ maskCard16 (16384 + k.val)) ∧
         (maskCard16 (16384 + k.val) = 6 →
           certFast (16384 + k.val) = true) := by
-  decide
+  decide +kernel
 
 theorem indepFast_large_chunk9 :
     ∀ k : Fin 2048,
@@ -273,7 +273,7 @@ theorem indepFast_large_chunk9 :
       (¬ 7 ≤ maskCard16 (18432 + k.val)) ∧
         (maskCard16 (18432 + k.val) = 6 →
           certFast (18432 + k.val) = true) := by
-  decide
+  decide +kernel
 
 theorem indepFast_large_chunk10 :
     ∀ k : Fin 2048,
@@ -281,7 +281,7 @@ theorem indepFast_large_chunk10 :
       (¬ 7 ≤ maskCard16 (20480 + k.val)) ∧
         (maskCard16 (20480 + k.val) = 6 →
           certFast (20480 + k.val) = true) := by
-  decide
+  decide +kernel
 
 theorem indepFast_large_chunk11 :
     ∀ k : Fin 2048,
@@ -289,7 +289,7 @@ theorem indepFast_large_chunk11 :
       (¬ 7 ≤ maskCard16 (22528 + k.val)) ∧
         (maskCard16 (22528 + k.val) = 6 →
           certFast (22528 + k.val) = true) := by
-  decide
+  decide +kernel
 
 theorem indepFast_large_chunk12 :
     ∀ k : Fin 2048,
@@ -297,7 +297,7 @@ theorem indepFast_large_chunk12 :
       (¬ 7 ≤ maskCard16 (24576 + k.val)) ∧
         (maskCard16 (24576 + k.val) = 6 →
           certFast (24576 + k.val) = true) := by
-  decide
+  decide +kernel
 
 theorem indepFast_large_chunk13 :
     ∀ k : Fin 2048,
@@ -305,7 +305,7 @@ theorem indepFast_large_chunk13 :
       (¬ 7 ≤ maskCard16 (26624 + k.val)) ∧
         (maskCard16 (26624 + k.val) = 6 →
           certFast (26624 + k.val) = true) := by
-  decide
+  decide +kernel
 
 theorem indepFast_large_chunk14 :
     ∀ k : Fin 2048,
@@ -313,7 +313,7 @@ theorem indepFast_large_chunk14 :
       (¬ 7 ≤ maskCard16 (28672 + k.val)) ∧
         (maskCard16 (28672 + k.val) = 6 →
           certFast (28672 + k.val) = true) := by
-  decide
+  decide +kernel
 
 theorem indepFast_large_chunk15 :
     ∀ k : Fin 2048,
@@ -321,7 +321,7 @@ theorem indepFast_large_chunk15 :
       (¬ 7 ≤ maskCard16 (30720 + k.val)) ∧
         (maskCard16 (30720 + k.val) = 6 →
           certFast (30720 + k.val) = true) := by
-  decide
+  decide +kernel
 
 theorem indepFast_large_chunk16 :
     ∀ k : Fin 2048,
@@ -329,7 +329,7 @@ theorem indepFast_large_chunk16 :
       (¬ 7 ≤ maskCard16 (32768 + k.val)) ∧
         (maskCard16 (32768 + k.val) = 6 →
           certFast (32768 + k.val) = true) := by
-  decide
+  decide +kernel
 
 theorem indepFast_large_chunk17 :
     ∀ k : Fin 2048,
@@ -337,7 +337,7 @@ theorem indepFast_large_chunk17 :
       (¬ 7 ≤ maskCard16 (34816 + k.val)) ∧
         (maskCard16 (34816 + k.val) = 6 →
           certFast (34816 + k.val) = true) := by
-  decide
+  decide +kernel
 
 theorem indepFast_large_chunk18 :
     ∀ k : Fin 2048,
@@ -345,7 +345,7 @@ theorem indepFast_large_chunk18 :
       (¬ 7 ≤ maskCard16 (36864 + k.val)) ∧
         (maskCard16 (36864 + k.val) = 6 →
           certFast (36864 + k.val) = true) := by
-  decide
+  decide +kernel
 
 theorem indepFast_large_chunk19 :
     ∀ k : Fin 2048,
@@ -353,7 +353,7 @@ theorem indepFast_large_chunk19 :
       (¬ 7 ≤ maskCard16 (38912 + k.val)) ∧
         (maskCard16 (38912 + k.val) = 6 →
           certFast (38912 + k.val) = true) := by
-  decide
+  decide +kernel
 
 theorem indepFast_large_chunk20 :
     ∀ k : Fin 2048,
@@ -361,7 +361,7 @@ theorem indepFast_large_chunk20 :
       (¬ 7 ≤ maskCard16 (40960 + k.val)) ∧
         (maskCard16 (40960 + k.val) = 6 →
           certFast (40960 + k.val) = true) := by
-  decide
+  decide +kernel
 
 theorem indepFast_large_chunk21 :
     ∀ k : Fin 2048,
@@ -369,7 +369,7 @@ theorem indepFast_large_chunk21 :
       (¬ 7 ≤ maskCard16 (43008 + k.val)) ∧
         (maskCard16 (43008 + k.val) = 6 →
           certFast (43008 + k.val) = true) := by
-  decide
+  decide +kernel
 
 theorem indepFast_large_chunk22 :
     ∀ k : Fin 2048,
@@ -377,7 +377,7 @@ theorem indepFast_large_chunk22 :
       (¬ 7 ≤ maskCard16 (45056 + k.val)) ∧
         (maskCard16 (45056 + k.val) = 6 →
           certFast (45056 + k.val) = true) := by
-  decide
+  decide +kernel
 
 theorem indepFast_large_chunk23 :
     ∀ k : Fin 2048,
@@ -385,7 +385,7 @@ theorem indepFast_large_chunk23 :
       (¬ 7 ≤ maskCard16 (47104 + k.val)) ∧
         (maskCard16 (47104 + k.val) = 6 →
           certFast (47104 + k.val) = true) := by
-  decide
+  decide +kernel
 
 theorem indepFast_large_chunk24 :
     ∀ k : Fin 2048,
@@ -393,7 +393,7 @@ theorem indepFast_large_chunk24 :
       (¬ 7 ≤ maskCard16 (49152 + k.val)) ∧
         (maskCard16 (49152 + k.val) = 6 →
           certFast (49152 + k.val) = true) := by
-  decide
+  decide +kernel
 
 theorem indepFast_large_chunk25 :
     ∀ k : Fin 2048,
@@ -401,7 +401,7 @@ theorem indepFast_large_chunk25 :
       (¬ 7 ≤ maskCard16 (51200 + k.val)) ∧
         (maskCard16 (51200 + k.val) = 6 →
           certFast (51200 + k.val) = true) := by
-  decide
+  decide +kernel
 
 theorem indepFast_large_chunk26 :
     ∀ k : Fin 2048,
@@ -409,7 +409,7 @@ theorem indepFast_large_chunk26 :
       (¬ 7 ≤ maskCard16 (53248 + k.val)) ∧
         (maskCard16 (53248 + k.val) = 6 →
           certFast (53248 + k.val) = true) := by
-  decide
+  decide +kernel
 
 theorem indepFast_large_chunk27 :
     ∀ k : Fin 2048,
@@ -417,7 +417,7 @@ theorem indepFast_large_chunk27 :
       (¬ 7 ≤ maskCard16 (55296 + k.val)) ∧
         (maskCard16 (55296 + k.val) = 6 →
           certFast (55296 + k.val) = true) := by
-  decide
+  decide +kernel
 
 theorem indepFast_large_chunk28 :
     ∀ k : Fin 2048,
@@ -425,7 +425,7 @@ theorem indepFast_large_chunk28 :
       (¬ 7 ≤ maskCard16 (57344 + k.val)) ∧
         (maskCard16 (57344 + k.val) = 6 →
           certFast (57344 + k.val) = true) := by
-  decide
+  decide +kernel
 
 theorem indepFast_large_chunk29 :
     ∀ k : Fin 2048,
@@ -433,7 +433,7 @@ theorem indepFast_large_chunk29 :
       (¬ 7 ≤ maskCard16 (59392 + k.val)) ∧
         (maskCard16 (59392 + k.val) = 6 →
           certFast (59392 + k.val) = true) := by
-  decide
+  decide +kernel
 
 theorem indepFast_large_chunk30 :
     ∀ k : Fin 2048,
@@ -441,7 +441,7 @@ theorem indepFast_large_chunk30 :
       (¬ 7 ≤ maskCard16 (61440 + k.val)) ∧
         (maskCard16 (61440 + k.val) = 6 →
           certFast (61440 + k.val) = true) := by
-  decide
+  decide +kernel
 
 theorem indepFast_large_chunk31 :
     ∀ k : Fin 2048,
@@ -449,7 +449,7 @@ theorem indepFast_large_chunk31 :
       (¬ 7 ≤ maskCard16 (63488 + k.val)) ∧
         (maskCard16 (63488 + k.val) = 6 →
           certFast (63488 + k.val) = true) := by
-  decide
+  decide +kernel
 
 theorem indepFast_large {m : Nat} (hm : m < 65536) (hind : indepFast m = true) :
     (¬ 7 ≤ maskCard16 m) ∧

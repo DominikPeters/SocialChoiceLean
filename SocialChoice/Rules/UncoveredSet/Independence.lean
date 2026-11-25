@@ -7,10 +7,6 @@ import SocialChoice.Rules.UncoveredSet.Defs
 namespace SocialChoice
 
 open Finset
-open Classical
-attribute [instance] Classical.decEq
-
-set_option maxHeartbeats 5000000
 
 /-!
 # Uncovered Set fails independence of dominated alternatives
@@ -55,159 +51,20 @@ abbrev cand2 : {x : A4 // x ≠ a} := ⟨c, by decide⟩
 abbrev cand3 : {x : A4 // x ≠ a} := ⟨d, by decide⟩
 
 lemma prefers_3_0 : ∀ v : Fin 4, Prefers profile v d a := by
-  intro v
-  change Prefers (profileOfListBallots ballots) v d a
-  rw [prefers_iff_prefersInList]
-  fin_cases v <;> decide
-
-lemma margin_eq_card_diff {V A : Type} [Fintype V] [Fintype A]
-    (P : Profile V A) (x y : A) :
-    margin P x y =
-      Int.ofNat (votersPreferring P x y).card -
-        Int.ofNat (votersPreferring P y x).card := by
-  classical
-  simp [margin, votersPreferring]
-
-private lemma votersPreferring_profile_eq_filter (x y : A4) :
-    votersPreferring profile x y =
-      Finset.univ.filter (fun v => prefersInList (ballots v).ranking x y) := by
-  simpa [profile] using votersPreferring_eq_filter_prefersInList ballots x y
-
-lemma votersPreferring_profile_1_0 :
-    votersPreferring profile (1 : A4) (0 : A4) =
-      ({0, 1, 3} : Finset (Fin 4)) := by
-  classical
-  rw [votersPreferring_profile_eq_filter]
-  ext v
-  fin_cases v <;> decide
-
-lemma votersPreferring_profile_0_1 :
-    votersPreferring profile (0 : A4) (1 : A4) =
-      ({2} : Finset (Fin 4)) := by
-  classical
-  rw [votersPreferring_profile_eq_filter]
-  ext v
-  fin_cases v <;> decide
-
-lemma votersPreferring_profile_2_0 :
-    votersPreferring profile (2 : A4) (0 : A4) =
-      ({0, 1} : Finset (Fin 4)) := by
-  classical
-  rw [votersPreferring_profile_eq_filter]
-  ext v
-  fin_cases v <;> decide
-
-lemma votersPreferring_profile_0_2 :
-    votersPreferring profile (0 : A4) (2 : A4) =
-      ({2, 3} : Finset (Fin 4)) := by
-  classical
-  rw [votersPreferring_profile_eq_filter]
-  ext v
-  fin_cases v <;> decide
-
-lemma votersPreferring_profile_2_1 :
-    votersPreferring profile (2 : A4) (1 : A4) =
-      ({0, 1, 2} : Finset (Fin 4)) := by
-  classical
-  rw [votersPreferring_profile_eq_filter]
-  ext v
-  fin_cases v <;> decide
-
-lemma votersPreferring_profile_1_2 :
-    votersPreferring profile (1 : A4) (2 : A4) =
-      ({3} : Finset (Fin 4)) := by
-  classical
-  rw [votersPreferring_profile_eq_filter]
-  ext v
-  fin_cases v <;> decide
-
-lemma votersPreferring_profile_3_1 :
-    votersPreferring profile (3 : A4) (1 : A4) =
-      ({2, 3} : Finset (Fin 4)) := by
-  classical
-  rw [votersPreferring_profile_eq_filter]
-  ext v
-  fin_cases v <;> decide
-
-lemma votersPreferring_profile_1_3 :
-    votersPreferring profile (1 : A4) (3 : A4) =
-      ({0, 1} : Finset (Fin 4)) := by
-  classical
-  rw [votersPreferring_profile_eq_filter]
-  ext v
-  fin_cases v <;> decide
-
-lemma votersPreferring_profile_3_2 :
-    votersPreferring profile (3 : A4) (2 : A4) =
-      ({2, 3} : Finset (Fin 4)) := by
-  classical
-  rw [votersPreferring_profile_eq_filter]
-  ext v
-  fin_cases v <;> decide
-
-lemma votersPreferring_profile_2_3 :
-    votersPreferring profile (2 : A4) (3 : A4) =
-      ({0, 1} : Finset (Fin 4)) := by
-  classical
-  rw [votersPreferring_profile_eq_filter]
-  ext v
-  fin_cases v <;> decide
-
-private lemma margin_profile_1_0 : margin profile (1 : A4) (0 : A4) = 2 := by
-  classical
-  simp [margin_eq_card_diff, votersPreferring_profile_1_0, votersPreferring_profile_0_1]
-
-private lemma margin_profile_2_0 : margin profile (2 : A4) (0 : A4) = 0 := by
-  classical
-  simp [margin_eq_card_diff, votersPreferring_profile_2_0, votersPreferring_profile_0_2]
-
-private lemma margin_profile_0_1 : margin profile (0 : A4) (1 : A4) = -2 := by
-  classical
-  simp [margin_eq_card_diff, votersPreferring_profile_0_1, votersPreferring_profile_1_0]
-
-private lemma margin_profile_3_1 : margin profile (3 : A4) (1 : A4) = 0 := by
-  classical
-  simp [margin_eq_card_diff, votersPreferring_profile_3_1, votersPreferring_profile_1_3]
-
-private lemma margin_profile_2_1 : margin profile (2 : A4) (1 : A4) = 2 := by
-  classical
-  simp [margin_eq_card_diff, votersPreferring_profile_2_1, votersPreferring_profile_1_2]
-
-private lemma margin_profile_1_2 : margin profile (1 : A4) (2 : A4) = -2 := by
-  classical
-  simp [margin_eq_card_diff, votersPreferring_profile_1_2, votersPreferring_profile_2_1]
-
-private lemma margin_profile_1_3 : margin profile (1 : A4) (3 : A4) = 0 := by
-  classical
-  simp [margin_eq_card_diff, votersPreferring_profile_1_3, votersPreferring_profile_3_1]
-
-private lemma margin_profile_3_2 : margin profile (3 : A4) (2 : A4) = 0 := by
-  classical
-  simp [margin_eq_card_diff, votersPreferring_profile_3_2, votersPreferring_profile_2_3]
+  simp only [profile, prefers_iff_prefersInList]
+  decide
 
 private lemma margin_pos_profile_1_0 : margin_pos profile (1 : A4) (0 : A4) := by
-  simp [margin_pos, margin_profile_1_0]
+  rw [margin_pos, profile, margin_profileOfListBallots]; decide
 
 private lemma not_margin_pos_profile_2_0 : ¬ margin_pos profile (2 : A4) (0 : A4) := by
-  simp [margin_pos, margin_profile_2_0]
+  rw [margin_pos, profile, margin_profileOfListBallots]; decide
 
 private lemma not_margin_pos_profile_0_1 : ¬ margin_pos profile (0 : A4) (1 : A4) := by
-  simp [margin_pos, margin_profile_0_1]
+  rw [margin_pos, profile, margin_profileOfListBallots]; decide
 
 private lemma not_margin_pos_profile_3_1 : ¬ margin_pos profile (3 : A4) (1 : A4) := by
-  simp [margin_pos, margin_profile_3_1]
-
-private lemma margin_pos_profile_2_1 : margin_pos profile (2 : A4) (1 : A4) := by
-  simp [margin_pos, margin_profile_2_1]
-
-private lemma not_margin_pos_profile_1_2 : ¬ margin_pos profile (1 : A4) (2 : A4) := by
-  simp [margin_pos, margin_profile_1_2]
-
-private lemma not_margin_pos_profile_1_3 : ¬ margin_pos profile (1 : A4) (3 : A4) := by
-  simp [margin_pos, margin_profile_1_3]
-
-private lemma not_margin_pos_profile_3_2 : ¬ margin_pos profile (3 : A4) (2 : A4) := by
-  simp [margin_pos, margin_profile_3_2]
+  rw [margin_pos, profile, margin_profileOfListBallots]; decide
 
 private lemma not_covers_profile_2_1 : ¬ covers profile (2 : A4) (1 : A4) := by
   intro hcov
@@ -236,60 +93,24 @@ lemma uncoveredSet_profile_has_1 : (1 : A4) ∈ uncoveredSet profile := by
   exact ⟨by simp, uncovered_profile_1⟩
 
 private lemma margin_pos_profile'_2_1 : margin_pos profile' cand2 cand1 := by
-  have hmargin : margin profile cand2 cand1 = 2 := by
-    simpa [cand1, cand2] using margin_profile_2_1
-  have hEq :
-      margin profile cand2 cand1 = margin profile' cand2 cand1 := by
-    change margin profile cand2 cand1 = margin (restrictProfile profile a) cand2 cand1
-    exact margin_eq_margin_restrictProfile
-  have hmargin' : margin profile' cand2 cand1 = 2 := by
-    calc
-      margin profile' cand2 cand1 = margin profile cand2 cand1 := by
-        simp [hEq]
-      _ = 2 := hmargin
-  simp [margin_pos, hmargin']
+  rw [margin_pos, profile', ← margin_eq_margin_restrictProfile, profile,
+    margin_profileOfListBallots]
+  decide
 
 private lemma not_margin_pos_profile'_1_2 : ¬ margin_pos profile' cand1 cand2 := by
-  have hmargin : margin profile cand1 cand2 = -2 := by
-    simpa [cand1, cand2] using margin_profile_1_2
-  have hEq :
-      margin profile cand1 cand2 = margin profile' cand1 cand2 := by
-    change margin profile cand1 cand2 = margin (restrictProfile profile a) cand1 cand2
-    exact margin_eq_margin_restrictProfile
-  have hmargin' : margin profile' cand1 cand2 = -2 := by
-    calc
-      margin profile' cand1 cand2 = margin profile cand1 cand2 := by
-        simp [hEq]
-      _ = -2 := hmargin
-  simp [margin_pos, hmargin']
+  rw [margin_pos, profile', ← margin_eq_margin_restrictProfile, profile,
+    margin_profileOfListBallots]
+  decide
 
 private lemma not_margin_pos_profile'_1_3 : ¬ margin_pos profile' cand1 cand3 := by
-  have hmargin : margin profile cand1 cand3 = 0 := by
-    simpa [cand1, cand3] using margin_profile_1_3
-  have hEq :
-      margin profile cand1 cand3 = margin profile' cand1 cand3 := by
-    change margin profile cand1 cand3 = margin (restrictProfile profile a) cand1 cand3
-    exact margin_eq_margin_restrictProfile
-  have hmargin' : margin profile' cand1 cand3 = 0 := by
-    calc
-      margin profile' cand1 cand3 = margin profile cand1 cand3 := by
-        simp [hEq]
-      _ = 0 := hmargin
-  simp [margin_pos, hmargin']
+  rw [margin_pos, profile', ← margin_eq_margin_restrictProfile, profile,
+    margin_profileOfListBallots]
+  decide
 
 private lemma not_margin_pos_profile'_3_2 : ¬ margin_pos profile' cand3 cand2 := by
-  have hmargin : margin profile cand3 cand2 = 0 := by
-    simpa [cand2, cand3] using margin_profile_3_2
-  have hEq :
-      margin profile cand3 cand2 = margin profile' cand3 cand2 := by
-    change margin profile cand3 cand2 = margin (restrictProfile profile a) cand3 cand2
-    exact margin_eq_margin_restrictProfile
-  have hmargin' : margin profile' cand3 cand2 = 0 := by
-    calc
-      margin profile' cand3 cand2 = margin profile cand3 cand2 := by
-        simp [hEq]
-      _ = 0 := hmargin
-  simp [margin_pos, hmargin']
+  rw [margin_pos, profile', ← margin_eq_margin_restrictProfile, profile,
+    margin_profileOfListBallots]
+  decide
 
 private lemma covers_profile'_2_1 : covers profile' cand2 cand1 := by
   refine ⟨margin_pos_profile'_2_1, ?_, ?_⟩

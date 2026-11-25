@@ -68,14 +68,14 @@ def winnerConeLe (r s : PairCode X V) : Prop :=
 
 lemma winnerConeLe_refl
     (hD : IsDomain D) (hA : GeneralAbstention D F) :
-    Reflexive (winnerConeLe F) := by
+    ∀ r, winnerConeLe F r r := by
   intro r p
   refine ⟨0, ?_, by simp⟩
   exact winnerCone_zero_of_generalAbstention (F := F) hD hA p.1
 
 lemma winnerConeLe_trans
     (hR : Reinforcement D F) :
-    Transitive (winnerConeLe F) := by
+    ∀ ⦃r s t⦄, winnerConeLe F r s → winnerConeLe F s t → winnerConeLe F r t := by
   intro r s t hrs hst p
   rcases hrs p with ⟨c₁, hc₁, hs⟩
   rcases hst p with ⟨c₂, hc₂, ht⟩
@@ -87,6 +87,7 @@ lemma winnerConeLe_trans
       _ = r p + (c₁ + c₂) := by simp [add_assoc]
 
 /-- Canonical preorder from winner cones. -/
+@[instance_reducible]
 def winnerConePreorder
     (hD : IsDomain D) (hA : GeneralAbstention D F) (hR : Reinforcement D F) :
     Preorder (PairCode X V) where
@@ -133,7 +134,7 @@ lemma mem_balanceRule_canonical_iff
     x ∈ balanceRule (D := D) (canonicalBalanceSystem (X := X) (V := V)) ⟨d, hd⟩ ↔
       x ∈ F ⟨d, hd⟩ := by
   classical
-  letI : Preorder (PairCode X V) := winnerConePreorder (F := F) hD hA hR
+  let : Preorder (PairCode X V) := winnerConePreorder (F := F) hD hA hR
   constructor
   · intro hx
     have hxx : 0 ≤ balanceAt (B := canonicalBalanceSystem (X := X) (V := V)) x x d := hx x
@@ -169,7 +170,7 @@ theorem reinforcement_has_balance_representation
     let R := PairCode X V
     letI : Preorder R := winnerConePreorder (F := F) hD hA hR
     ∃ B : BalanceSystem R X V, F = balanceRule (D := D) B := by
-  letI : Preorder (PairCode X V) := winnerConePreorder (F := F) hD hA hR
+  let : Preorder (PairCode X V) := winnerConePreorder (F := F) hD hA hR
   refine ⟨canonicalBalanceSystem (X := X) (V := V), ?_⟩
   funext d
   ext x

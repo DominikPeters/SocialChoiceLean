@@ -7,7 +7,6 @@ import SocialChoice.Rules.Black.Defs
 namespace SocialChoice
 
 open Finset
-open Classical
 
 /-!
 # Black fails the mutual majority criterion
@@ -36,50 +35,20 @@ def ballots : Fin 5 → ListBallot 5
 noncomputable def profile : Profile (Fin 5) (Fin 5) :=
   profileOfListBallots ballots
 
-private lemma marginList_profile_0_2 :
-    marginList (fun v => (ballots v).ranking) 0 2 = -1 := by
-  rfl
-
-private lemma marginList_profile_1_0 :
-    marginList (fun v => (ballots v).ranking) 1 0 = -1 := by
-  rfl
-
-private lemma marginList_profile_2_1 :
-    marginList (fun v => (ballots v).ranking) 2 1 = -1 := by
-  rfl
-
-private lemma marginList_profile_3_0 :
-    marginList (fun v => (ballots v).ranking) 3 0 = -1 := by
-  rfl
-
-private lemma marginList_profile_4_3 :
-    marginList (fun v => (ballots v).ranking) 4 3 = -5 := by
-  rfl
-
 private lemma margin_profile_0_2 : margin profile (0 : Fin 5) (2 : Fin 5) = -1 := by
-  have h :=
-    margin_eq_marginList (ballots := ballots) (a := (0 : Fin 5)) (b := (2 : Fin 5))
-  simpa [profile, marginList_profile_0_2] using h
+  rw [profile, margin_eq_marginList]; rfl
 
 private lemma margin_profile_1_0 : margin profile (1 : Fin 5) (0 : Fin 5) = -1 := by
-  have h :=
-    margin_eq_marginList (ballots := ballots) (a := (1 : Fin 5)) (b := (0 : Fin 5))
-  simpa [profile, marginList_profile_1_0] using h
+  rw [profile, margin_eq_marginList]; rfl
 
 private lemma margin_profile_2_1 : margin profile (2 : Fin 5) (1 : Fin 5) = -1 := by
-  have h :=
-    margin_eq_marginList (ballots := ballots) (a := (2 : Fin 5)) (b := (1 : Fin 5))
-  simpa [profile, marginList_profile_2_1] using h
+  rw [profile, margin_eq_marginList]; rfl
 
 private lemma margin_profile_3_0 : margin profile (3 : Fin 5) (0 : Fin 5) = -1 := by
-  have h :=
-    margin_eq_marginList (ballots := ballots) (a := (3 : Fin 5)) (b := (0 : Fin 5))
-  simpa [profile, marginList_profile_3_0] using h
+  rw [profile, margin_eq_marginList]; rfl
 
 private lemma margin_profile_4_3 : margin profile (4 : Fin 5) (3 : Fin 5) = -5 := by
-  have h :=
-    margin_eq_marginList (ballots := ballots) (a := (4 : Fin 5)) (b := (3 : Fin 5))
-  simpa [profile, marginList_profile_4_3] using h
+  rw [profile, margin_eq_marginList]; rfl
 
 private lemma no_condorcet_profile : ¬ ∃ x, CondorcetWinner profile x := by
   intro h
@@ -118,24 +87,8 @@ private lemma T_nonempty : T.Nonempty := by
 
 private lemma prefers_T_over_Tc :
     ∀ v ∈ S, ∀ a ∈ T, ∀ b ∉ T, Prefers profile v a b := by
-  intro v hv a ha b hb
-  fin_cases v
-  · -- v = 0
-    fin_cases a <;> fin_cases b <;>
-      (simp [profile, ballots, prefers_iff_prefersInList, prefersInList, T] at ha hb ⊢
-        <;> cases ha <;> cases hb <;> decide)
-  · -- v = 1
-    fin_cases a <;> fin_cases b <;>
-      (simp [profile, ballots, prefers_iff_prefersInList, prefersInList, T] at ha hb ⊢
-        <;> cases ha <;> cases hb <;> decide)
-  · -- v = 2
-    fin_cases a <;> fin_cases b <;>
-      (simp [profile, ballots, prefers_iff_prefersInList, prefersInList, T] at ha hb ⊢
-        <;> cases ha <;> cases hb <;> decide)
-  · -- v = 3
-    simp [S] at hv
-  · -- v = 4
-    simp [S] at hv
+  simp only [S, T, profile, prefers_iff_prefersInList]
+  decide
 
 theorem black_not_mutualMajorityCriterion : ¬ MutualMajorityCriterion black := by
   intro hmut

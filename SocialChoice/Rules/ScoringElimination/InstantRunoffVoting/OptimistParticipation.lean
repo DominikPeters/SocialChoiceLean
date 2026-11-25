@@ -11,7 +11,7 @@ theorem instantRunoffVoting_not_optimistParticipation :
     ¬ OptimistParticipation instantRunoffVoting := by
   intro hopt
   let r := profile5OP.pref (newVoter (u := (0 : Fin 5)) (V := voters4OP) voters4OP_not_mem)
-  letI : LinearOrder (Fin 3) := r
+  let : LinearOrder (Fin 3) := r
   have hIRV5 :
       instantRunoffVoting profile5OP = pluralityWithRunoff profile5OP := by
     simpa using

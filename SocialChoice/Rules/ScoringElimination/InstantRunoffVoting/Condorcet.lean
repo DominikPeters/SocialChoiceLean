@@ -11,9 +11,6 @@ namespace SocialChoice
 
 open Finset
 
-open Classical
-attribute [instance] Classical.decEq Classical.decPred
-
 /-!
 # IRV fails Condorcet consistency
 
@@ -39,27 +36,18 @@ noncomputable def profile : Profile (Fin 5) (Fin 3) :=
 
 lemma votersTop_0 :
     votersTop profile 0 = ({0, 1} : Finset (Fin 5)) := by
-  classical
-  ext v
-  fin_cases v <;>
-    simp [profile, ballots, votersTop, topRank_iff_isTopOfList, isTopOfList] <;>
-    decide
+  rw [profile, votersTop_eq_filter_isTopOfList]
+  decide
 
 lemma votersTop_1 :
     votersTop profile 1 = ({4} : Finset (Fin 5)) := by
-  classical
-  ext v
-  fin_cases v <;>
-    simp [profile, ballots, votersTop, topRank_iff_isTopOfList, isTopOfList] <;>
-    decide
+  rw [profile, votersTop_eq_filter_isTopOfList]
+  decide
 
 lemma votersTop_2 :
     votersTop profile 2 = ({2, 3} : Finset (Fin 5)) := by
-  classical
-  ext v
-  fin_cases v <;>
-    simp [profile, ballots, votersTop, topRank_iff_isTopOfList, isTopOfList] <;>
-    decide
+  rw [profile, votersTop_eq_filter_isTopOfList]
+  decide
 
 lemma votersTop_0_card : (votersTop profile 0).card = 2 := by
   simp [votersTop_0]
@@ -92,7 +80,6 @@ lemma score1_lt_score2 : scoreCandidate profile scoreVec 1 < scoreCandidate prof
 
 lemma lowestScoring_eq_singleton_one :
     lowestScoring profile scoreVec = ({1} : Finset (Fin 3)) := by
-  classical
   have hLne :
       (lowestScoring profile scoreVec).Nonempty := by
     exact lowestScoring_nonempty (P := profile) (score := scoreVec)
@@ -149,31 +136,23 @@ def cand2 : {x : Fin 3 // x ≠ (1 : Fin 3)} := ⟨2, by decide⟩
 
 lemma votersPreferring_0_2 :
     votersPreferring profile 0 2 = ({0, 1, 4} : Finset (Fin 5)) := by
-  classical
-  ext v
-  fin_cases v <;>
-    simp [profile, ballots, votersPreferring, prefers_iff_prefersInList, prefersInList] <;>
-    decide
+  rw [profile, votersPreferring_eq_filter_prefersInList]
+  decide
 
 lemma votersPreferring_2_0 :
     votersPreferring profile 2 0 = ({2, 3} : Finset (Fin 5)) := by
-  classical
-  ext v
-  fin_cases v <;>
-    simp [profile, ballots, votersPreferring, prefers_iff_prefersInList, prefersInList] <;>
-    decide
+  rw [profile, votersPreferring_eq_filter_prefersInList]
+  decide
 
 lemma votersPreferring_restrict_cand0 :
     votersPreferring profile' cand0 cand2 = votersPreferring profile 0 2 := by
-  classical
   ext v
-  simp [profile', votersPreferring, prefers_restrictProfile_iff, cand0, cand2]
+  simp [profile', cand0, cand2]
 
 lemma votersPreferring_restrict_cand2 :
     votersPreferring profile' cand2 cand0 = votersPreferring profile 2 0 := by
-  classical
   ext v
-  simp [profile', votersPreferring, prefers_restrictProfile_iff, cand0, cand2]
+  simp [profile', cand0, cand2]
 
 lemma scoreCandidate_restrict_cand0 :
     scoreCandidate profile' (fun r => pluralityScore 2 r) cand0 = 3 := by
@@ -211,8 +190,7 @@ lemma score_restrict_cand2_lt_cand0 :
 lemma lowestScoring_restrict_eq_singleton_cand2 :
     lowestScoring profile' (fun r => pluralityScore 2 r) =
       ({cand2} : Finset {x : Fin 3 // x ≠ (1 : Fin 3)}) := by
-  classical
-  haveI : Nonempty {x : Fin 3 // x ≠ (1 : Fin 3)} := by
+  have : Nonempty {x : Fin 3 // x ≠ (1 : Fin 3)} := by
     exact ⟨cand0⟩
   have hLne :
       (lowestScoring profile' (fun r => pluralityScore 2 r)).Nonempty := by
@@ -250,7 +228,6 @@ lemma scoringEliminationAux_restrict_singleton :
     scoringEliminationAux pluralityScore {x : {x : Fin 3 // x ≠ (1 : Fin 3)} // x ≠ cand2}
       (restrictProfile profile' cand2) =
       (Finset.univ : Finset {x : {x : Fin 3 // x ≠ (1 : Fin 3)} // x ≠ cand2}) := by
-  classical
   have hcard : Fintype.card {x : Fin 3 // x ≠ (1 : Fin 3)} = 2 := by
     simp [card_subtype_ne_eq (1 : Fin 3)]
   have hcard' :
@@ -272,7 +249,6 @@ lemma liftFinset_univ_restrict :
     liftFinset
       (Finset.univ : Finset {x : {x : Fin 3 // x ≠ (1 : Fin 3)} // x ≠ cand2}) =
         ({cand0} : Finset {x : Fin 3 // x ≠ (1 : Fin 3)}) := by
-  classical
   apply Finset.ext
   intro x
   constructor
@@ -298,7 +274,6 @@ lemma liftFinset_univ_restrict :
 
 theorem instantRunoffVoting_profile_winner :
     instantRunoffVoting profile = ({0} : Finset (Fin 3)) := by
-  classical
   have hcard : ¬ Fintype.card (Fin 3) ≤ 1 := by decide
   have haux :=
     scoringEliminationAux_eq_biUnion_of_not_card_le_one
@@ -345,7 +320,6 @@ theorem instantRunoffVoting_profile_winner :
     simpa [profile'] using hrec
   have hIRV :
       instantRunoffVoting profile = scoringEliminationAux pluralityScore (Fin 3) profile := by
-    classical
     simpa [instantRunoffVoting, scoringEliminationRule] using
       (scoringEliminationAux_decidableEq_congr (score := pluralityScore) (P := profile)
         (inst1 := Classical.decEq (Fin 3)) (inst2 := inferInstance))

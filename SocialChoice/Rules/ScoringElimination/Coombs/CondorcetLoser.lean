@@ -85,7 +85,7 @@ lemma coombs_of_card_two
     (P : Profile V A) (hcard : Fintype.card A = 2) (a b : A) (hab : a ≠ b) :
     a ∈ coombs P ↔ 0 ≤ margin P a b := by
   classical
-  letI : DecidableEq A := Classical.decEq A
+  let : DecidableEq A := Classical.decEq A
   have hnot_le_one : ¬ Fintype.card A ≤ 1 := by
     omega
   let m := Fintype.card A
@@ -99,7 +99,7 @@ lemma coombs_of_card_two
         (score := vetoScore) (P := P) (hcard := hnot_le_one))
   have hA : (Finset.univ : Finset A).Nonempty := by
     have hpos : 0 < Fintype.card A := by omega
-    haveI : Nonempty A := Fintype.card_pos_iff.mp hpos
+    have : Nonempty A := Fintype.card_pos_iff.mp hpos
     exact Finset.univ_nonempty
   have hbL : b ∈ L ↔ topCount P b ≤ topCount P a := by
     constructor
@@ -162,7 +162,7 @@ lemma coombs_of_card_two
         exact le_of_eq hcard_sub_eq
       have hsub : Subsingleton {x : A // x ≠ b} :=
         (Fintype.card_le_one_iff_subsingleton).1 hcard_sub
-      haveI : Nonempty {x : A // x ≠ b} := by
+      have : Nonempty {x : A // x ≠ b} := by
         have hpos : 0 < Fintype.card {x : A // x ≠ b} := by
           simp [hcard_sub_eq]
         exact Fintype.card_pos_iff.mp hpos
@@ -201,7 +201,7 @@ lemma coombs_of_card_two
 theorem coombs_CondorcetLoser_criterion : CondorcetLoserCriterion coombs := by
   intro V A _ _ P d hloser
   classical
-  letI : DecidableEq A := Classical.decEq A
+  let : DecidableEq A := Classical.decEq A
   change d ∉ scoringEliminationAux vetoScore A P
   set n : Nat := Fintype.card A
   have aux :
@@ -227,7 +227,7 @@ theorem coombs_CondorcetLoser_criterion : CondorcetLoserCriterion coombs := by
       rcases hloser.2 with ⟨y, hyd⟩
       let instDec : DecidableEq A := inferInstance
       have hdmem_coombs : d ∈ coombs P := by
-        letI : DecidableEq A := Classical.decEq A
+        let : DecidableEq A := Classical.decEq A
         have hcongr :=
           scoringEliminationAux_decidableEq_congr (score := vetoScore) (P := P)
             (inst1 := instDec) (inst2 := Classical.decEq A)

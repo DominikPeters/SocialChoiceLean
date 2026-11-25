@@ -7,7 +7,6 @@ import SocialChoice.Rules.Copeland.Defs
 namespace SocialChoice
 
 open Finset
-open Classical
 
 lemma copelandPairScore2_neg (m : Int) :
     copelandPairScore2 (-m) = 2 - copelandPairScore2 m := by
@@ -68,7 +67,7 @@ lemma copelandScore2_le_max {V A : Type} [Fintype V] [Fintype A]
     (P : Profile V A) (a : A) :
     copelandScore2 P a ≤ copelandMaxScore2 P := by
   classical
-  letI : Nonempty A := ⟨a⟩
+  let : Nonempty A := ⟨a⟩
   have hAuniv : (Finset.univ : Finset A).Nonempty := Finset.univ_nonempty
   let scores : Finset Int := Finset.univ.image (fun x => copelandScore2 P x)
   have hScores : scores.Nonempty := hAuniv.image (fun x => copelandScore2 P x)
@@ -82,7 +81,7 @@ theorem copeland_reversal_symmetry : ReversalSymmetry copeland := by
   intro V A _ _ _ P hnot
   classical
   by_cases hA : Nonempty A
-  · letI : Nonempty A := hA
+  · let : Nonempty A := hA
     ext x
     constructor
     · intro hx

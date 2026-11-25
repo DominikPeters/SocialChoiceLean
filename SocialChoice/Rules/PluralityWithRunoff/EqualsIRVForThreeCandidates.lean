@@ -141,7 +141,7 @@ private lemma irv_branch_iff_margin_of_card_three
           @scoringEliminationAux V _ pluralityScore {z : A // z ≠ c} _ (Classical.decEq _)
             (restrictProfile P c) ↔
         0 ≤ margin (restrictProfile P c) ⟨x, hxne⟩ ⟨y, hyne⟩ := by
-    letI : DecidableEq {z : A // z ≠ c} := Classical.decEq _
+    let : DecidableEq {z : A // z ≠ c} := Classical.decEq _
     simpa [instantRunoffVoting, scoringEliminationRule] using
       (instantRunoffVoting_of_card_two (P := restrictProfile P c) (hcard := hcard_sub)
         (a := (⟨x, hxne⟩ : {z : A // z ≠ c}))
@@ -544,7 +544,7 @@ private lemma pluralityWithRunoffPairs_eq_image_lowest_of_card_three
   let L : Finset A := lowestScoring P scoreVec
   have hA_pos : 0 < Fintype.card A := by
     simp [hcard]
-  haveI : Nonempty A := Fintype.card_pos_iff.mp hA_pos
+  have : Nonempty A := Fintype.card_pos_iff.mp hA_pos
   have hpair_iff : ∀ c : A,
       (Finset.univ.erase c : Finset A) ∈ pluralityWithRunoffPairs P ↔ c ∈ L := by
     intro c

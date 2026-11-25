@@ -97,7 +97,7 @@ lemma pair_mem_pluralityWithRunoffPairs_of_card_two
     ({a, b} : Finset A) ∈ pluralityWithRunoffPairs P := by
   classical
   let S := plurality P
-  haveI : Nonempty A := by
+  have : Nonempty A := by
     have hpos : 0 < Fintype.card A := by
       simp [hcard]
     exact Fintype.card_pos_iff.mp hpos
@@ -206,7 +206,7 @@ lemma pluralityWithRunoff_of_card_two
     (P : Profile V A) (hcard : Fintype.card A = 2) (a b : A) (hab : a ≠ b) :
     a ∈ pluralityWithRunoff P ↔ 0 ≤ margin P a b := by
   classical
-  letI : DecidableEq A := Classical.decEq A
+  let : DecidableEq A := Classical.decEq A
   have hnot_le_one : ¬ Fintype.card A ≤ 1 := by
     omega
   constructor

@@ -11,9 +11,6 @@ open IdentitySelection
 
 namespace Main
 
-set_option maxHeartbeats 0
-set_option linter.unusedSimpArgs false
-
 /-- Successor in the candidate cycle `0 → 1 → 2 → 0`. -/
 def nextCandidate : Fin 3 → Fin 3
   | 0 => 1
@@ -45,38 +42,38 @@ theorem fin3_eq_singleton_prev_of_nonempty_of_not_mem
       have h0not : (0 : Fin 3) ∉ s := by simpa using hx
       have h1not : (1 : Fin 3) ∉ s := by simpa [nextCandidate] using hy
       rcases hne with ⟨z, hz⟩
-      fin_cases z <;> simp [nextCandidate, prevCandidate] at hx hy hz ⊢
+      fin_cases z <;> simp [nextCandidate] at hx hy hz ⊢
       · exact False.elim (h0not hz)
       · exact False.elim (h1not hz)
       · exact hz
     have h0not : (0 : Fin 3) ∉ s := by simpa using hx
     have h1not : (1 : Fin 3) ∉ s := by simpa [nextCandidate] using hy
     ext y
-    fin_cases y <;> simp [nextCandidate, prevCandidate, h0not, h1not, h2]
+    fin_cases y <;> simp [prevCandidate, h0not, h1not, h2]
   · have h0 : (0 : Fin 3) ∈ s := by
       have h1not : (1 : Fin 3) ∉ s := by simpa using hx
       have h2not : (2 : Fin 3) ∉ s := by simpa [nextCandidate] using hy
       rcases hne with ⟨z, hz⟩
-      fin_cases z <;> simp [nextCandidate, prevCandidate] at hx hy hz ⊢
+      fin_cases z <;> simp [nextCandidate] at hx hy hz ⊢
       · exact hz
       · exact False.elim (h1not hz)
       · exact False.elim (h2not hz)
     have h1not : (1 : Fin 3) ∉ s := by simpa using hx
     have h2not : (2 : Fin 3) ∉ s := by simpa [nextCandidate] using hy
     ext y
-    fin_cases y <;> simp [nextCandidate, prevCandidate, h0, h1not, h2not]
+    fin_cases y <;> simp [prevCandidate, h0, h1not, h2not]
   · have h1 : (1 : Fin 3) ∈ s := by
       have h2not : (2 : Fin 3) ∉ s := by simpa using hx
       have h0not : (0 : Fin 3) ∉ s := by simpa [nextCandidate] using hy
       rcases hne with ⟨z, hz⟩
-      fin_cases z <;> simp [nextCandidate, prevCandidate] at hx hy hz ⊢
+      fin_cases z <;> simp [nextCandidate] at hx hy hz ⊢
       · exact False.elim (h0not hz)
       · exact hz
       · exact False.elim (h2not hz)
     have h2not : (2 : Fin 3) ∉ s := by simpa using hx
     have h0not : (0 : Fin 3) ∉ s := by simpa [nextCandidate] using hy
     ext y
-    fin_cases y <;> simp [nextCandidate, prevCandidate, h0not, h1, h2not]
+    fin_cases y <;> simp [prevCandidate, h0not, h1, h2not]
 
 theorem perm_xyz (x : Fin 3) :
     [x, nextCandidate x, prevCandidate x].Perm (List.finRange 3) := by
@@ -382,7 +379,7 @@ theorem cycle_union_four_eq_sevenVoters (a b c p u v w : Fin 8) :
     ({a, b, c} : Finset (Fin 8)) ∪ ({p, u, v, w} : Finset (Fin 8)) =
       sevenVoters a b c p u v w := by
   ext r
-  simp [sevenVoters, or_assoc, or_left_comm, or_comm]
+  simp [sevenVoters, or_left_comm]
 
 def sevenVoterIndex (a b c p u v w : Fin 8)
     (r : Electorate (Fin 8) (sevenVoters a b c p u v w)) : Fin 7 :=
@@ -460,8 +457,8 @@ theorem sevenVoterIndex_injective
     first
     | apply Subtype.ext
       exact hr.trans hs.symm
-    | simp [sevenVoterIndex, hr, hs, hab, hac, hap, hau, hav, haw, hbc, hbp, hbu, hbv, hbw,
-        hcp, hcu, hcv, hcw, hpu, hpv, hpw, huv, huw, hvw,
+    | simp [sevenVoterIndex, hr, hs,
+
         hab.symm, hac.symm, hap.symm, hau.symm, hav.symm, haw.symm, hbc.symm, hbp.symm,
         hbu.symm, hbv.symm, hbw.symm, hcp.symm, hcu.symm, hcv.symm, hcw.symm,
         hpu.symm, hpv.symm, hpw.symm, huv.symm, huw.symm, hvw.symm] at hidx
@@ -536,31 +533,31 @@ theorem four_union_four_middle_left_eq_eightVoters (p q r u a b d e : Fin 8) :
     ({p, u, r, d} : Finset (Fin 8)) ∪ ({q, a, b, e} : Finset (Fin 8)) =
       eightVoters p q r u a b d e := by
   ext s
-  simp [eightVoters, or_assoc, or_left_comm, or_comm]
+  simp [eightVoters, or_left_comm]
 
 theorem four_union_four_middle_right_eq_eightVoters (p q r u a b d e : Fin 8) :
     ({p, u, d, e} : Finset (Fin 8)) ∪ ({q, r, a, b} : Finset (Fin 8)) =
       eightVoters p q r u a b d e := by
   ext s
-  simp [eightVoters, or_assoc, or_left_comm, or_comm]
+  simp [eightVoters, or_left_comm, or_comm]
 
 theorem three_union_five_middle_left_eq_eightVoters (p q r u a b d e : Fin 8) :
     ({p, q, r} : Finset (Fin 8)) ∪ ({u, a, b, d, e} : Finset (Fin 8)) =
       eightVoters p q r u a b d e := by
   ext s
-  simp [eightVoters, or_assoc, or_left_comm, or_comm]
+  simp [eightVoters, or_left_comm]
 
 theorem four_union_singleton_eq_fiveVoters (a b c d e : Fin 8) :
     ({a, b, c, d} : Finset (Fin 8)) ∪ ({e} : Finset (Fin 8)) =
       fiveVoters a b c d e := by
   ext r
-  simp [fiveVoters, or_assoc, or_left_comm, or_comm]
+  simp [fiveVoters]
 
 theorem three_union_two_eq_fiveVoters (a b c d e : Fin 8) :
     ({a, b, c} : Finset (Fin 8)) ∪ ({d, e} : Finset (Fin 8)) =
       fiveVoters a b c d e := by
   ext r
-  simp [fiveVoters, or_assoc, or_left_comm, or_comm]
+  simp [fiveVoters, or_left_comm]
 
 def fiveVoterIndex (a b c d e : Fin 8)
     (r : Electorate (Fin 8) (fiveVoters a b c d e)) : Fin 5 :=
@@ -624,7 +621,7 @@ theorem fiveVoterIndex_injective
     first
     | apply Subtype.ext
       exact hr.trans hs.symm
-    | simp [fiveVoterIndex, hr, hs, hab, hac, had, hae, hbc, hbd, hbe, hcd, hce, hde,
+    | simp [fiveVoterIndex, hr, hs,
         hab.symm, hac.symm, had.symm, hae.symm, hbc.symm, hbd.symm, hbe.symm,
         hcd.symm, hce.symm, hde.symm] at hidx
 
@@ -815,8 +812,8 @@ theorem p5Named_eq_reindex_p5
   rcases hr with rfl | rfl | rfl | rfl | rfl
   all_goals
     simp [p5NamedProfile, p5NamedBallot, reindexVoters, p5Profile, p5Ballot,
-      profileOfListBallots, fiveVoterEquiv, fiveVoterIndex, hab, hac, had, hae, hbc,
-      hbd, hbe, hcd, hce, hde, hab.symm, hac.symm, had.symm, hae.symm, hbc.symm,
+      profileOfListBallots, fiveVoterIndex,
+      hab.symm, hac.symm, had.symm, hae.symm, hbc.symm,
       hbd.symm, hbe.symm, hcd.symm, hce.symm, hde.symm] ; rfl
 
 theorem p5Named_condorcetWinner
@@ -874,8 +871,8 @@ theorem finalProfile_middle_left_eq_cycle_p5
   all_goals
     simp [castProfile, unionNamedProfiles, p2NamedProfile, p2NamedBallot, p3NamedProfile,
       p3NamedBallot, cycleNamedProfile, cycleNamedBallot, p5NamedProfile, p5NamedBallot,
-      hv, hpq, hpr, hpu, hpa, hpb, hpd, hpe, hqr, hqu, hqa, hqb, hqd, hqe,
-      hru, hra, hrb, hrd, hre, hua, hub, hud, hue, hab, had, hae, hbd, hbe, hde,
+      hv, hpq, hpr, hpu, hpd, hqr, hqu, hqd,
+      hru, hrd, hud, had, hae, hbd, hbe,
       hpq.symm, hpr.symm, hpu.symm, hpa.symm, hpb.symm, hpd.symm, hpe.symm,
       hqr.symm, hqu.symm, hqa.symm, hqb.symm, hqd.symm, hqe.symm, hru.symm,
       hra.symm, hrb.symm, hrd.symm, hre.symm, hua.symm, hub.symm, hud.symm,
@@ -913,8 +910,8 @@ theorem finalProfile_middle_right_eq_cycle_p5
   all_goals
     simp [castProfile, unionNamedProfiles, p2NamedProfile, p2NamedBallot, p3NamedProfile,
       p3NamedBallot, cycleNamedProfile, cycleNamedBallot, p5NamedProfile, p5NamedBallot,
-      hv, hpq, hpr, hpu, hpa, hpb, hpd, hpe, hqr, hqu, hqa, hqb, hqd, hqe,
-      hru, hra, hrb, hrd, hre, hua, hub, hud, hue, hab, had, hae, hbd, hbe, hde,
+      hv, hpq, hpr, hpu, hpd, hpe, hqr, hqu, hqd, hqe,
+      hru, hrd, hre, hud, hue, had, hae, hbd, hbe, hde,
       hpq.symm, hpr.symm, hpu.symm, hpa.symm, hpb.symm, hpd.symm, hpe.symm,
       hqr.symm, hqu.symm, hqa.symm, hqb.symm, hqd.symm, hqe.symm, hru.symm,
       hra.symm, hrb.symm, hrd.symm, hre.symm, hua.symm, hub.symm, hud.symm,
@@ -1164,8 +1161,8 @@ theorem cast_union_cycle_p2_eq_reindex_cyclePlusP2
   all_goals
     simp [castProfile, unionNamedProfiles, reindexVoters, cycleNamedProfile, cycleNamedBallot,
       p2NamedProfile, p2NamedBallot, cyclePlusP2Profile, cyclePlusP2Ballot, profileOfListBallots,
-      sevenVoterEquiv, sevenVoterIndex, hab, hac, hap, hau, hav, haw, hbc, hbp, hbu,
-      hbv, hbw, hcp, hcu, hcv, hcw, hpu, hpv, hpw, huv, huw, hvw,
+      sevenVoterIndex, hab, hac, hbc,
+
       hab.symm, hac.symm, hap.symm, hau.symm, hav.symm, haw.symm, hbc.symm, hbp.symm,
       hbu.symm, hbv.symm, hbw.symm, hcp.symm, hcu.symm, hcv.symm, hcw.symm,
       hpu.symm, hpv.symm, hpw.symm, huv.symm, huw.symm, hvw.symm] ; rfl
@@ -1197,8 +1194,8 @@ theorem cast_union_cycle_p3_eq_reindex_cyclePlusP3
   all_goals
     simp [castProfile, unionNamedProfiles, reindexVoters, cycleNamedProfile, cycleNamedBallot,
       p3NamedProfile, p3NamedBallot, cyclePlusP3Profile, cyclePlusP3Ballot, profileOfListBallots,
-      sevenVoterEquiv, sevenVoterIndex, hab, hac, hap, hau, haq, haw, hbc, hbp, hbu,
-      hbq, hbw, hcp, hcu, hcq, hcw, hpu, hpq, hpw, huq, huw, hqw,
+      sevenVoterIndex, hab, hac, hbc,
+      hpq, hpw, huq, huw,
       hab.symm, hac.symm, hap.symm, hau.symm, haq.symm, haw.symm, hbc.symm, hbp.symm,
       hbu.symm, hbq.symm, hbw.symm, hcp.symm, hcu.symm, hcq.symm, hcw.symm,
       hpu.symm, hpq.symm, hpw.symm, huq.symm, huw.symm, hqw.symm] ; rfl
@@ -1407,8 +1404,8 @@ theorem cast_union_p2_singletonYXZ_eq_reindex_p2PlusYXZ
   all_goals
     simp [castProfile, unionNamedProfiles, reindexVoters, p2NamedProfile, p2NamedBallot,
       singletonYXZProfile, singletonYXZBallot, p2PlusYXZProfile, p2PlusYXZBallot,
-      profileOfListBallots, fiveVoterEquiv, fiveVoterIndex, hpu, hpv, hpw, hpy,
-      huv, huw, huy, hvw, hvy, hwy, hpu.symm, hpv.symm, hpw.symm, hpy.symm,
+      profileOfListBallots, fiveVoterIndex, hpu, hpv, hpw,
+      huv, huw, hvw, hpu.symm, hpv.symm, hpw.symm, hpy.symm,
       huv.symm, huw.symm, huy.symm, hvw.symm, hvy.symm, hwy.symm] ; rfl
 
 theorem cast_union_p3_singletonYXZ_eq_reindex_p3PlusYXZ
@@ -1435,8 +1432,8 @@ theorem cast_union_p3_singletonYXZ_eq_reindex_p3PlusYXZ
   all_goals
     simp [castProfile, unionNamedProfiles, reindexVoters, p3NamedProfile, p3NamedBallot,
       singletonYXZProfile, singletonYXZBallot, p3PlusYXZProfile, p3PlusYXZBallot,
-      profileOfListBallots, fiveVoterEquiv, fiveVoterIndex, hpu, hpq, hpw, hpy,
-      huq, huw, huy, hqw, hqy, hwy, hpu.symm, hpq.symm, hpw.symm, hpy.symm,
+      profileOfListBallots, fiveVoterIndex, hpu, hpq, hpw,
+      huq, huw, hqw, hpu.symm, hpq.symm, hpw.symm, hpy.symm,
       huq.symm, huw.symm, huy.symm, hqw.symm, hqy.symm, hwy.symm] ; rfl
 
 theorem cast_union_p2_singletonYXZ_condorcetWinner
@@ -1690,13 +1687,13 @@ theorem topVoter_ne_bottomVoter (x : Fin 3) (t : OrderedTriple8) :
 theorem topVoter_ne_middleVoter (x : Fin 3) (t : OrderedTriple8) :
     topVoter x t ≠ middleVoter x t := by
   fin_cases x <;> simp [topVoter, middleVoter, OrderedTriple8.first_ne_third,
-    OrderedTriple8.first_ne_second, OrderedTriple8.second_ne_third,
+
     (OrderedTriple8.first_ne_second t).symm, (OrderedTriple8.second_ne_third t).symm]
 
 theorem bottomVoter_ne_middleVoter (x : Fin 3) (t : OrderedTriple8) :
     bottomVoter x t ≠ middleVoter x t := by
   fin_cases x <;> simp [bottomVoter, middleVoter, OrderedTriple8.second_ne_third,
-    OrderedTriple8.first_ne_second, OrderedTriple8.third_ne_first,
+    OrderedTriple8.first_ne_second,
     (OrderedTriple8.first_ne_third t).symm]
 
 theorem support_eq_top_bottom_middle (x : Fin 3) (t : OrderedTriple8) :
@@ -1760,7 +1757,7 @@ theorem exists_four_eq_of_card_four_of_two_mem
     simp [hud]
   have hdT : d ∈ (S.erase p).erase r := by
     rw [hT]
-    simp [hud]
+    simp
   have huner : u ≠ r := (Finset.mem_erase.mp huT).1
   have hdner : d ≠ r := (Finset.mem_erase.mp hdT).1
   have huSp : u ∈ S.erase p := (Finset.mem_erase.mp huT).2
@@ -1774,7 +1771,7 @@ theorem exists_four_eq_of_card_four_of_two_mem
     _ = ({p, u, r, d} : Finset (Fin 8)) := by
       rw [hT]
       ext s
-      simp [or_assoc, or_left_comm, or_comm]
+      simp [or_left_comm]
 
 theorem exists_four_eq_of_card_four_of_one_mem
     (S : Finset (Fin 8)) (hS : S.card = 4) (q : Fin 8) (hq : q ∈ S) :
@@ -1789,10 +1786,10 @@ theorem exists_four_eq_of_card_four_of_one_mem
     simp [hab, hae]
   have hbT : b ∈ S.erase q := by
     rw [hT]
-    simp [hab, hbe]
+    simp [hbe]
   have heT : e ∈ S.erase q := by
     rw [hT]
-    simp [hae, hbe]
+    simp
   have hqa : q ≠ a := (Finset.mem_erase.mp haT).1.symm
   have hqb : q ≠ b := (Finset.mem_erase.mp hbT).1.symm
   have hqe : q ≠ e := (Finset.mem_erase.mp heT).1.symm
@@ -1927,8 +1924,7 @@ theorem cycleNamedProfile_eq_canonical (x : Fin 3) (t : OrderedTriple8) :
   fin_cases x
   · have hballot :
         cycleNamedBallot 0 (topVoter 0 t) (bottomVoter 0 t) v =
-          canonicalCycleBallot t v := by
-      simp [cycleNamedBallot, canonicalCycleBallot, topVoter, bottomVoter]
+          canonicalCycleBallot t v := rfl
     simpa [cycleNamedProfile, canonicalCycleProfile] using congrArg ListBallot.toLinearOrder hballot
   · have hballot :
         cycleNamedBallot 1 (topVoter 1 t) (bottomVoter 1 t) v =
@@ -2070,7 +2066,7 @@ theorem final_witness_top_left_middle_left_contradiction
         {prevCandidate x} := by
     have hset : ({a, b, q, e} : Finset (Fin 8)) = ({q, a, b, e} : Finset (Fin 8)) := by
       ext s
-      simp [or_assoc, or_left_comm, or_comm]
+      simp [or_assoc, or_comm]
     rw [← hset]
     exact hP3raw
   have hxT' :
@@ -2121,7 +2117,7 @@ theorem final_witness_top_left_middle_right_contradiction
   have hdA : d ∈ A := by rw [hAeq]; simp [hpd.symm, hud.symm, hde]
   have heA : e ∈ A := by rw [hAeq]; simp [hpe.symm, hue.symm, hde.symm]
   have haB : a ∈ otherSide A := by rw [hBeq]; simp [hqa.symm, har]
-  have hbB : b ∈ otherSide A := by rw [hBeq]; simp [hqb.symm, hab.symm, hrb]
+  have hbB : b ∈ otherSide A := by rw [hBeq]; simp [hqb.symm, hab.symm]
   have hleft_right_ne {l s : Fin 8} (hl : l ∈ A) (hs : s ∈ otherSide A) : l ≠ s := by
     intro hls
     have hsnot : s ∉ A := (mem_otherSide_iff A s).mp hs

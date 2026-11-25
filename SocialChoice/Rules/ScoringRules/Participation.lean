@@ -37,6 +37,11 @@ noncomputable def oldVoterEquiv {U : Type} [DecidableEq U] {V : Finset U} {u : U
     apply Subtype.ext
     rfl
 
+@[simp] lemma oldVoterEquiv_apply_coe {U : Type} [DecidableEq U] {V : Finset U} {u : U}
+    (hu : u ∉ V) (v : Electorate U V) :
+    (oldVoterEquiv hu v).1 = liftVoter u v :=
+  rfl
+
 lemma scoreCandidate_add_newVoter {U A : Type} [DecidableEq U] [Fintype A] [DecidableEq A]
     {V : Finset U} {u : U} (hu : u ∉ V)
     (P : Profile (Electorate U V) A)
@@ -67,7 +72,7 @@ lemma scoreCandidate_add_newVoter {U A : Type} [DecidableEq U] [Fintype A] [Deci
         {v : Electorate U (insert u V) // v ≠ newVoter (u := u) (V := V) hu} =>
           (scoreFun (rank (Q.pref v.1) c) : Int)) ?_
     intro v
-    simp [oldVoterEquiv, hagree]
+    simp [hagree]
   have hsumQ' :
       (∑ v : Electorate U (insert u V), scoreFun (rank (Q.pref v) c)) =
         scoreFun (rank (Q.pref (newVoter (u := u) (V := V) hu)) c) +

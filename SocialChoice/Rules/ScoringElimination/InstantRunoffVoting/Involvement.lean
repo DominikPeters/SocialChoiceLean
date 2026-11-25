@@ -116,7 +116,7 @@ theorem instantRunoffVoting_positive_involvement : PositiveInvolvement instantRu
       have hA : (Finset.univ : Finset A).Nonempty := by
         have hcard' : 1 < Fintype.card A := Nat.lt_of_not_ge hle
         have hpos : 0 < Fintype.card A := Nat.lt_trans Nat.zero_lt_one hcard'
-        haveI : Nonempty A := Fintype.card_pos_iff.mp hpos
+        have : Nonempty A := Fintype.card_pos_iff.mp hpos
         exact Finset.univ_nonempty
       have hcL' : c ∈ lowestScoring P scoreVec := by
         simpa [L] using hcL

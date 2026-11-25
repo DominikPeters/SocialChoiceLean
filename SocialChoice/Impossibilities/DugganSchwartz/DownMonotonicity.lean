@@ -170,8 +170,8 @@ lemma profile_eq_update_of_swap (P : Profile V A) (v : V) (x y : A) :
   unfold swapInProfile updateProfile
   by_cases huv : u = v
   · subst u
-    simp only [if_true]
-  · simp only [if_neg huv]
+    simp only [ite_true]
+  · simp only [ite_eq_right huv]
 
 /-- swapInProfile relates to updateProfile. -/
 lemma swapInProfile_eq (P : Profile V A) (v : V) (x y : A) :
@@ -187,8 +187,8 @@ lemma updateProfile_updateProfile_same (P : Profile V A) (v : V)
   unfold updateProfile
   by_cases h : u = v
   · subst u
-    simp only [if_true]
-  · simp only [if_neg h]
+    simp only [ite_true]
+  · simp only [ite_eq_right h]
 
 end ProfileSwap
 
@@ -865,7 +865,7 @@ lemma prefers_w_preserved_swap (P : Profile V A) (v : V) (w x y b : A)
       have hwb' : (swapInBallot r x y).lt w b := hpres.mpr hwb
       change ((swapInProfile P v x y).pref v).lt w b
       rw [show (swapInProfile P v x y).pref v = swapInBallot r x y by
-        simp only [swapInProfile, updateProfile, if_pos, r]]
+        simp only [swapInProfile, updateProfile, ite_eq_left, r]]
       exact hwb'
   | inr hset =>
       exfalso
@@ -898,7 +898,7 @@ lemma downObtainable_of_swap (P : Profile V A) (v : V) (w x y : A)
     simpa [huv] using hres
   · unfold Prefers
     rw [show (swapInProfile P v x y).pref u = P.pref u by
-      simp only [swapInProfile, updateProfile, if_neg huv]]
+      simp only [swapInProfile, updateProfile, ite_eq_right huv]]
     exact hwb
 
 lemma downObtainable_of_seq (w : A) {P Q : Profile V A} :
@@ -1115,8 +1115,8 @@ lemma downObtainableSeq_updateProfile
     unfold updateProfile
     by_cases h : u = v
     · subst u
-      simp only [if_true]
-    · simp only [if_neg h]
+      simp only [ite_true]
+    · simp only [ite_eq_right h]
   simpa [linearOrderOfList_listOfLinearOrder, hself] using hseq_profile
 
 noncomputable def profileUpdateSet (P P' : Profile V A) (S : Finset V) : Profile V A := by
@@ -1143,10 +1143,10 @@ lemma profileUpdateSet_insert [DecidableEq V]
   unfold profileUpdateSet updateProfile
   by_cases h : u = v
   · subst u
-    simp only [Finset.mem_insert, true_or, if_true]
+    simp only [Finset.mem_insert, true_or, ite_true]
   · by_cases huS : u ∈ S
-    · simp only [Finset.mem_insert, h, huS, false_or, if_true, if_false]
-    · simp only [Finset.mem_insert, h, huS, or_false, if_false]
+    · simp only [Finset.mem_insert, h, huS, false_or, ite_true, ite_false]
+    · simp only [Finset.mem_insert, h, huS, or_false, ite_false]
 
 omit [DecidableEq A] in
 lemma profileUpdateSet_univ (P P' : Profile V A) :
@@ -1155,7 +1155,7 @@ lemma profileUpdateSet_univ (P P' : Profile V A) :
   apply Profile.ext
   intro v
   change (if v ∈ (Finset.univ : Finset V) then P'.pref v else P.pref v) = P'.pref v
-  simp only [Finset.mem_univ, if_true]
+  simp only [Finset.mem_univ, ite_true]
 
 lemma downObtainableSeq_of_downObtainable
     {P P' : Profile V A} {w : A}
@@ -1176,16 +1176,16 @@ lemma downObtainableSeq_of_downObtainable
           have hwb' : Prefers P v w b := by
             unfold Prefers at hwb ⊢
             rw [show (profileUpdateSet P P' S).pref v = P.pref v by
-              simp only [profileUpdateSet, if_neg hv]] at hwb
+              simp only [profileUpdateSet, ite_eq_right hv]] at hwb
             exact hwb
           have hwb'' : Prefers P' v w b := hdown v b hwb'
           unfold Prefers at hwb'' ⊢
           rw [show (updateProfile (profileUpdateSet P P' S) v (P'.pref v)).pref v =
-              P'.pref v by simp only [updateProfile, if_pos]]
+              P'.pref v by simp only [updateProfile, ite_eq_left]]
           exact hwb''
         · unfold Prefers at hwb ⊢
           rw [show (updateProfile (profileUpdateSet P P' S) v (P'.pref v)).pref u =
-              (profileUpdateSet P P' S).pref u by simp only [updateProfile, if_neg huv]]
+              (profileUpdateSet P P' S).pref u by simp only [updateProfile, ite_eq_right huv]]
           exact hwb
       have hstep :=
         downObtainableSeq_updateProfile (P := profileUpdateSet P P' S) (v := v)
@@ -1294,8 +1294,8 @@ theorem downMonotonicity_of_opt_pess_sp (f : VotingRule)
     unfold P' swapInProfile updateProfile
     by_cases h : u = v
     · subst u
-      simp only [if_true]
-    · simp only [if_neg h]
+      simp only [ite_true]
+    · simp only [ite_eq_right h]
   have hP : updateProfile P' v (P.pref v) = P := by
     simpa [P'] using (profile_eq_update_of_swap P v x y).symm
   let _ : Nonempty A := ⟨w⟩

@@ -87,7 +87,7 @@ private lemma c2BordaScore_lt_of_pareto {V A : Type} [Fintype V] [Fintype A]
 theorem nanson_pareto_efficiency : ParetoEfficiency nanson := by
   intro V A _ _ _ P c d hpref
   classical
-  letI : DecidableEq A := Classical.decEq A
+  let : DecidableEq A := Classical.decEq A
   set k : Nat := Fintype.card A
   let Motive : Nat → Prop := fun n =>
     ∀ {A : Type} [Fintype A] [DecidableEq A],

@@ -1,6 +1,6 @@
 import Mathlib.Data.Finset.Sort
 import Mathlib.Data.List.Pairwise
-import Mathlib.Data.Prod.Lex
+import Mathlib.Order.Prod.Lex.Basic
 import SocialChoice.Rules.River.Defs
 import SocialChoice.Cycles
 

@@ -89,10 +89,10 @@ theorem reinforcement_of_perfectSkewBalanceRepresentation
     (hRep : IsPerfectSkewBalanceRepresentable (F := F)) :
     Reinforcement D F := by
   rcases hRep with ⟨R, instAdd, instLin, instCovLe, instCovLt, B, hRepB⟩
-  letI : AddCommGroup R := instAdd
-  letI : LinearOrder R := instLin
-  letI : CovariantClass R R (fun a b => a + b) (· ≤ ·) := instCovLe
-  letI : CovariantClass R R (fun a b => a + b) (· < ·) := instCovLt
+  let : AddCommGroup R := instAdd
+  let : LinearOrder R := instLin
+  let : CovariantClass R R (fun a b => a + b) (· ≤ ·) := instCovLe
+  let : CovariantClass R R (fun a b => a + b) (· < ·) := instCovLt
   rcases hRepB with ⟨hskew, hperfect, hFB⟩
   have hWA_B : WeaklyAdditive D (balanceRule (D := D) B) := by
     simpa [hFB] using hWA

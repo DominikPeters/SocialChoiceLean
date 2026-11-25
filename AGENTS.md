@@ -25,7 +25,7 @@ The project includes:
         - `SplitCycle/`: Implementation and properties of the SplitCycle rule.
     - `Impossibilities/`: Formalized impossibility results.
 - `lakefile.toml`: Configuration for the Lake build system.
-- `lean-toolchain`: Specifies the Lean 4 version used (currently `v4.27.0-rc1`).
+- `lean-toolchain`: Specifies the Lean 4 version used (currently `v4.36.0`).
 
 ## Testing
 

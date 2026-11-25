@@ -11,8 +11,8 @@ open Finset
 theorem plurality_with_runoff_pareto_efficiency : ParetoEfficiency pluralityWithRunoff := by
   intro V A _ _ _ P c d hpref
   classical
-  letI : Nonempty A := ⟨c⟩
-  letI : DecidableEq A := Classical.decEq A
+  let : Nonempty A := ⟨c⟩
+  let : DecidableEq A := Classical.decEq A
   by_cases hcard : Fintype.card A ≤ 1
   · have hforall : ∀ a b : A, a = b := (Fintype.card_le_one_iff).1 hcard
     have hcd : c ≠ d := by

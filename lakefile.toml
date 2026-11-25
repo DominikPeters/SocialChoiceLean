@@ -2,11 +2,14 @@ name = "social_choice"
 version = "0.1.0"
 defaultTargets = ["SocialChoice"]
 moreServerArgs = []
+# Mathlib now opts into the module system; this project's files are plain
+# (non-`module`) Lean files, so silence the per-import warning about that.
+allowNonModules = true
 
 [[require]]
 name = "mathlib"
 scope = "leanprover-community"
-rev = "v4.32.0"
+rev = "v4.36.0"
 
 [[lean_lib]]
 name = "SocialChoice"

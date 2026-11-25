@@ -214,7 +214,7 @@ theorem gs_case1
   have hsp4' : ¬ (P.pref v₁).lt a b := by
     simpa using hsp4
 
-  letI := P.pref v₁
+  let := P.pref v₁
   have hle1 : a ≤ b := not_lt.mp hsp1'
   have hle2 : b ≤ a := not_lt.mp hsp4'
   have hba : a = b := le_antisymm hle1 hle2

@@ -825,8 +825,8 @@ lemma c8Fallback_pow8_fix_of_pow4_fix
     (hpow4 : (φ ^ 4) x = x) :
     (φ ^ 8) x = x := by
   have h8 : (8 : ℕ) = 4 * 2 := by decide
-  have hpowMul : φ ^ (4 * 2) = (φ ^ 4) ^ 2 := by
-    simpa [pow_mul] using (pow_mul φ 4 2).symm
+  have hpowMul : φ ^ (4 * 2) = (φ ^ 4) ^ 2 :=
+    pow_mul φ 4 2
   calc
     (φ ^ 8) x = (φ ^ (4 * 2)) x := by simp [h8]
     _ = ((φ ^ 4) ^ 2) x := by simp [hpowMul]
@@ -839,8 +839,8 @@ lemma c8Fallback_pow10_fix_of_pow5_fix
     (hpow5 : (φ ^ 5) x = x) :
     (φ ^ 10) x = x := by
   have h10 : (10 : ℕ) = 5 * 2 := by decide
-  have hpowMul : φ ^ (5 * 2) = (φ ^ 5) ^ 2 := by
-    simpa [pow_mul] using (pow_mul φ 5 2).symm
+  have hpowMul : φ ^ (5 * 2) = (φ ^ 5) ^ 2 :=
+    pow_mul φ 5 2
   calc
     (φ ^ 10) x = (φ ^ (5 * 2)) x := by simp [h10]
     _ = ((φ ^ 5) ^ 2) x := by simp [hpowMul]
@@ -971,7 +971,7 @@ lemma c8Fallback_orbitProfileSum11_split
             (Finset.sum (Finset.range 4) (fun k => f (4 + k)) +
               Finset.sum (Finset.range 4) (fun k => f (8 + k))) := by
             congr 1
-            simpa [Nat.add_assoc] using
+            simpa [← Nat.add_assoc] using
               (Finset.sum_range_add (fun k => f (4 + k)) 4 4)
       _ = Finset.sum (Finset.range 4) f +
             Finset.sum (Finset.range 4) (fun k => f (4 + k)) +
@@ -1037,7 +1037,7 @@ lemma c8Fallback_orbitProfileSum14_split
             (Finset.sum (Finset.range 5) (fun k => f (5 + k)) +
               Finset.sum (Finset.range 5) (fun k => f (10 + k))) := by
             congr 1
-            simpa [Nat.add_assoc] using
+            simpa [← Nat.add_assoc] using
               (Finset.sum_range_add (fun k => f (5 + k)) 5 5)
       _ = Finset.sum (Finset.range 5) f +
             Finset.sum (Finset.range 5) (fun k => f (5 + k)) +

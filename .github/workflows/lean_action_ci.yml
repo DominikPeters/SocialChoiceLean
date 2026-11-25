@@ -2,8 +2,17 @@ name: Lean Action CI
 
 on:
   push:
+    branches: [master]
   pull_request:
   workflow_dispatch:
+
+# A new push to a PR cancels that PR's in-flight build; builds of master always finish.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
 
 jobs:
   build:
@@ -11,4 +20,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
+      - name: Reject sorry and native_decide
+        run: |
+          if grep -rnwE 'sorry|native_decide' --include='*.lean' SocialChoice SocialChoice.lean Pivato Pivato.lean; then
+            echo "::error::Found sorry or native_decide (see matches above)."
+            exit 1
+          fi
       - uses: leanprover/lean-action@v1
+        with:
+          # Pivato is not a default target, so a plain `lake build` would skip it.
+          build-args: "SocialChoice Pivato"

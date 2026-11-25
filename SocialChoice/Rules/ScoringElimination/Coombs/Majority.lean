@@ -11,14 +11,12 @@ import SocialChoice.Rules.ScoringRules.Veto.Common
 namespace SocialChoice
 
 open Finset
-open Classical
-attribute [instance] Classical.decEq Classical.decPred
 
 theorem coombs_majority_loser_criterion : MajorityLoserCriterion coombs := by
   intro V A _ _ P c hmaj hne
   classical
   rcases hne with ⟨d0, hd0c⟩
-  haveI : Nonempty A := ⟨d0⟩
+  have : Nonempty A := ⟨d0⟩
   let m := Fintype.card A
   let scoreVec : Nat → Int := fun r => vetoScore m r
   let L : Finset A := lowestScoring P scoreVec
@@ -154,122 +152,11 @@ def ballots : Fin 3 → ListBallot 3
 noncomputable def profile : Profile (Fin 3) (Fin 3) :=
   profileOfListBallots ballots
 
-lemma bottomRank_iff_prefersInList {m n : ℕ} (bs : Fin m → ListBallot n)
-    (v : Fin m) (c : Fin n) :
-    BottomRank (profileOfListBallots bs) v c ↔
-      ∀ d : Fin n, d ≠ c → prefersInList (bs v).ranking d c = true := by
-  constructor
-  · intro h d hd
-    exact (prefers_iff_prefersInList bs v d c).1 (h d hd)
-  · intro h d hd
-    exact (prefers_iff_prefersInList bs v d c).2 (h d hd)
-
-lemma votersBottom_0 :
-    votersBottom profile 0 = ({2} : Finset (Fin 3)) := by
-  classical
-  ext v
-  fin_cases v <;>
-    simp [profile, ballots, votersBottom, bottomRank_iff_prefersInList, prefersInList] <;>
-    decide
-
-lemma votersBottom_1 :
-    votersBottom profile 1 = ({1} : Finset (Fin 3)) := by
-  classical
-  ext v
-  fin_cases v <;>
-    simp [profile, ballots, votersBottom, bottomRank_iff_prefersInList, prefersInList] <;>
-    decide
-
-lemma votersBottom_2 :
-    votersBottom profile 2 = ({0} : Finset (Fin 3)) := by
-  classical
-  ext v
-  fin_cases v <;>
-    simp [profile, ballots, votersBottom, bottomRank_iff_prefersInList, prefersInList] <;>
-    decide
-
-lemma votersBottom_0_card : (votersBottom profile 0).card = 1 := by
-  simp [votersBottom_0]
-
-lemma votersBottom_1_card : (votersBottom profile 1).card = 1 := by
-  simp [votersBottom_1]
-
-lemma votersBottom_2_card : (votersBottom profile 2).card = 1 := by
-  simp [votersBottom_2]
-
-lemma notBottom_card {V A : Type} [Fintype V] [Fintype A]
-    (P : Profile V A) (c : A) {k : Nat} (hcard : (votersBottom P c).card = k) :
-    (Finset.univ.filter (fun v => ¬ BottomRank P v c)).card = Fintype.card V - k := by
-  classical
-  have hsum :
-      (Finset.univ.filter (fun v => BottomRank P v c)).card +
-        (Finset.univ.filter (fun v => ¬ BottomRank P v c)).card =
-        (Finset.univ : Finset V).card := by
-    simpa using
-      (Finset.card_filter_add_card_filter_not
-        (s := (Finset.univ : Finset V)) (p := fun v => BottomRank P v c))
-  have hbottom :
-      (Finset.univ.filter (fun v => BottomRank P v c)).card = k := by
-    simpa [votersBottom] using hcard
-  have hsum' := hsum
-  simp [hbottom] at hsum'
-  omega
-
 local notation "scoreVec" => fun r => vetoScore 3 r
-
-lemma scoreCandidate_0 : scoreCandidate profile scoreVec (0 : Fin 3) = (2 : Int) := by
-  have hcard :
-      (Finset.univ.filter (fun v => ¬ BottomRank profile v 0)).card = 2 := by
-    have h := notBottom_card (P := profile) (c := (0 : Fin 3)) (k := 1) votersBottom_0_card
-    simpa using h
-  calc
-    scoreCandidate profile scoreVec (0 : Fin 3) =
-        ((Finset.univ.filter (fun v => ¬ BottomRank profile v 0)).card : Int) := by
-          simpa [vetoScore] using
-            (vetoScore_scoreCandidate_eq_notBottom_card (P := profile) (c := (0 : Fin 3)))
-    _ = (2 : Int) := by
-          exact_mod_cast hcard
-
-lemma scoreCandidate_1 : scoreCandidate profile scoreVec (1 : Fin 3) = (2 : Int) := by
-  have hcard :
-      (Finset.univ.filter (fun v => ¬ BottomRank profile v 1)).card = 2 := by
-    have h := notBottom_card (P := profile) (c := (1 : Fin 3)) (k := 1) votersBottom_1_card
-    simpa using h
-  calc
-    scoreCandidate profile scoreVec (1 : Fin 3) =
-        ((Finset.univ.filter (fun v => ¬ BottomRank profile v 1)).card : Int) := by
-          simpa [vetoScore] using
-            (vetoScore_scoreCandidate_eq_notBottom_card (P := profile) (c := (1 : Fin 3)))
-    _ = (2 : Int) := by
-          exact_mod_cast hcard
-
-lemma scoreCandidate_2 : scoreCandidate profile scoreVec (2 : Fin 3) = (2 : Int) := by
-  have hcard :
-      (Finset.univ.filter (fun v => ¬ BottomRank profile v 2)).card = 2 := by
-    have h := notBottom_card (P := profile) (c := (2 : Fin 3)) (k := 1) votersBottom_2_card
-    simpa using h
-  calc
-    scoreCandidate profile scoreVec (2 : Fin 3) =
-        ((Finset.univ.filter (fun v => ¬ BottomRank profile v 2)).card : Int) := by
-          simpa [vetoScore] using
-            (vetoScore_scoreCandidate_eq_notBottom_card (P := profile) (c := (2 : Fin 3)))
-    _ = (2 : Int) := by
-          exact_mod_cast hcard
 
 lemma lowestScoring_profile_eq_univ :
     lowestScoring profile scoreVec = (Finset.univ : Finset (Fin 3)) := by
-  classical
-  apply Finset.ext
-  intro x
-  constructor
-  · intro _hx
-    exact Finset.mem_univ x
-  · intro _hx
-    have hA : (Finset.univ : Finset (Fin 3)).Nonempty := Finset.univ_nonempty
-    apply (lowestScoring_iff_forall_le (P := profile) (score := scoreVec) hA x).2
-    intro d
-    fin_cases x <;> fin_cases d <;>
-      simp [scoreCandidate_0, scoreCandidate_1, scoreCandidate_2]
+  decide
 
 /-! ## Pairwise margins -/
 
